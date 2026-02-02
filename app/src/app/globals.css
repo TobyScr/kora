@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap");
+
+/* Kora Design Tokens */
+:root {
+  /* Background */
+  --background-page: #f3f4f6;
+  --background-surface: #ffffff;
+  --background-surface-0: #f8f8f9;
+  --background-brand: #60a6e3;
+
+  /* Text */
+  --text-primary: #0d2b4c;
+  --text-secondary: #6e8094;
+  --text-tertiary: #b6bfc9;
+  --text-inverse: #ffffff;
+
+  /* Stroke */
+  --stroke-default: #e7eaed;
+  --stroke-soft: #f3f4f6;
+
+  /* Button */
+  --button-solid-default: #0d2b4c;
+  --button-outline-default: #ffffff;
+
+  /* Primary palette */
+  --primary-100: #e7eaed;
+
+  /* Spacing */
+  --spacing-none: 0px;
+  --spacing-1: 4px;
+  --spacing-1-5: 6px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+
+  /* Radius */
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-xxl: 24px;
+  --radius-max: 999px;
+
+  /* Typography sizes */
+  --font-size-14: 14px;
+  --body-size-small: 14px;
+  --body-size-medium: 16px;
+  --body-lineheight-medium: 24px;
+  --heading-size-h6: 20px;
+  --heading-lineheight-h6: 24px;
+
+  /* Letter spacing */
+  --letter-spacing-normal: 0px;
+  --letter-spacing-wide-s: 0.15px;
+}
+
+@theme inline {
+  --color-background: var(--background-surface);
+  --color-foreground: var(--text-primary);
+  --color-background-page: var(--background-page);
+  --color-background-surface: var(--background-surface);
+  --color-background-surface-0: var(--background-surface-0);
+  --color-background-brand: var(--background-brand);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inverse: var(--text-inverse);
+  --color-stroke-default: var(--stroke-default);
+  --color-stroke-soft: var(--stroke-soft);
+  --color-button-solid: var(--button-solid-default);
+  --color-button-outline: var(--button-outline-default);
+  --color-primary-100: var(--primary-100);
+  --font-sans: "Satoshi", sans-serif;
+}
+
+body {
+  background: var(--background-page);
+  color: var(--text-primary);
+  font-family: "Satoshi", sans-serif;
+}
