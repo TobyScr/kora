@@ -62,7 +62,7 @@ export function ChatInput({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         rows={1}
-        className="flex-1 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-6 tracking-[var(--letter-spacing-wide-s)] outline-none"
+        className="flex-1 h-8 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-8 tracking-[var(--letter-spacing-wide-s)] outline-none"
         suppressHydrationWarning
       />
       <button

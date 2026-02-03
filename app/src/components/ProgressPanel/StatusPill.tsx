@@ -28,7 +28,7 @@ export function StatusPill({ status }: StatusPillProps) {
 
   return (
     <div
-      className={`flex items-center gap-2 h-6 px-2 py-[3px] rounded-2xl border ${config.bg} ${config.border}`}
+      className={`flex items-center gap-2 h-6 px-2 py-[3px] rounded-2xl border whitespace-nowrap ${config.bg} ${config.border}`}
     >
       <span className={`w-[6px] h-[6px] rounded-full ${config.dot}`} />
       <span className={`text-xs font-medium leading-[1.6] tracking-[0.15px] ${config.text}`}>

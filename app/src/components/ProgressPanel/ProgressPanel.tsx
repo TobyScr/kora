@@ -132,13 +132,16 @@ export function ProgressPanel({ sections, onToggleSection, onClose }: ProgressPa
           content={<BriefOverviewContent />}
           onToggle={() => onToggleSection?.("briefOverview")}
         />
-        <ProgressPanelSection
-          title="Research Insights"
-          status={sections.researchInsights.status}
-          isExpanded={sections.researchInsights.isExpanded}
-          content={<ResearchInsightsContent />}
-          onToggle={() => onToggleSection?.("researchInsights")}
-        />
+        {/* Only show Research Insights after Brief Overview is complete */}
+        {sections.briefOverview.status === "complete" && (
+          <ProgressPanelSection
+            title="Research Insights"
+            status={sections.researchInsights.status}
+            isExpanded={sections.researchInsights.isExpanded}
+            content={<ResearchInsightsContent />}
+            onToggle={() => onToggleSection?.("researchInsights")}
+          />
+        )}
       </div>
     </div>
   );
