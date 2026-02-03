@@ -62,13 +62,16 @@ export function ChatInput({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         rows={1}
-        className="flex-1 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-6 tracking-[var(--letter-spacing-wide-s)] outline-none"
-        suppressHydrationWarning
+        className="flex-1 h-8 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-8 tracking-[var(--letter-spacing-wide-s)] outline-none"
       />
       <button
         type="submit"
         disabled={!value.trim()}
-        className="flex items-center justify-center size-8 rounded-full bg-button-solid text-text-inverse cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        className={`flex items-center justify-center size-8 rounded-full text-text-inverse shrink-0 transition-colors ${
+          value.trim()
+            ? "bg-button-solid cursor-pointer"
+            : "bg-button-solid/40 cursor-not-allowed"
+        }`}
         aria-label="Send message"
       >
         <SendIcon />

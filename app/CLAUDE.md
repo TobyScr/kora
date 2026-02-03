@@ -25,8 +25,7 @@ You operate in `/app/` which contains the application.
 
 ## Reference Documents (Use Only When Needed)
 
-- **Design Workflow:** `Docs/design_workflow.md` — **Read this for UI work** (Figma MCP, mobile-first, etc.)
-- **Dev Workflow:** `Docs/dev_workflow.md` — Pre-development process
+- **Workflow:** `Docs/workflow.md` — **Read this for UI work** (Figma MCP, desktop-first, pre-development process)
 
 ## GitHub Integration
 
@@ -66,12 +65,12 @@ Only proceed without Figma if the user explicitly approves.
 
 ## Design Priority
 
-**See `Docs/design_workflow.md` for full details.**
+**See `Docs/workflow.md` for full details.**
 
 Summary:
 1. **Figma (via MCP)** — Primary source of truth. GitHub issues have Figma links.
 
-Always build **mobile-first** with responsive desktop.
+Always build **desktop-first**.
 
 ## What "Done" Means
 
@@ -80,7 +79,6 @@ Before marking ready-for-qa:
 - [ ] All acceptance criteria checked off
 - [ ] No TypeScript errors
 - [ ] No console errors
-- [ ] Works on mobile viewport
 - [ ] Works on desktop viewport
 - [ ] Dev notes added to issue
 

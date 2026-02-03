@@ -1,9 +1,9 @@
-# Dev Workflow
+# Dev Agent — Workflow
 
 > **Status:** AUTHORITATIVE
 >
-> This file defines the full pre-development workflow before spawning the Dev Agent.
-> The Orchestrator must follow these steps before any code is written.
+> This file defines the full development workflow including design integration.
+> The Orchestrator and Dev Agent must follow these steps.
 
 ---
 
@@ -18,14 +18,14 @@ gh issue view #N
 
 If anything in the issue is ambiguous, incomplete, or leaves room for interpretation, **stop and ask the user** before proceeding. Do not assume or fill in gaps.
 
-### 1b. Check for Figma Design
+### 2. Check for Figma Design
 
 If the issue involves any UI work, confirm a Figma link is present in the issue. If there is no Figma link:
 - **Do not proceed with building.**
 - Ask the user: *"This issue has no Figma design linked. Should I wait for a design, or do you want me to build without one?"*
 - Only proceed without Figma if the user explicitly approves.
 
-### 2. Present a Technical Implementation Plan
+### 3. Present a Technical Implementation Plan
 
 Before branching or writing code, present a plain-English plan to the user. Pitch it as a CTO briefing a technical PM — no code snippets, but explain trade-offs where they exist.
 
@@ -38,9 +38,100 @@ The plan should cover:
 
 **Wait for user approval before proceeding.** The user may ask questions, push back, or adjust scope. Do not create a branch or spawn the Dev Agent until the plan is approved.
 
-### 3. Branch and Build
+### 4. Branch and Build
 
 Once the plan is approved, follow the branching process below, then spawn the Dev Agent.
+
+---
+
+## Design Source of Truth
+
+### Priority Order
+
+| Priority | Source | Purpose |
+|----------|--------|---------|
+| 1 | **Figma (via MCP)** | Primary design reference |
+| 2 | **User story descriptions** | Behavior when no design exists |
+
+---
+
+## Figma Integration
+
+### Every GitHub Issue Must Have a Figma Link
+
+GitHub issues should contain a "Design Reference" section with a Figma URL:
+
+```markdown
+## Design Reference
+[Screen Name (Figma)](https://www.figma.com/design/FILE_KEY/FILE_NAME?node-id=XX-XXXX&m=dev)
+```
+
+### If No Figma Link Exists
+
+**Stop and ask the user.**
+
+Do not:
+- Guess the design
+- Build based only on text descriptions
+- Proceed without visual reference
+
+Instead:
+1. Note that the issue is missing a Figma link
+2. Ask the user to provide the correct Figma frame
+3. Wait for the link before building UI
+
+### Using the Figma MCP
+
+> **Important:** Always use the **Figma Desktop MCP** tools (`mcp__figma-desktop__*`), not the regular Figma MCP. The desktop version provides better integration and more reliable results.
+
+Once you have a Figma URL:
+
+1. **Extract the node ID** from the URL
+   - `node-id=57-2845` → `57:2845`
+
+2. **Get the design screenshot:**
+   ```
+   mcp__figma-desktop__get_screenshot(nodeId: "57:2845")
+   ```
+
+3. **Get detailed design context** (layout, spacing, colors):
+   ```
+   mcp__figma-desktop__get_design_context(nodeId: "57:2845")
+   ```
+
+4. **Analyze the design thoroughly** (see checklist below)
+
+5. **Build to match** the Figma design
+
+### Design Analysis Checklist
+
+When analyzing a Figma design, check ALL of the following — not just structure:
+
+| Category | What to Look For |
+|----------|------------------|
+| **Layout & Structure** | Grid, columns, positioning, spacing between elements |
+| **Content** | Text, icons, images, data displayed |
+| **Backgrounds** | Section backgrounds, card backgrounds, container colors |
+| **Borders & Dividers** | Border colors, widths, which elements have borders |
+| **Shadows** | Drop shadows, inner shadows, elevation |
+| **Border Radius** | Rounded corners on containers, buttons, cards |
+| **Typography** | Font weights, sizes, colors, letter-spacing |
+| **States** | Hover, active, disabled, loading states |
+
+> **Common Mistake:** Focusing only on layout and content while missing visual styling like backgrounds, borders, and shadows. Always check container styling, not just the content inside.
+
+---
+
+## Desktop-First Development
+
+### Build for Desktop
+
+All development should target desktop viewport first. This is the primary experience.
+
+### Build Order
+
+1. **Build desktop first** — Match Figma exactly
+2. **Desktop is the priority** — Ensure full functionality and visual fidelity on desktop
 
 ---
 
@@ -147,17 +238,36 @@ gh pr merge {PR-number} --merge --delete-branch
 
 ---
 
+## Checklists
+
+### Before Building UI
+
+- [ ] GitHub issue has Figma link in "Design Reference" section
+- [ ] If no Figma link → **ask user before proceeding**
+- [ ] Retrieved design via Figma MCP
+- [ ] Analyzed design for ALL visual details (see Design Analysis Checklist above)
+- [ ] Have a plan for implementation
+
+### When Done
+
+- [ ] Desktop matches Figma design
+- [ ] No TypeScript errors
+- [ ] No console errors
+- [ ] Dev notes added to GitHub issue
+
+---
+
 ## Quick Reference
 
 | Step | Action |
 |------|--------|
 | 1 | Read issue with `gh issue view #N` |
-| 1b | **Check for Figma design (UI issues only)** |
-| 2 | **Present implementation plan, wait for approval** |
-| 3 | Ask user about branch creation |
-| 4 | Create branch if requested |
-| 5 | Spawn Dev Agent to build |
-| 6 | Push branch & create PR |
-| 7 | Run QA against the branch |
-| 8 | If QA passes → merge PR into main |
-| 9 | If QA fails → fix on branch → re-QA → merge |
+| 2 | **Check for Figma design (UI issues only)** |
+| 3 | **Present implementation plan, wait for approval** |
+| 4 | Ask user about branch creation |
+| 5 | Create branch if requested |
+| 6 | Spawn Dev Agent to build |
+| 7 | Push branch & create PR |
+| 8 | Run QA against the branch |
+| 9 | If QA passes → merge PR into main |
+| 10 | If QA fails → fix on branch → re-QA → merge |

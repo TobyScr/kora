@@ -6,6 +6,9 @@ import { SectionItem } from "@/components/Sidebar/SectionItem";
 import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
 import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
+import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
+import { Button } from "@/components/Button/Button";
+import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
 const FileIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -30,10 +33,34 @@ const LockIcon = () => (
   </svg>
 );
 
+const ArrowRightIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M3 8h10m0 0L9 4m4 4L9 12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 type Message = {
   id: string;
   variant: "ai" | "user";
   content: string;
+};
+
+type ViewMode = "chat" | "overview";
+
+type SectionState = {
+  status: StatusType;
+  isExpanded: boolean;
+};
+
+type ProgressSections = {
+  briefOverview: SectionState;
+  researchInsights: SectionState;
 };
 
 const initialMessages: Message[] = [
@@ -53,7 +80,16 @@ const aiResponses = [
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [viewMode, setViewMode] = useState<ViewMode>("chat");
+  const [cardState, setCardState] = useState<CardState>("filled");
+  const [progressSections, setProgressSections] = useState<ProgressSections>({
+    briefOverview: { status: "in-progress", isExpanded: true },
+    researchInsights: { status: "in-progress", isExpanded: false },
+  });
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Check if user has sent at least one message
+  const hasUserMessage = messages.some((m) => m.variant === "user");
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -78,6 +114,27 @@ export default function BriefPage() {
       };
       setMessages((prev) => [...prev, aiResponse]);
     }, 1000);
+  };
+
+  const handleGenerateOverview = () => {
+    setViewMode("overview");
+  };
+
+  const handleToggleSection = (section: "briefOverview" | "researchInsights") => {
+    setProgressSections((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        isExpanded: !prev[section].isExpanded,
+      },
+    }));
+  };
+
+  const handleConfirmBriefOverview = () => {
+    setProgressSections({
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "in-progress", isExpanded: true },
+    });
   };
 
   return (
@@ -115,44 +172,79 @@ export default function BriefPage() {
         </Sidebar>
       </div>
 
-      {/* Main chat area */}
+      {/* Main content area */}
       <main className="flex-1 flex flex-col relative bg-[#f3f4f7]">
         {/* Top gradient fade */}
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#f3f4f7] to-transparent z-10 pointer-events-none" />
 
-        {/* Chat messages */}
-        <div
-          ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-40"
-        >
-          <div className="flex flex-col gap-12 items-center max-w-[700px] mx-auto">
-            {messages.map((message) => (
-              <ChatBubble key={message.id} variant={message.variant}>
-                <div className="whitespace-pre-wrap">
-                  {message.content.split(/(\*\*.*?\*\*)/).map((part, i) => {
-                    if (part.startsWith("**") && part.endsWith("**")) {
-                      return (
-                        <span key={i} className="font-medium">
-                          {part.slice(2, -2)}
-                        </span>
-                      );
-                    }
-                    return part;
-                  })}
-                </div>
-              </ChatBubble>
-            ))}
+        {viewMode === "chat" ? (
+          <>
+            {/* Chat messages */}
+            <div
+              ref={chatContainerRef}
+              className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-40"
+            >
+              <div className="flex flex-col gap-12 items-center max-w-[700px] mx-auto">
+                {messages.map((message) => (
+                  <ChatBubble key={message.id} variant={message.variant}>
+                    <div className="whitespace-pre-wrap">
+                      {message.content.split(/(\*\*.*?\*\*)/).map((part, i) => {
+                        if (part.startsWith("**") && part.endsWith("**")) {
+                          return (
+                            <span key={i} className="font-medium">
+                              {part.slice(2, -2)}
+                            </span>
+                          );
+                        }
+                        return part;
+                      })}
+                    </div>
+                  </ChatBubble>
+                ))}
+
+                {/* Generate Brief Overview button - shown after user sends a message */}
+                {hasUserMessage && (
+                  <Button
+                    variant="solid"
+                    icon={<ArrowRightIcon />}
+                    onClick={handleGenerateOverview}
+                  >
+                    Generate Brief Overview
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Bottom gradient fade */}
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#f3f4f7] to-transparent pointer-events-none" />
+
+            {/* Input bar */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[668px] px-4 z-20">
+              <ChatInput placeholder="Type here" onSubmit={handleSendMessage} />
+            </div>
+          </>
+        ) : (
+          /* Brief Overview view */
+          <div className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-10">
+            <BriefOverviewSection
+              state={cardState}
+              onStateChange={setCardState}
+              onConfirm={handleConfirmBriefOverview}
+              showDevToggle
+            />
           </div>
-        </div>
-
-        {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#f3f4f7] to-transparent pointer-events-none" />
-
-        {/* Input bar */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[668px] px-4">
-          <ChatInput placeholder="Type here" onSubmit={handleSendMessage} />
-        </div>
+        )}
       </main>
+
+      {/* Progress Panel - right side, only in overview mode */}
+      {viewMode === "overview" && (
+        <div className="hidden lg:block">
+          <ProgressPanel
+            sections={progressSections}
+            onToggleSection={handleToggleSection}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,21 @@
-@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap");
 @import "tailwindcss";
+
+/* Satoshi Font - Local */
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: italic;
+}
 
 /* Kora Design Tokens */
 :root {
@@ -72,11 +88,14 @@
   --color-button-solid: var(--button-solid-default);
   --color-button-outline: var(--button-outline-default);
   --color-primary-100: var(--primary-100);
-  --font-sans: "Satoshi", sans-serif;
+  --font-sans: "Satoshi", system-ui, sans-serif;
+}
+
+html, body, input, textarea, button, select {
+  font-family: "Satoshi", system-ui, sans-serif;
 }
 
 body {
   background: var(--background-page);
   color: var(--text-primary);
-  font-family: "Satoshi", sans-serif;
 }
