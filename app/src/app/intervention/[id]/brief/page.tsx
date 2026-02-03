@@ -7,6 +7,7 @@ import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
 import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
 import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
+import { ResearchInsightsSection } from "@/components/ResearchInsights";
 import { Button } from "@/components/Button/Button";
 import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
@@ -226,12 +227,22 @@ export default function BriefPage() {
         ) : (
           /* Brief Overview view */
           <div className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-10">
-            <BriefOverviewSection
-              state={cardState}
-              onStateChange={setCardState}
-              onConfirm={handleConfirmBriefOverview}
-              showDevToggle
-            />
+            <div className="space-y-6">
+              <BriefOverviewSection
+                state={cardState}
+                onStateChange={setCardState}
+                onConfirm={handleConfirmBriefOverview}
+                showDevToggle
+              />
+              <ResearchInsightsSection
+                isExpanded={progressSections.researchInsights.isExpanded}
+                onToggleExpand={() => handleToggleSection("researchInsights")}
+                onConfirm={() => {
+                  // Handle confirm research insights
+                  console.log("Research insights confirmed");
+                }}
+              />
+            </div>
           </div>
         )}
       </main>
