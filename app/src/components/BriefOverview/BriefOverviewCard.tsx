@@ -21,6 +21,7 @@ type BriefOverviewCardProps = {
   state: CardState;
   content?: ReactNode;
   className?: string;
+  onEdit?: () => void;
 };
 
 const cardConfig: Record<
@@ -209,6 +210,7 @@ export function BriefOverviewCard({
   state,
   content,
   className = "",
+  onEdit,
 }: BriefOverviewCardProps) {
   const config = cardConfig[type];
 
@@ -228,7 +230,11 @@ export function BriefOverviewCard({
           )}
         </div>
         {state !== "loading" && (
-          <button className="p-1 cursor-default" aria-label="Edit">
+          <button
+            onClick={onEdit}
+            className="p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+            aria-label={`Edit ${config.title}`}
+          >
             <EditIcon />
           </button>
         )}
