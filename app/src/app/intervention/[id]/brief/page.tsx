@@ -39,28 +39,13 @@ type Message = {
 const initialMessages: Message[] = [
   {
     id: "1",
-    variant: "ai",
-    content: "Thank you!\n\n8. **What's the available timeline?** (e.g., \"campaign is live over 6 months\"; \"1-4 months\")",
+    variant: "user",
+    content: "Let's do it!",
   },
   {
     id: "2",
-    variant: "user",
-    content: "6 Months",
-  },
-  {
-    id: "3",
     variant: "ai",
-    content: "Thank you!\n\n9. **What are the expected deliverables** — if you know them at this time? (e.g., \"integrated campaign with 1 hero video\")",
-  },
-  {
-    id: "4",
-    variant: "user",
-    content: "Integrated campaign with digital and offline content/activations",
-  },
-  {
-    id: "5",
-    variant: "ai",
-    content: "Thank you!\nI have three short **follow-up questions to clarify or refine** areas that could impact later design decisions.\n\n1. Are there specific diaspora locations (e.g., Russia, Turkey, EU countries) that should be prioritized for the campaign?\n2. Would you like the behavior-change focus to emphasize prevention (stopping early-stage radicalization), disengagement (helping those already exposed), or resilience-building (community-level strength)?\n3. Should this campaign use local languages (Tajik, Uzbek, Russian) or operate primarily in English for digital diaspora audiences?\n\nWould you like to answer these to refine the brief before I lock it?",
+    content: "We begin by gaining an initial understanding of your brief.\nWe'll walk you through 9 initial questions.\n\n**1. Who is the client or funder?** (e.g., \"government\"; \"foundation\")",
   },
 ];
 
