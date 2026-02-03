@@ -72,27 +72,50 @@ const dummyData = {
   ],
 };
 
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-green-600 shrink-0">
-    <path
-      d="M3 8l4 4 6-8"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
+// TA Profile checkbox - lavender background
+const CheckboxIcon = () => (
+  <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#eceeff] shrink-0">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect
+        x="2"
+        y="2"
+        width="12"
+        height="12"
+        rx="2"
+        stroke="#7c7cff"
+        strokeWidth="1.5"
+      />
+    </svg>
+  </span>
 );
 
+// Do's checkmark - teal background
+const CheckIcon = () => (
+  <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#e1f4ee] shrink-0">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path
+        d="M4 8l3 3 5-6"
+        stroke="#0d9373"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </span>
+);
+
+// Don'ts X - tomato background
 const XIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-red-500 shrink-0">
-    <path
-      d="M4 4l8 8M12 4l-8 8"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
+  <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#fff0e5] shrink-0">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path
+        d="M5 5l6 6M11 5l-6 6"
+        stroke="#e54d2e"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  </span>
 );
 
 export function BriefOverviewSection({
@@ -195,11 +218,11 @@ export function BriefOverviewSection({
           type="taProfile"
           state={state}
           content={
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {dummyData.taProfile.map((item, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="w-4 h-4 mt-0.5 border border-stroke-default rounded shrink-0" />
-                  {item}
+                <li key={i} className="flex items-center gap-3">
+                  <CheckboxIcon />
+                  <span className="font-medium tracking-[0.4px]">{item}</span>
                 </li>
               ))}
             </ul>
@@ -212,11 +235,11 @@ export function BriefOverviewSection({
           type="dos"
           state={state}
           content={
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {dummyData.dos.map((item, i) => (
-                <li key={i} className="flex items-start gap-2">
+                <li key={i} className="flex items-center gap-3">
                   <CheckIcon />
-                  {item}
+                  <span className="font-medium tracking-[0.4px]">{item}</span>
                 </li>
               ))}
             </ul>
@@ -227,11 +250,11 @@ export function BriefOverviewSection({
           type="donts"
           state={state}
           content={
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {dummyData.donts.map((item, i) => (
-                <li key={i} className="flex items-start gap-2">
+                <li key={i} className="flex items-center gap-3">
                   <XIcon />
-                  {item}
+                  <span className="font-medium tracking-[0.4px]">{item}</span>
                 </li>
               ))}
             </ul>
