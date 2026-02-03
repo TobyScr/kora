@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type KeyboardEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from "react";
 
 type ChatInputProps = {
   placeholder?: string;
@@ -26,6 +26,14 @@ export function ChatInput({
   className,
 }: ChatInputProps) {
   const [value, setValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "32px";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+    }
+  }, [value]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -45,15 +53,16 @@ export function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex items-center gap-3 bg-background-surface p-4 rounded-[var(--radius-xxl)] w-full max-w-[668px] ${className ?? ""}`}
+      className={`flex items-end gap-3 bg-background-surface p-4 rounded-[var(--radius-xxl)] w-full max-w-[668px] ${className ?? ""}`}
     >
       <textarea
+        ref={textareaRef}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         rows={1}
-        className="flex-1 min-h-[32px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-[32px] tracking-[var(--letter-spacing-wide-s)] outline-none"
+        className="flex-1 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-6 tracking-[var(--letter-spacing-wide-s)] outline-none"
       />
       <button
         type="submit"
