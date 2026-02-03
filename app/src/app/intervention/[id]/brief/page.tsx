@@ -8,6 +8,7 @@ import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
 import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
 import { Button } from "@/components/Button/Button";
+import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
 const FileIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -52,6 +53,16 @@ type Message = {
 
 type ViewMode = "chat" | "overview";
 
+type SectionState = {
+  status: StatusType;
+  isExpanded: boolean;
+};
+
+type ProgressSections = {
+  briefOverview: SectionState;
+  researchInsights: SectionState;
+};
+
 const initialMessages: Message[] = [
   {
     id: "1",
@@ -71,6 +82,11 @@ export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [viewMode, setViewMode] = useState<ViewMode>("chat");
   const [cardState, setCardState] = useState<CardState>("filled");
+  const [progressSections, setProgressSections] = useState<ProgressSections>({
+    briefOverview: { status: "in-progress", isExpanded: true },
+    researchInsights: { status: "in-progress", isExpanded: false },
+  });
+  const [showProgressPanel, setShowProgressPanel] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Check if user has sent at least one message
@@ -103,6 +119,23 @@ export default function BriefPage() {
 
   const handleGenerateOverview = () => {
     setViewMode("overview");
+  };
+
+  const handleToggleSection = (section: "briefOverview" | "researchInsights") => {
+    setProgressSections((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        isExpanded: !prev[section].isExpanded,
+      },
+    }));
+  };
+
+  const handleConfirmBriefOverview = () => {
+    setProgressSections({
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "in-progress", isExpanded: true },
+    });
   };
 
   return (
@@ -197,11 +230,23 @@ export default function BriefPage() {
             <BriefOverviewSection
               state={cardState}
               onStateChange={setCardState}
+              onConfirm={handleConfirmBriefOverview}
               showDevToggle
             />
           </div>
         )}
       </main>
+
+      {/* Progress Panel - right side */}
+      {showProgressPanel && (
+        <div className="hidden lg:block">
+          <ProgressPanel
+            sections={progressSections}
+            onToggleSection={handleToggleSection}
+            onClose={() => setShowProgressPanel(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

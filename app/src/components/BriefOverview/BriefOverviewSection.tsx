@@ -5,6 +5,7 @@ import { BriefOverviewCard, type CardState } from "./BriefOverviewCard";
 type BriefOverviewSectionProps = {
   state: CardState;
   onStateChange?: (state: CardState) => void;
+  onConfirm?: () => void;
   showDevToggle?: boolean;
 };
 
@@ -121,6 +122,7 @@ const XIcon = () => (
 export function BriefOverviewSection({
   state,
   onStateChange,
+  onConfirm,
   showDevToggle = false,
 }: BriefOverviewSectionProps) {
   return (
@@ -159,7 +161,10 @@ export function BriefOverviewSection({
 
           {/* Confirm Button - in empty and filled states */}
           {state !== "loading" && (
-            <button className="px-4 py-2 text-sm font-medium text-text-inverse bg-button-solid rounded-full hover:opacity-90 transition-opacity">
+            <button
+              onClick={onConfirm}
+              className="px-4 py-2 text-sm font-medium text-text-inverse bg-button-solid rounded-full hover:opacity-90 transition-opacity"
+            >
               Confirm Brief Overview
             </button>
           )}
