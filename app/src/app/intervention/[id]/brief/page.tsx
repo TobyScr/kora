@@ -39,11 +39,6 @@ type Message = {
 const initialMessages: Message[] = [
   {
     id: "1",
-    variant: "user",
-    content: "Let's do it!",
-  },
-  {
-    id: "2",
     variant: "ai",
     content: "We begin by gaining an initial understanding of your brief.\nWe'll walk you through 9 initial questions.\n\n**1. Who is the client or funder?** (e.g., \"government\"; \"foundation\")",
   },
