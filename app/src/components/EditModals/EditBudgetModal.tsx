@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal";
 import { Select, InputField } from "../FormField";
 
@@ -15,6 +15,12 @@ type EditBudgetModalProps = {
   onClose: () => void;
   initialValue: BudgetData;
   onSave: (value: BudgetData) => void;
+};
+
+// Parse formatted number string to numeric value (e.g., "1,000,000" -> 1000000)
+const parseFormattedNumber = (value: string): number => {
+  const digits = value.replace(/\D/g, "");
+  return digits ? parseInt(digits, 10) : 0;
 };
 
 const PoundIcon = () => (
@@ -59,6 +65,18 @@ export function EditBudgetModal({
     }
   }, [isOpen, initialValue]);
 
+  // Validate that min amount does not exceed max amount
+  const validationError = useMemo(() => {
+    const minValue = parseFormattedNumber(value.minAmount);
+    const maxValue = parseFormattedNumber(value.maxAmount);
+
+    // Only validate if both values are non-zero (user has entered values)
+    if (minValue > 0 && maxValue > 0 && minValue > maxValue) {
+      return "Minimum cannot exceed maximum";
+    }
+    return null;
+  }, [value.minAmount, value.maxAmount]);
+
   const handleSave = () => {
     onSave(value);
     onClose();
@@ -90,29 +108,34 @@ export function EditBudgetModal({
             options={currencyOptions}
             icon={<PoundIcon />}
           />
-          <div className="flex gap-2">
-            <InputField
-              label="Min. amount"
-              value={value.minAmount}
-              onChange={(v) => updateAmountField("minAmount", v)}
-              type="text"
-              icon={<PoundIcon />}
-              clearable
-              className="flex-1"
-            />
-            <InputField
-              label="Max. amount"
-              value={value.maxAmount}
-              onChange={(v) => updateAmountField("maxAmount", v)}
-              type="text"
-              icon={<PoundIcon />}
-              clearable
-              className="flex-1"
-            />
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <InputField
+                label="Min. amount"
+                value={value.minAmount}
+                onChange={(v) => updateAmountField("minAmount", v)}
+                type="text"
+                icon={<PoundIcon />}
+                clearable
+                className="flex-1"
+              />
+              <InputField
+                label="Max. amount"
+                value={value.maxAmount}
+                onChange={(v) => updateAmountField("maxAmount", v)}
+                type="text"
+                icon={<PoundIcon />}
+                clearable
+                className="flex-1"
+              />
+            </div>
+            {validationError && (
+              <p className="text-sm text-red-500 px-2">{validationError}</p>
+            )}
           </div>
         </div>
       </ModalBody>
-      <ModalFooter onCancel={handleCancel} onSave={handleSave} />
+      <ModalFooter onCancel={handleCancel} onSave={handleSave} saveDisabled={!!validationError} />
     </Modal>
   );
 }

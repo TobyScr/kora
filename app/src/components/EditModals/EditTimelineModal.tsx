@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal";
 import { Tabs, InputField } from "../FormField";
 
@@ -39,6 +39,18 @@ export function EditTimelineModal({
     }
   }, [isOpen, initialValue]);
 
+  // Validate that start value does not exceed end value
+  const validationError = useMemo(() => {
+    const fromValue = parseInt(value.from, 10);
+    const toValue = parseInt(value.to, 10);
+
+    // Only validate if both values are valid numbers
+    if (!isNaN(fromValue) && !isNaN(toValue) && fromValue > toValue) {
+      return "Start date cannot be after end date";
+    }
+    return null;
+  }, [value.from, value.to]);
+
   const handleSave = () => {
     onSave(value);
     onClose();
@@ -64,26 +76,31 @@ export function EditTimelineModal({
             onChange={(v) => updateField("unit", v)}
             options={unitOptions}
           />
-          <div className="flex gap-2">
-            <InputField
-              label="From"
-              value={value.from}
-              onChange={(v) => updateField("from", v)}
-              type="text"
-              clearable
-              className="flex-1"
-            />
-            <InputField
-              label="To"
-              value={value.to}
-              onChange={(v) => updateField("to", v)}
-              type="text"
-              className="flex-1"
-            />
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <InputField
+                label="From"
+                value={value.from}
+                onChange={(v) => updateField("from", v)}
+                type="text"
+                clearable
+                className="flex-1"
+              />
+              <InputField
+                label="To"
+                value={value.to}
+                onChange={(v) => updateField("to", v)}
+                type="text"
+                className="flex-1"
+              />
+            </div>
+            {validationError && (
+              <p className="text-sm text-red-500 px-2">{validationError}</p>
+            )}
           </div>
         </div>
       </ModalBody>
-      <ModalFooter onCancel={handleCancel} onSave={handleSave} />
+      <ModalFooter onCancel={handleCancel} onSave={handleSave} saveDisabled={!!validationError} />
     </Modal>
   );
 }
