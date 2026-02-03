@@ -237,8 +237,8 @@ export default function BriefPage() {
         )}
       </main>
 
-      {/* Progress Panel - right side */}
-      {showProgressPanel && (
+      {/* Progress Panel - right side, only in overview mode */}
+      {viewMode === "overview" && showProgressPanel && (
         <div className="hidden lg:block">
           <ProgressPanel
             sections={progressSections}

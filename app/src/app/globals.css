@@ -91,12 +91,11 @@
   --font-sans: "Satoshi", system-ui, sans-serif;
 }
 
-* {
+html, body, input, textarea, button, select {
   font-family: "Satoshi", system-ui, sans-serif;
 }
 
 body {
   background: var(--background-page);
   color: var(--text-primary);
-  font-family: "Satoshi", system-ui, sans-serif;
 }
