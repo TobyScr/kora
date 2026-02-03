@@ -83,11 +83,13 @@ export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [viewMode, setViewMode] = useState<ViewMode>("chat");
   const [cardState, setCardState] = useState<CardState>("filled");
+  const [briefOverviewExpanded, setBriefOverviewExpanded] = useState(true);
   const [progressSections, setProgressSections] = useState<ProgressSections>({
     briefOverview: { status: "in-progress", isExpanded: true },
     researchInsights: { status: "in-progress", isExpanded: false },
   });
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const researchInsightsRef = useRef<HTMLDivElement>(null);
 
   // Check if user has sent at least one message
   const hasUserMessage = messages.some((m) => m.variant === "user");
@@ -132,10 +134,17 @@ export default function BriefPage() {
   };
 
   const handleConfirmBriefOverview = () => {
+    // Collapse Brief Overview and expand Research Insights
+    setBriefOverviewExpanded(false);
     setProgressSections({
       briefOverview: { status: "complete", isExpanded: false },
       researchInsights: { status: "in-progress", isExpanded: true },
     });
+
+    // Auto-scroll to Research Insights after a short delay for DOM update
+    setTimeout(() => {
+      researchInsightsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   return (
@@ -233,15 +242,19 @@ export default function BriefPage() {
                 onStateChange={setCardState}
                 onConfirm={handleConfirmBriefOverview}
                 showDevToggle
+                isExpanded={briefOverviewExpanded}
+                onToggleExpand={() => setBriefOverviewExpanded(!briefOverviewExpanded)}
               />
-              <ResearchInsightsSection
-                isExpanded={progressSections.researchInsights.isExpanded}
-                onToggleExpand={() => handleToggleSection("researchInsights")}
-                onConfirm={() => {
-                  // Handle confirm research insights
-                  console.log("Research insights confirmed");
-                }}
-              />
+              <div ref={researchInsightsRef}>
+                <ResearchInsightsSection
+                  isExpanded={progressSections.researchInsights.isExpanded}
+                  onToggleExpand={() => handleToggleSection("researchInsights")}
+                  onConfirm={() => {
+                    // Handle confirm research insights
+                    console.log("Research insights confirmed");
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}

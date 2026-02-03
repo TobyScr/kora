@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Insight } from "./types";
+import type { Insight, InsightColor } from "./types";
 
 type InsightItemProps = {
   insight: Insight;
@@ -34,61 +34,94 @@ const KebabIcon = () => (
   </svg>
 );
 
+// Color configurations for insight highlights
+const colorConfig: Record<InsightColor, { bg: string; text: string }> = {
+  teal: { bg: "bg-[#0d9488]", text: "text-white" },
+  cyan: { bg: "bg-[#0891b2]", text: "text-white" },
+  blue: { bg: "bg-[#0284c7]", text: "text-white" },
+  indigo: { bg: "bg-[#4f46e5]", text: "text-white" },
+};
+
 export function InsightItem({ insight, onToggleExpand }: InsightItemProps) {
   const [showMenu, setShowMenu] = useState(false);
-
-  // Determine if text is long enough to truncate (e.g., > 60 chars)
-  const isLongText = insight.text.length > 80;
-  const displayText =
-    !insight.isExpanded && isLongText
-      ? insight.text.slice(0, 80) + "..."
-      : insight.text;
+  const colors = colorConfig[insight.color];
 
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-stroke-default last:border-b-0">
-      {/* Expand/collapse button (only if long text) */}
-      <button
-        onClick={() => onToggleExpand?.(insight.id)}
-        className={`text-text-tertiary hover:text-text-secondary transition-colors ${
-          isLongText ? "" : "invisible"
-        }`}
-      >
-        <ChevronIcon isExpanded={insight.isExpanded} />
-      </button>
-
-      {/* Number */}
-      <span className="text-sm font-medium text-[#0ea5e9] shrink-0">
-        {insight.number}.
-      </span>
-
-      {/* Text */}
-      <p className="flex-1 text-sm text-[#0ea5e9]">{displayText}</p>
-
-      {/* Kebab menu */}
-      <div className="relative">
+    <div className="py-3 border-b border-stroke-default last:border-b-0">
+      {/* Main row */}
+      <div className="flex items-center gap-3">
+        {/* Expand/collapse button */}
         <button
-          onClick={() => setShowMenu(!showMenu)}
-          className="text-text-tertiary hover:text-text-secondary transition-colors p-1"
+          onClick={() => onToggleExpand?.(insight.id)}
+          className="text-text-tertiary hover:text-text-secondary transition-colors cursor-pointer shrink-0"
         >
-          <KebabIcon />
+          <ChevronIcon isExpanded={insight.isExpanded} />
         </button>
-        {showMenu && (
-          <>
-            <div
-              className="fixed inset-0 z-10"
-              onClick={() => setShowMenu(false)}
-            />
-            <div className="absolute right-0 top-full mt-1 bg-white border border-stroke-default rounded-lg shadow-lg py-1 z-20 min-w-[120px]">
-              <button className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-stroke-soft/30">
-                Edit
-              </button>
-              <button className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-stroke-soft/30">
-                Remove
-              </button>
-            </div>
-          </>
-        )}
+
+        {/* Number and highlighted text */}
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium ${colors.bg} ${colors.text}`}
+          >
+            <span>{insight.number}.</span>
+            <span className="truncate">{insight.text}</span>
+          </span>
+        </div>
+
+        {/* Kebab menu */}
+        <div className="relative shrink-0">
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className="text-text-tertiary hover:text-text-secondary transition-colors p-1 cursor-pointer"
+          >
+            <KebabIcon />
+          </button>
+          {showMenu && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setShowMenu(false)}
+              />
+              <div className="absolute right-0 top-full mt-1 bg-white border border-stroke-default rounded-lg shadow-lg py-1 z-20 min-w-[120px]">
+                <button className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-stroke-soft/30 cursor-pointer">
+                  Edit
+                </button>
+                <button className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-stroke-soft/30 cursor-pointer">
+                  Remove
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Expanded content */}
+      {insight.isExpanded && (
+        <div className="mt-3 ml-9 space-y-3">
+          {insight.description && (
+            <p className="text-sm text-text-secondary leading-relaxed">
+              {insight.description}
+            </p>
+          )}
+          {insight.sources && insight.sources.length > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-text-tertiary font-medium">
+                Source(s):
+              </span>
+              <div className="flex gap-2">
+                {insight.sources.map((source) => (
+                  <span
+                    key={source}
+                    className="px-2 py-0.5 text-xs font-medium bg-[#f1f5f9] text-text-secondary rounded border border-stroke-default"
+                  >
+                    {source}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

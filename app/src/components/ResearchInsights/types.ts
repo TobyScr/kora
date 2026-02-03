@@ -10,10 +10,17 @@ export type ResearchLink = {
   url: string;
 };
 
+export type InsightSource = "Existing Research" | "DeepResearch";
+
+export type InsightColor = "teal" | "cyan" | "blue" | "indigo";
+
 export type Insight = {
   id: string;
   number: number;
   text: string;
+  description?: string;
+  sources?: InsightSource[];
+  color: InsightColor;
   isExpanded: boolean;
 };
 

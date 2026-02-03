@@ -71,7 +71,7 @@ export function InsightsReadyState({
       </p>
       <button
         onClick={onGenerateInsights}
-        className="mt-6 px-6 py-2.5 text-sm font-medium text-text-inverse bg-button-solid rounded-full hover:opacity-90 transition-opacity"
+        className="mt-6 px-6 py-2.5 text-sm font-medium text-text-inverse bg-button-solid rounded-full hover:opacity-90 transition-opacity cursor-pointer"
       >
         Generate Insights
       </button>

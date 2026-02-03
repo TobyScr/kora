@@ -222,48 +222,76 @@ Problem Validation and Rapid Evidence Assessment
 • A deeper understanding of why manosphere messages stick
 • Narrative and emotional drivers behind engagement`;
 
-// Sample insights
+// Sample insights with colors, descriptions, and sources
 const SAMPLE_INSIGHTS: Insight[] = [
   {
     id: "1",
     number: 1,
     text: "Recruitment thrives on identity repair, not ideology.",
+    description:
+      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth—especially migrants facing stigma in Russia",
+    sources: ["Existing Research", "DeepResearch"],
+    color: "teal",
     isExpanded: false,
   },
   {
     id: "2",
     number: 2,
     text: "Mistrust and fear of surveillance silence healthy discourse",
+    description:
+      "Young people in Central Asia are hesitant to discuss sensitive topics online due to perceived government monitoring, pushing conversations to encrypted platforms where extremist content thrives unchecked.",
+    sources: ["Existing Research"],
+    color: "cyan",
     isExpanded: false,
   },
   {
     id: "3",
     number: 3,
     text: "Mistrust and fear of surveillance silence healthy discourse",
+    description:
+      "Fear of being flagged by authorities creates a chilling effect on open discourse, making it harder to counter extremist narratives in public forums.",
+    sources: ["DeepResearch"],
+    color: "blue",
     isExpanded: false,
   },
   {
     id: "4",
     number: 4,
     text: "Mistrust and fear of surveillance silence healthy discourse",
+    description:
+      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth—especially migrants facing stigma in Russia",
+    sources: ["Existing Research"],
+    color: "teal",
     isExpanded: false,
   },
   {
     id: "5",
     number: 5,
     text: "Mistrust and fear of surveillance silence healthy discourse",
+    description:
+      "Platform algorithms amplify emotionally charged content, making extremist messaging more visible to vulnerable youth seeking validation.",
+    sources: ["DeepResearch"],
+    color: "indigo",
     isExpanded: false,
   },
   {
     id: "6",
     number: 6,
     text: "Mistrust and fear of surveillance silence healthy discourse",
+    description:
+      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth—especially migrants facing stigma in Russia",
+    sources: ["Existing Research"],
+    color: "cyan",
     isExpanded: false,
   },
   {
     id: "7",
     number: 7,
     text: "Recruitment thrives on identity repair, not ideology.",
+    description:
+      "Economic frustration and lack of opportunity create fertile ground for extremist recruitment, as groups offer both material support and a sense of purpose.",
+    sources: ["Existing Research", "DeepResearch"],
+    color: "teal",
     isExpanded: false,
   },
 ];
