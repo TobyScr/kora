@@ -6,6 +6,7 @@ import { SectionItem } from "@/components/Sidebar/SectionItem";
 import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
 import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
+import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
 
 const FileIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -53,6 +54,7 @@ const aiResponses = [
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [cardState, setCardState] = useState<CardState>("filled");
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -120,12 +122,13 @@ export default function BriefPage() {
         {/* Top gradient fade */}
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#f3f4f7] to-transparent z-10 pointer-events-none" />
 
-        {/* Chat messages */}
+        {/* Chat messages and Brief Overview */}
         <div
           ref={chatContainerRef}
           className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-40"
         >
-          <div className="flex flex-col gap-12 items-center max-w-[700px] mx-auto">
+          {/* Chat messages */}
+          <div className="flex flex-col gap-12 items-center max-w-[700px] mx-auto mb-16">
             {messages.map((message) => (
               <ChatBubble key={message.id} variant={message.variant}>
                 <div className="whitespace-pre-wrap">
@@ -143,6 +146,13 @@ export default function BriefPage() {
               </ChatBubble>
             ))}
           </div>
+
+          {/* Brief Overview Section */}
+          <BriefOverviewSection
+            state={cardState}
+            onStateChange={setCardState}
+            showDevToggle
+          />
         </div>
 
         {/* Bottom gradient fade */}
