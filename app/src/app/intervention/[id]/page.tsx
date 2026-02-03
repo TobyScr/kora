@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useParams } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { SectionItem } from "@/components/Sidebar/SectionItem";
 import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
@@ -48,44 +49,43 @@ const WelcomeIllustration = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    {/* Document body */}
     <path
-      d="M25 15h35l15 15v55a5 5 0 01-5 5H25a5 5 0 01-5-5V20a5 5 0 015-5z"
-      stroke="var(--text-primary)"
-      strokeWidth="2.5"
-      fill="none"
-    />
-    <path d="M60 15v15h15" stroke="var(--text-primary)" strokeWidth="2.5" fill="none" />
-    {/* Lines on document */}
-    <path d="M32 45h36M32 55h28M32 65h32" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-    {/* Question mark circle */}
-    <circle cx="72" cy="28" r="16" stroke="var(--text-primary)" strokeWidth="2.5" fill="var(--background-page)" />
-    <text
-      x="72"
-      y="34"
-      textAnchor="middle"
-      fontSize="20"
-      fontWeight="600"
-      fill="var(--text-primary)"
-      fontFamily="Satoshi, sans-serif"
-    >
-      ?
-    </text>
-    {/* Pencil */}
-    <path
-      d="M78 60l8-8 4 4-8 8H78v-4z"
+      d="M63.6182 70.9207L61.6917 78.145C61.1828 80.0536 63.4546 81.4662 64.9412 80.1654L70.8546 74.9912L90.3696 44.9056C91.5859 43.0305 91.0686 40.5259 89.2089 39.2861C87.3202 38.027 84.7671 38.5499 83.5256 40.4502L63.6182 70.9207Z"
       stroke="var(--text-primary)"
       strokeWidth="2"
-      fill="none"
+    />
+    <path
+      d="M48.4185 78.8161C48.4185 78.8161 49.323 74.2934 48.8707 69.7706C48.8707 69.7706 55.6549 70.6752 64.7004 62.5342"
+      stroke="var(--text-primary)"
+      strokeWidth="2"
+    />
+    <path
+      d="M48.4185 79.2698C48.4185 79.2698 18.719 73.541 5 71.1288C5 71.1288 28.5 52.5004 29.8752 18.2106C29.8752 18.2106 50.5 13.5004 74.6506 20.9261C74.6506 20.9261 74.6506 65.7001 48.4185 79.2698Z"
+      stroke="var(--text-primary)"
+      strokeWidth="2"
       strokeLinejoin="round"
     />
-    <path d="M84 54l4 4" stroke="var(--text-primary)" strokeWidth="2" />
+    <path
+      d="M4.5 78.5002C4.5 78.5002 15.8613 76.2071 19 73.5002L48.4185 78.8161C48.4185 78.8161 61.233 67.9615 64.2482 63.4387C64.2482 63.4387 55.2724 80.1616 49 84.0002C49 84.0002 14.7864 84.1844 4.5 78.5002Z"
+      fill="var(--text-primary)"
+    />
+    <ellipse cx="68" cy="82.5" rx="8" ry="1.5" fill="var(--text-primary)" />
+    <path
+      d="M40.5 39.4995C40.5 39.4995 43.5 34 49 36.9579C51.4076 38.2527 53 42.4587 50.5 45.4579C48.0373 48.4123 44.6181 45.527 41.5 47.9578C39.6456 49.4034 38 53.5 38 53.5"
+      stroke="var(--text-primary)"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <circle cx="36" cy="57" r="1" fill="var(--text-primary)" />
   </svg>
 );
 
 export default function InterventionPage() {
+  const router = useRouter();
+  const params = useParams();
+
   const handleStart = () => {
-    console.log("Start intervention clicked");
+    router.push(`/intervention/${params.id}/brief`);
   };
 
   return (
