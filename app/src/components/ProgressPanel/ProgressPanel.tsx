@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ProgressPanelSection } from "./ProgressPanelSection";
 import { type StatusType } from "./StatusPill";
 
@@ -14,37 +15,7 @@ type ProgressPanelProps = {
     researchInsights: SectionState;
   };
   onToggleSection?: (section: "briefOverview" | "researchInsights") => void;
-  onClose?: () => void;
 };
-
-// Kora logo component
-const KoraLogo = () => (
-  <div className="flex items-center gap-4">
-    <div className="grid grid-cols-3 gap-[1.67px]">
-      <div className="w-[6.67px] h-[6.67px] rounded bg-[#0d2b4c]" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-transparent" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-[#0d2b4c]" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-transparent" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-[#0d2b4c]" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-transparent" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-[#0d2b4c]" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-transparent" />
-      <div className="w-[6.67px] h-[6.67px] rounded bg-[#0d2b4c]" />
-    </div>
-    <span className="text-sm font-medium text-text-primary tracking-wider">KORA</span>
-  </div>
-);
-
-const CloseIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M4 4l8 8M12 4l-8 8"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-  </svg>
-);
 
 // Static content for Brief Overview section
 const BriefOverviewContent = () => (
@@ -106,21 +77,20 @@ const ResearchInsightsContent = () => (
   </div>
 );
 
-export function ProgressPanel({ sections, onToggleSection, onClose }: ProgressPanelProps) {
+export function ProgressPanel({ sections, onToggleSection }: ProgressPanelProps) {
   return (
     <div className="w-[280px] h-full bg-background-surface-0 border-l border-stroke-default flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-2 bg-background-surface border-b border-stroke-default">
-        <div className="px-4">
-          <KoraLogo />
+      <div className="flex items-center p-4 bg-background-surface border-b border-stroke-default">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/brand/Icon.svg"
+            alt="Kora"
+            width={24}
+            height={24}
+          />
+          <span className="text-sm font-medium text-text-primary tracking-wider">KORA</span>
         </div>
-        <button
-          onClick={onClose}
-          className="flex items-center justify-center w-10 h-10 text-text-secondary hover:text-text-primary transition-colors"
-          aria-label="Close panel"
-        >
-          <CloseIcon />
-        </button>
       </div>
 
       {/* Sections */}

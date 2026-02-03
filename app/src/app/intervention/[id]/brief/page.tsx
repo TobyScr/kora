@@ -86,7 +86,6 @@ export default function BriefPage() {
     briefOverview: { status: "in-progress", isExpanded: true },
     researchInsights: { status: "in-progress", isExpanded: false },
   });
-  const [showProgressPanel, setShowProgressPanel] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Check if user has sent at least one message
@@ -238,12 +237,11 @@ export default function BriefPage() {
       </main>
 
       {/* Progress Panel - right side, only in overview mode */}
-      {viewMode === "overview" && showProgressPanel && (
+      {viewMode === "overview" && (
         <div className="hidden lg:block">
           <ProgressPanel
             sections={progressSections}
             onToggleSection={handleToggleSection}
-            onClose={() => setShowProgressPanel(false)}
           />
         </div>
       )}

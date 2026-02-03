@@ -46,8 +46,8 @@ export function ProgressPanelSection({
 }: ProgressPanelSectionProps) {
   return (
     <div className="border-t border-stroke-default">
-      {/* Header - always visible */}
-      <div className="flex items-center justify-between p-4">
+      {/* Header - always visible, clickable to toggle */}
+      <div className="flex items-center justify-between p-4 cursor-pointer" onClick={onToggle}>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-text-primary tracking-[0.15px]">
             {title}
