@@ -214,7 +214,7 @@ export function BriefOverviewCard({
 
   return (
     <div
-      className={`bg-background-surface rounded-[var(--radius-lg)] p-4 flex flex-col gap-3 ${className}`}
+      className={`bg-background-surface border border-stroke-default rounded-[var(--radius-lg)] p-4 flex flex-col gap-3 ${className}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between">

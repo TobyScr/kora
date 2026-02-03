@@ -124,7 +124,7 @@ export function BriefOverviewSection({
   showDevToggle = false,
 }: BriefOverviewSectionProps) {
   return (
-    <div className="w-full max-w-[800px] mx-auto">
+    <div className="w-full max-w-[800px] mx-auto bg-background-surface-0 rounded-[var(--radius-xl)] p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button className="flex items-center gap-2 text-text-primary">
