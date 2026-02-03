@@ -8,6 +8,9 @@ import { InsightItem } from "./InsightItem";
 import { InsightsEmptyState } from "./InsightsEmptyState";
 import { InsightsReadyState } from "./InsightsReadyState";
 import { InsightsGeneratingState } from "./InsightsGeneratingState";
+import { EditInsightModal } from "./EditInsightModal";
+import { DeleteInsightModal } from "./DeleteInsightModal";
+import { useToast } from "../Toast";
 import type {
   ResearchTab,
   ResearchFile,
@@ -321,6 +324,16 @@ export function ResearchInsightsSection({
   // Insights state
   const [insights, setInsights] = useState<Insight[]>([]);
   const [insightsState, setInsightsState] = useState<InsightsState>("empty");
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
+  // Modal state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
+  const [insightToDelete, setInsightToDelete] = useState<string | null>(null);
+
+  // Toast
+  const { showToast } = useToast();
 
   // Check if any research has been added
   const hasResearch =
@@ -387,6 +400,46 @@ export function ResearchInsightsSection({
     }, 2000);
   };
 
+  // Edit insight handlers
+  const handleEditInsight = (insight: Insight) => {
+    setSelectedInsight(insight);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveInsight = (updatedInsight: Insight) => {
+    setInsights(
+      insights.map((i) => (i.id === updatedInsight.id ? updatedInsight : i))
+    );
+    showToast("Insight saved", "success");
+  };
+
+  // Delete insight handlers
+  const handleDeleteInsight = (id: string) => {
+    setInsightToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!insightToDelete) return;
+
+    // Remove the insight and renumber remaining ones
+    const filteredInsights = insights.filter((i) => i.id !== insightToDelete);
+    const renumberedInsights = filteredInsights.map((insight, index) => ({
+      ...insight,
+      number: index + 1,
+    }));
+
+    setInsights(renumberedInsights);
+    setInsightToDelete(null);
+    showToast("Insight deleted", "success");
+  };
+
+  // Confirm handler
+  const handleConfirmInsights = () => {
+    setIsConfirmed(true);
+    onConfirm?.();
+  };
+
   // Determine insights state based on research
   const currentInsightsState = (): InsightsState => {
     if (insightsState === "generating") return "generating";
@@ -408,15 +461,15 @@ export function ResearchInsightsSection({
         </button>
 
         <button
-          onClick={onConfirm}
-          disabled={currentInsightsState() !== "generated"}
+          onClick={handleConfirmInsights}
+          disabled={currentInsightsState() !== "generated" || isConfirmed}
           className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
-            currentInsightsState() === "generated"
+            currentInsightsState() === "generated" && !isConfirmed
               ? "text-text-inverse bg-button-solid hover:opacity-90"
               : "text-text-tertiary bg-stroke-soft cursor-not-allowed"
           }`}
         >
-          Confirm Research Insights
+          {isConfirmed ? "Research Insights Confirmed" : "Confirm Research Insights"}
         </button>
       </div>
 
@@ -595,6 +648,9 @@ export function ResearchInsightsSection({
                           key={insight.id}
                           insight={insight}
                           onToggleExpand={handleToggleInsightExpand}
+                          onEdit={handleEditInsight}
+                          onDelete={handleDeleteInsight}
+                          isConfirmed={isConfirmed}
                         />
                       ))}
                     </div>
@@ -611,6 +667,27 @@ export function ResearchInsightsSection({
           </div>
         </>
       )}
+
+      {/* Edit Insight Modal */}
+      <EditInsightModal
+        isOpen={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedInsight(null);
+        }}
+        insight={selectedInsight}
+        onSave={handleSaveInsight}
+      />
+
+      {/* Delete Insight Modal */}
+      <DeleteInsightModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setInsightToDelete(null);
+        }}
+        onDelete={handleConfirmDelete}
+      />
     </div>
   );
 }

@@ -1,2 +1,4 @@
 export { ResearchInsightsSection } from "./ResearchInsightsSection";
-export type { ResearchFile, ResearchLink, Insight } from "./types";
+export { EditInsightModal } from "./EditInsightModal";
+export { DeleteInsightModal } from "./DeleteInsightModal";
+export type { ResearchFile, ResearchLink, Insight, InsightSource } from "./types";
