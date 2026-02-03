@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Insight, InsightColor } from "./types";
 
 type InsightItemProps = {
   insight: Insight;
   onToggleExpand?: (id: string) => void;
+  onEdit?: (insight: Insight) => void;
+  onDelete?: (id: string) => void;
+  isConfirmed?: boolean;
 };
 
 const ChevronIcon = ({ isExpanded }: { isExpanded: boolean }) => (
@@ -34,6 +37,30 @@ const KebabIcon = () => (
   </svg>
 );
 
+const EditIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path
+      d="M10 1.5L12.5 4M1 13L1.5 10L10.5 1L13 3.5L4 12.5L1 13Z"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const TrashIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path
+      d="M2.5 3.5H11.5M5 3.5V2.5C5 2.10218 5.15804 1.72064 5.43934 1.43934C5.72064 1.15804 6.10218 1 6.5 1H7.5C7.89782 1 8.27936 1.15804 8.56066 1.43934C8.84196 1.72064 9 2.10218 9 2.5V3.5M10.5 3.5V12C10.5 12.3978 10.342 12.7794 10.0607 13.0607C9.77936 13.342 9.39782 13.5 9 13.5H5C4.60218 13.5 4.22064 13.342 3.93934 13.0607C3.65804 12.7794 3.5 12.3978 3.5 12V3.5H10.5Z"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 // Color configurations for insight highlights
 const colorConfig: Record<InsightColor, { bg: string; text: string }> = {
   teal: { bg: "bg-[#0d9488]", text: "text-white" },
@@ -42,9 +69,43 @@ const colorConfig: Record<InsightColor, { bg: string; text: string }> = {
   indigo: { bg: "bg-[#4f46e5]", text: "text-white" },
 };
 
-export function InsightItem({ insight, onToggleExpand }: InsightItemProps) {
+export function InsightItem({
+  insight,
+  onToggleExpand,
+  onEdit,
+  onDelete,
+  isConfirmed = false,
+}: InsightItemProps) {
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const colors = colorConfig[insight.color];
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMenu]);
+
+  const handleEditClick = () => {
+    setShowMenu(false);
+    onEdit?.(insight);
+  };
+
+  const handleDeleteClick = () => {
+    setShowMenu(false);
+    onDelete?.(insight.id);
+  };
 
   return (
     <div className="py-3 border-b border-stroke-default last:border-b-0">
@@ -68,31 +129,36 @@ export function InsightItem({ insight, onToggleExpand }: InsightItemProps) {
           </span>
         </div>
 
-        {/* Kebab menu */}
-        <div className="relative shrink-0">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="text-text-tertiary hover:text-text-secondary transition-colors p-1 cursor-pointer"
-          >
-            <KebabIcon />
-          </button>
-          {showMenu && (
-            <>
-              <div
-                className="fixed inset-0 z-10"
-                onClick={() => setShowMenu(false)}
-              />
-              <div className="absolute right-0 top-full mt-1 bg-white border border-stroke-default rounded-lg shadow-lg py-1 z-20 min-w-[120px]">
-                <button className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-stroke-soft/30 cursor-pointer">
-                  Edit
+        {/* Kebab menu - only shown when not confirmed */}
+        {!isConfirmed && (
+          <div className="relative shrink-0" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="text-text-tertiary hover:text-text-secondary transition-colors p-1 cursor-pointer"
+              aria-label="Insight actions"
+            >
+              <KebabIcon />
+            </button>
+            {showMenu && (
+              <div className="absolute right-0 top-full mt-1 bg-white border border-stroke-default rounded-lg shadow-lg py-1 z-20 min-w-[160px]">
+                <button
+                  onClick={handleEditClick}
+                  className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-stroke-soft/30 cursor-pointer"
+                >
+                  <EditIcon />
+                  Edit Insight
                 </button>
-                <button className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-stroke-soft/30 cursor-pointer">
-                  Remove
+                <button
+                  onClick={handleDeleteClick}
+                  className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                >
+                  <TrashIcon />
+                  Delete Insight
                 </button>
               </div>
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Expanded content */}
