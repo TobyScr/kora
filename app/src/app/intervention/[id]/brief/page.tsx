@@ -219,7 +219,7 @@ export default function BriefPage() {
             <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#f3f4f7] to-transparent pointer-events-none" />
 
             {/* Input bar */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[668px] px-4">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[668px] px-4 z-20">
               <ChatInput placeholder="Type here" onSubmit={handleSendMessage} />
             </div>
           </>

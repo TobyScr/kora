@@ -67,7 +67,11 @@ export function ChatInput({
       <button
         type="submit"
         disabled={!value.trim()}
-        className="flex items-center justify-center size-8 rounded-full bg-button-solid text-text-inverse cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        className={`flex items-center justify-center size-8 rounded-full text-text-inverse shrink-0 transition-colors ${
+          value.trim()
+            ? "bg-button-solid cursor-pointer"
+            : "bg-button-solid/40 cursor-not-allowed"
+        }`}
         aria-label="Send message"
       >
         <SendIcon />
