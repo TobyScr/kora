@@ -54,13 +54,12 @@ export function ProgressPanelSection({
           </span>
           <StatusPill status={status} />
         </div>
-        <button
-          onClick={onToggle}
-          className="flex items-center justify-center w-10 h-10 text-text-secondary hover:text-text-primary transition-colors"
+        <div
+          className="flex items-center justify-center w-10 h-10 text-text-secondary"
           aria-label={isExpanded ? "Collapse section" : "Expand section"}
         >
           {isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
-        </button>
+        </div>
       </div>
 
       {/* Content - only visible when expanded */}

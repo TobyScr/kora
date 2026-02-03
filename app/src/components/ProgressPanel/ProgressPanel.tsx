@@ -82,15 +82,12 @@ export function ProgressPanel({ sections, onToggleSection }: ProgressPanelProps)
     <div className="w-[280px] h-full bg-background-surface-0 border-l border-stroke-default flex flex-col">
       {/* Header */}
       <div className="flex items-center p-4 bg-background-surface border-b border-stroke-default">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/brand/Icon.svg"
-            alt="Kora"
-            width={24}
-            height={24}
-          />
-          <span className="text-sm font-medium text-text-primary tracking-wider">KORA</span>
-        </div>
+        <Image
+          src="/brand/Sidebar_Logo.svg"
+          alt="Kora"
+          width={85}
+          height={22}
+        />
       </div>
 
       {/* Sections */}
