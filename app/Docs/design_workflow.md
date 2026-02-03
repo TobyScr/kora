@@ -60,7 +60,26 @@ Once you have a Figma URL:
    mcp__figma-dev-mode__get_design_context(nodeId: "57:2845")
    ```
 
-4. **Build to match** the Figma design
+4. **Analyze the design thoroughly** (see checklist below)
+
+5. **Build to match** the Figma design
+
+### Design Analysis Checklist
+
+When analyzing a Figma design, check ALL of the following — not just structure:
+
+| Category | What to Look For |
+|----------|------------------|
+| **Layout & Structure** | Grid, columns, positioning, spacing between elements |
+| **Content** | Text, icons, images, data displayed |
+| **Backgrounds** | Section backgrounds, card backgrounds, container colors |
+| **Borders & Dividers** | Border colors, widths, which elements have borders |
+| **Shadows** | Drop shadows, inner shadows, elevation |
+| **Border Radius** | Rounded corners on containers, buttons, cards |
+| **Typography** | Font weights, sizes, colors, letter-spacing |
+| **States** | Hover, active, disabled, loading states |
+
+> **Common Mistake:** Focusing only on layout and content while missing visual styling like backgrounds, borders, and shadows. Always check container styling, not just the content inside.
 
 ---
 
@@ -91,6 +110,7 @@ When adapting mobile designs to desktop:
 - [ ] GitHub issue has Figma link in "Design Reference" section
 - [ ] If no Figma link → **ask user before proceeding**
 - [ ] Retrieved design via Figma MCP
+- [ ] Analyzed design for ALL visual details (see Design Analysis Checklist above)
 - [ ] Building mobile-first (390×844)
 - [ ] Have a plan for desktop adaptation
 
