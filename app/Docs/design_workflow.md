@@ -81,6 +81,18 @@ When analyzing a Figma design, check ALL of the following — not just structure
 
 > **Common Mistake:** Focusing only on layout and content while missing visual styling like backgrounds, borders, and shadows. Always check container styling, not just the content inside.
 
+### Typography Style Distinction
+
+Pay close attention to Figma's typography styles. Common patterns:
+
+| Style | Usage | Weight | Notes |
+|-------|-------|--------|-------|
+| **Typography/Label/md** | Headings, labels, emphasized text | 500 (Medium) | `font-medium`, letter-spacing 0.15px |
+| **Typography/Body/sm** | Body text, descriptions, list items | 400 (Regular) | `font-normal`, no letter-spacing |
+| **Typography/Body/md** | Larger body text | 400 (Regular) | `font-normal` |
+
+> **Common Mistake:** Using `font-medium` (Label style) for list item text that should be `font-normal` (Body style). Check if the text is a heading/label or body content.
+
 ---
 
 ## Mobile-First Development

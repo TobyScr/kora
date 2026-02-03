@@ -166,51 +166,54 @@ export function BriefOverviewSection({
         </div>
       </div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Cards Grid - 6 columns on lg for flexible layouts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         {/* Row 1: Client Name, Location, Budget */}
         <BriefOverviewCard
           type="clientName"
           state={state}
           content={dummyData.clientName}
+          className="lg:col-span-2"
         />
         <BriefOverviewCard
           type="location"
           state={state}
           content={dummyData.location}
+          className="lg:col-span-2"
         />
         <BriefOverviewCard
           type="budget"
           state={state}
           content={dummyData.budget}
+          className="lg:col-span-2"
         />
 
-        {/* Row 2: Timeline, Deliverables (2 columns on lg) */}
+        {/* Row 2: Timeline, Deliverables */}
         <BriefOverviewCard
           type="timeline"
           state={state}
           content={dummyData.timeline}
-          className="lg:col-span-1"
+          className="lg:col-span-2"
         />
         <BriefOverviewCard
           type="deliverables"
           state={state}
           content={dummyData.deliverables}
-          className="lg:col-span-2"
+          className="lg:col-span-4"
         />
 
-        {/* Row 3: Problem Definition, Initial Objective */}
+        {/* Row 3: Problem Definition, Initial Objective (equal width 50/50) */}
         <BriefOverviewCard
           type="problemDefinition"
           state={state}
           content={dummyData.problemDefinition}
-          className="md:col-span-1 lg:col-span-1"
+          className="lg:col-span-3"
         />
         <BriefOverviewCard
           type="initialObjective"
           state={state}
           content={dummyData.initialObjective}
-          className="md:col-span-1 lg:col-span-2"
+          className="lg:col-span-3"
         />
 
         {/* Row 4: TA Profile (full width) */}
@@ -222,15 +225,15 @@ export function BriefOverviewSection({
               {dummyData.taProfile.map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <CheckboxIcon />
-                  <span className="font-medium tracking-[0.4px]">{item}</span>
+                  <span className="font-normal">{item}</span>
                 </li>
               ))}
             </ul>
           }
-          className="md:col-span-2 lg:col-span-3"
+          className="md:col-span-2 lg:col-span-6"
         />
 
-        {/* Row 5: Do's, Don'ts */}
+        {/* Row 5: Do's, Don'ts (equal width 50/50) */}
         <BriefOverviewCard
           type="dos"
           state={state}
@@ -239,12 +242,12 @@ export function BriefOverviewSection({
               {dummyData.dos.map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <CheckIcon />
-                  <span className="font-medium tracking-[0.4px]">{item}</span>
+                  <span className="font-normal">{item}</span>
                 </li>
               ))}
             </ul>
           }
-          className="lg:col-span-1"
+          className="lg:col-span-3"
         />
         <BriefOverviewCard
           type="donts"
@@ -254,12 +257,12 @@ export function BriefOverviewSection({
               {dummyData.donts.map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <XIcon />
-                  <span className="font-medium tracking-[0.4px]">{item}</span>
+                  <span className="font-normal">{item}</span>
                 </li>
               ))}
             </ul>
           }
-          className="lg:col-span-2"
+          className="lg:col-span-3"
         />
       </div>
     </div>
