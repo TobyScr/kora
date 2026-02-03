@@ -18,6 +18,8 @@ type BriefOverviewSectionProps = {
   onStateChange?: (state: CardState) => void;
   onConfirm?: () => void;
   showDevToggle?: boolean;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
 };
 
 const ChevronIcon = ({ isExpanded }: { isExpanded: boolean }) => (
@@ -146,9 +148,23 @@ export function BriefOverviewSection({
   onStateChange,
   onConfirm,
   showDevToggle = false,
+  isExpanded: controlledExpanded,
+  onToggleExpand,
 }: BriefOverviewSectionProps) {
   const [data, setData] = useState<BriefData>(initialData);
   const [openModal, setOpenModal] = useState<OpenModal>(null);
+  const [localExpanded, setLocalExpanded] = useState(true);
+
+  // Use controlled or local expansion state
+  const isExpanded = controlledExpanded ?? localExpanded;
+
+  const handleToggle = () => {
+    if (onToggleExpand) {
+      onToggleExpand();
+    } else {
+      setLocalExpanded(!localExpanded);
+    }
+  };
 
   const openEditModal = (modal: CardType) => setOpenModal(modal);
   const closeModal = () => setOpenModal(null);
@@ -178,9 +194,12 @@ export function BriefOverviewSection({
   return (
     <div className="w-full max-w-[800px] mx-auto bg-background-surface-0 rounded-[var(--radius-xl)] p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <button className="flex items-center gap-2 text-text-primary">
-          <ChevronIcon isExpanded />
+      <div className={`flex items-center justify-between ${isExpanded ? "mb-6" : ""}`}>
+        <button
+          onClick={handleToggle}
+          className="flex items-center gap-2 text-text-primary cursor-pointer"
+        >
+          <ChevronIcon isExpanded={isExpanded} />
           <span className="text-lg font-medium">Brief Overview</span>
         </button>
 
@@ -222,6 +241,7 @@ export function BriefOverviewSection({
       </div>
 
       {/* Cards Grid - 6 columns on lg for flexible layouts */}
+      {isExpanded && (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         {/* Row 1: Client Name, Location, Budget */}
         <BriefOverviewCard
@@ -330,6 +350,7 @@ export function BriefOverviewSection({
           onEdit={() => openEditModal("donts")}
         />
       </div>
+      )}
 
       {/* Edit Modals */}
       <EditClientNameModal
