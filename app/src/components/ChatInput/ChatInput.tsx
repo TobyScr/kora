@@ -45,7 +45,7 @@ export function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex items-end gap-3 bg-background-surface p-4 rounded-[var(--radius-xxl)] w-full max-w-[668px] ${className ?? ""}`}
+      className={`flex items-center gap-3 bg-background-surface p-4 rounded-[var(--radius-xxl)] w-full max-w-[668px] ${className ?? ""}`}
     >
       <textarea
         value={value}
@@ -53,7 +53,7 @@ export function ChatInput({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         rows={1}
-        className="flex-1 min-h-[32px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-[1.6] tracking-[var(--letter-spacing-wide-s)] outline-none"
+        className="flex-1 min-h-[32px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-[32px] tracking-[var(--letter-spacing-wide-s)] outline-none"
       />
       <button
         type="submit"
