@@ -249,7 +249,7 @@ export function BriefOverviewCard({
           <p className="text-sm text-text-tertiary">No information</p>
         )}
         {state === "filled" && (
-          <div className="text-sm text-text-primary">{content}</div>
+          <div className="text-sm text-text-primary whitespace-pre-wrap">{content}</div>
         )}
       </div>
     </div>

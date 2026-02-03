@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal";
 import { Select, InputField } from "../FormField";
 
@@ -36,6 +36,14 @@ const currencyOptions = [
   { value: "AUD", label: "Australian Dollar" },
 ];
 
+// Format number with commas (e.g., 1000000 -> 1,000,000)
+const formatNumberWithCommas = (value: string): string => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, "");
+  // Add commas
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 export function EditBudgetModal({
   isOpen,
   onClose,
@@ -43,6 +51,13 @@ export function EditBudgetModal({
   onSave,
 }: EditBudgetModalProps) {
   const [value, setValue] = useState<BudgetData>(initialValue);
+
+  // Reset state when modal opens with new initial value
+  useEffect(() => {
+    if (isOpen) {
+      setValue(initialValue);
+    }
+  }, [isOpen, initialValue]);
 
   const handleSave = () => {
     onSave(value);
@@ -52,6 +67,11 @@ export function EditBudgetModal({
   const handleCancel = () => {
     setValue(initialValue);
     onClose();
+  };
+
+  const updateAmountField = (field: "minAmount" | "maxAmount", rawValue: string) => {
+    const formatted = formatNumberWithCommas(rawValue);
+    setValue((prev) => ({ ...prev, [field]: formatted }));
   };
 
   const updateField = (field: keyof BudgetData, fieldValue: string) => {
@@ -74,7 +94,7 @@ export function EditBudgetModal({
             <InputField
               label="Min. amount"
               value={value.minAmount}
-              onChange={(v) => updateField("minAmount", v)}
+              onChange={(v) => updateAmountField("minAmount", v)}
               type="text"
               icon={<PoundIcon />}
               clearable
@@ -83,9 +103,10 @@ export function EditBudgetModal({
             <InputField
               label="Max. amount"
               value={value.maxAmount}
-              onChange={(v) => updateField("maxAmount", v)}
+              onChange={(v) => updateAmountField("maxAmount", v)}
               type="text"
               icon={<PoundIcon />}
+              clearable
               className="flex-1"
             />
           </div>

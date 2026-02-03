@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal";
 import { RichTextArea } from "../FormField";
 
@@ -18,6 +18,10 @@ export function EditInitialObjectiveModal({
   onSave,
 }: EditInitialObjectiveModalProps) {
   const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    if (isOpen) setValue(initialValue);
+  }, [isOpen, initialValue]);
 
   const handleSave = () => {
     onSave(value);

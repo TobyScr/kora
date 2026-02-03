@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "../Modal";
 import { Tabs, InputField } from "../FormField";
 
@@ -31,6 +31,13 @@ export function EditTimelineModal({
   onSave,
 }: EditTimelineModalProps) {
   const [value, setValue] = useState<TimelineData>(initialValue);
+
+  // Reset state when modal opens with new initial value
+  useEffect(() => {
+    if (isOpen) {
+      setValue(initialValue);
+    }
+  }, [isOpen, initialValue]);
 
   const handleSave = () => {
     onSave(value);
