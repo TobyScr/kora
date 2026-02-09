@@ -6,8 +6,14 @@ import { SectionItem } from "@/components/Sidebar/SectionItem";
 import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
 import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
-import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
-import { ResearchInsightsSection } from "@/components/ResearchInsights";
+import { AccordionSection } from "@/components/AccordionSection/AccordionSection";
+import {
+  COMBMappingSection,
+  SAMPLE_COMB_DATA,
+  type COMBState,
+  type COMBCategory,
+  type COMBCategoryId,
+} from "@/components/COMBMapping";
 import { Button } from "@/components/Button/Button";
 import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
@@ -62,7 +68,13 @@ type SectionState = {
 type ProgressSections = {
   briefOverview: SectionState;
   researchInsights: SectionState;
+  systemMap: SectionState;
+  behaviouralObjective: SectionState;
+  assumptionTesting: SectionState;
+  combPersonas: SectionState;
 };
+
+type ProgressSectionKey = keyof ProgressSections;
 
 const initialMessages: Message[] = [
   {
@@ -81,15 +93,22 @@ const aiResponses = [
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [viewMode, setViewMode] = useState<ViewMode>("chat");
-  const [cardState, setCardState] = useState<CardState>("filled");
-  const [briefOverviewExpanded, setBriefOverviewExpanded] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("overview");
+  // COM-B state
+  const [combState, setCombState] = useState<COMBState>("filled");
+  const [combExpanded, setCombExpanded] = useState(true);
+  const [combCategories, setCombCategories] = useState<COMBCategory[]>(SAMPLE_COMB_DATA);
+
   const [progressSections, setProgressSections] = useState<ProgressSections>({
-    briefOverview: { status: "in-progress", isExpanded: true },
-    researchInsights: { status: "in-progress", isExpanded: false },
+    briefOverview: { status: "complete", isExpanded: false },
+    researchInsights: { status: "complete", isExpanded: false },
+    systemMap: { status: "complete", isExpanded: false },
+    behaviouralObjective: { status: "complete", isExpanded: false },
+    assumptionTesting: { status: "complete", isExpanded: false },
+    combPersonas: { status: "in-progress", isExpanded: true },
   });
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const researchInsightsRef = useRef<HTMLDivElement>(null);
+  const combSectionRef = useRef<HTMLDivElement>(null);
 
   // Check if user has sent at least one message
   const hasUserMessage = messages.some((m) => m.variant === "user");
@@ -123,7 +142,7 @@ export default function BriefPage() {
     setViewMode("overview");
   };
 
-  const handleToggleSection = (section: "briefOverview" | "researchInsights") => {
+  const handleToggleSection = (section: ProgressSectionKey) => {
     setProgressSections((prev) => ({
       ...prev,
       [section]: {
@@ -133,18 +152,12 @@ export default function BriefPage() {
     }));
   };
 
-  const handleConfirmBriefOverview = () => {
-    // Collapse Brief Overview and expand Research Insights
-    setBriefOverviewExpanded(false);
-    setProgressSections({
-      briefOverview: { status: "complete", isExpanded: false },
-      researchInsights: { status: "in-progress", isExpanded: true },
-    });
-
-    // Auto-scroll to Research Insights after a short delay for DOM update
-    setTimeout(() => {
-      researchInsightsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+  const handleToggleCombCategory = (categoryId: COMBCategoryId) => {
+    setCombCategories((prev) =>
+      prev.map((cat) =>
+        cat.id === categoryId ? { ...cat, isExpanded: !cat.isExpanded } : cat
+      )
+    );
   };
 
   return (
@@ -160,12 +173,12 @@ export default function BriefPage() {
           {/* Understand - expanded */}
           <div className="border-b border-stroke-default">
             <SectionItem icon={<FileIcon />} label="Understand" isExpanded />
-            <SubsectionItem label="Brief Overview" isActive />
-            <SubsectionItem label="Research Insights" isLocked />
-            <SubsectionItem label="System Map" isLocked />
-            <SubsectionItem label="Behavioural Objective" isLocked />
-            <SubsectionItem label="Assumption testing" isLocked />
-            <SubsectionItem label="COM-B & Personas" isLocked />
+            <SubsectionItem label="Brief Overview" isComplete />
+            <SubsectionItem label="Research Insights" isComplete />
+            <SubsectionItem label="System Map" isComplete />
+            <SubsectionItem label="Behavioural Objective" isComplete />
+            <SubsectionItem label="Assumption testing" isComplete />
+            <SubsectionItem label="COM-B & Personas" isActive />
           </div>
           {/* Design - locked */}
           <div className="border-b border-stroke-default">
@@ -234,25 +247,42 @@ export default function BriefPage() {
             </div>
           </>
         ) : (
-          /* Brief Overview view */
+          /* Overview view */
           <div className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-10">
-            <div className="space-y-6">
-              <BriefOverviewSection
-                state={cardState}
-                onStateChange={setCardState}
-                onConfirm={handleConfirmBriefOverview}
-                showDevToggle
-                isExpanded={briefOverviewExpanded}
-                onToggleExpand={() => setBriefOverviewExpanded(!briefOverviewExpanded)}
+            <div className="space-y-4">
+              {/* Completed sections as collapsed AccordionSections */}
+              <AccordionSection
+                title="Brief Overview"
+                isComplete
+                onExportPdf={() => {}}
               />
-              <div ref={researchInsightsRef}>
-                <ResearchInsightsSection
-                  isExpanded={progressSections.researchInsights.isExpanded}
-                  onToggleExpand={() => handleToggleSection("researchInsights")}
-                  onConfirm={() => {
-                    // Handle confirm research insights
-                    console.log("Research insights confirmed");
-                  }}
+              <AccordionSection
+                title="Research Insights"
+                isComplete
+              />
+              <AccordionSection
+                title="System Map"
+                isComplete
+              />
+              <AccordionSection
+                title="Behavioral Objective"
+                isComplete
+              />
+              <AccordionSection
+                title="Assumption Testing"
+                isComplete
+              />
+
+              {/* COM-B Mapping Section - active */}
+              <div ref={combSectionRef}>
+                <COMBMappingSection
+                  state={combState}
+                  onStateChange={setCombState}
+                  categories={combCategories}
+                  onToggleCategory={handleToggleCombCategory}
+                  showDevToggle
+                  isExpanded={combExpanded}
+                  onToggleExpand={() => setCombExpanded(!combExpanded)}
                 />
               </div>
             </div>

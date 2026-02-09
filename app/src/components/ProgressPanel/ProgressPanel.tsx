@@ -9,12 +9,24 @@ type SectionState = {
   isExpanded: boolean;
 };
 
+type SectionKey =
+  | "briefOverview"
+  | "researchInsights"
+  | "systemMap"
+  | "behaviouralObjective"
+  | "assumptionTesting"
+  | "combPersonas";
+
 type ProgressPanelProps = {
   sections: {
     briefOverview: SectionState;
     researchInsights: SectionState;
+    systemMap?: SectionState;
+    behaviouralObjective?: SectionState;
+    assumptionTesting?: SectionState;
+    combPersonas?: SectionState;
   };
-  onToggleSection?: (section: "briefOverview" | "researchInsights") => void;
+  onToggleSection?: (section: SectionKey) => void;
 };
 
 // Static content for Brief Overview section
@@ -34,13 +46,13 @@ const BriefOverviewContent = () => (
         <li>Review the canvas and make edits if needed.</li>
         <li>
           When everything looks good, select{" "}
-          <span className="font-medium">"Confirm Brief Overview"</span> to move to the
+          <span className="font-medium">&quot;Confirm Brief Overview&quot;</span> to move to the
           next step.
         </li>
       </ol>
     </div>
     <p className="text-text-secondary text-xs">
-      Note: Once you confirm, the brief will become read-only and can't be edited
+      Note: Once you confirm, the brief will become read-only and can&apos;t be edited
       further.
     </p>
   </div>
@@ -62,8 +74,8 @@ const ResearchInsightsContent = () => (
           via text, through saved documents, or through external links.
         </li>
         <li>
-          If you don't have existing research, copy the prompt provided in the{" "}
-          <span className="font-medium">DeepResearch tab</span> and paste it in ChatGPT's
+          If you don&apos;t have existing research, copy the prompt provided in the{" "}
+          <span className="font-medium">DeepResearch tab</span> and paste it in ChatGPT&apos;s
           DeepResearch function. Once the research comes back, upload your findings into
           the <span className="font-medium">Add Findings</span> heading.
         </li>
@@ -71,6 +83,62 @@ const ResearchInsightsContent = () => (
           Once all research is uploaded, select{" "}
           <span className="font-medium">Generate Insights</span> and I will share 3-8 key
           insights to guide your next steps.
+        </li>
+      </ol>
+    </div>
+  </div>
+);
+
+// Static content for System Map section
+const SystemMapContent = () => (
+  <div className="space-y-4">
+    <p>Section complete.</p>
+  </div>
+);
+
+// Static content for Behavioural Objective section
+const BehaviouralObjectiveContent = () => (
+  <div className="space-y-4">
+    <p>Section complete.</p>
+  </div>
+);
+
+// Static content for Assumption Testing section
+const AssumptionTestingContent = () => (
+  <div className="space-y-4">
+    <p>Section complete.</p>
+  </div>
+);
+
+// Static content for COM-B & Personas section
+const COMBPersonasContent = () => (
+  <div className="space-y-4">
+    <p>
+      Great! You&apos;ve now reached the last step in the Understand stage, where I&apos;ll
+      use your research to map behavioural barriers for your target audience in a COM-B
+      analysis and create associated personas.
+    </p>
+    <div>
+      <span className="font-medium">Purpose:</span> This maps your audience&apos;s
+      behavioural barriers across Capability, Opportunity, and Motivation — helping you
+      design interventions that address the right drivers of change.
+    </div>
+    <div>
+      <p className="font-medium mb-2">What's Next:</p>
+      <ol className="list-decimal list-inside space-y-2">
+        <li>
+          Review the <span className="font-medium">COM-B barriers</span> generated from
+          your research. Barriers marked with <span className="font-medium">*</span> are
+          recommended based on your insights.
+        </li>
+        <li>
+          <span className="font-medium">Select the barriers</span> you want to focus on
+          using the toggle switches. You can also add custom barriers.
+        </li>
+        <li>
+          When you&apos;re happy with your selection, select{" "}
+          <span className="font-medium">&quot;Confirm COM-B Mapping&quot;</span> to generate
+          personas based on the selected barriers.
         </li>
       </ol>
     </div>
@@ -107,6 +175,46 @@ export function ProgressPanel({ sections, onToggleSection }: ProgressPanelProps)
             isExpanded={sections.researchInsights.isExpanded}
             content={<ResearchInsightsContent />}
             onToggle={() => onToggleSection?.("researchInsights")}
+          />
+        )}
+        {/* Show System Map after Research Insights is complete */}
+        {sections.researchInsights.status === "complete" && sections.systemMap && (
+          <ProgressPanelSection
+            title="System Map"
+            status={sections.systemMap.status}
+            isExpanded={sections.systemMap.isExpanded}
+            content={<SystemMapContent />}
+            onToggle={() => onToggleSection?.("systemMap")}
+          />
+        )}
+        {/* Show Behavioural Objective after System Map is complete */}
+        {sections.systemMap?.status === "complete" && sections.behaviouralObjective && (
+          <ProgressPanelSection
+            title="Behavioural Objective"
+            status={sections.behaviouralObjective.status}
+            isExpanded={sections.behaviouralObjective.isExpanded}
+            content={<BehaviouralObjectiveContent />}
+            onToggle={() => onToggleSection?.("behaviouralObjective")}
+          />
+        )}
+        {/* Show Assumption Testing after Behavioural Objective is complete */}
+        {sections.behaviouralObjective?.status === "complete" && sections.assumptionTesting && (
+          <ProgressPanelSection
+            title="Assumption Testing"
+            status={sections.assumptionTesting.status}
+            isExpanded={sections.assumptionTesting.isExpanded}
+            content={<AssumptionTestingContent />}
+            onToggle={() => onToggleSection?.("assumptionTesting")}
+          />
+        )}
+        {/* Show COM-B & Personas after Assumption Testing is complete */}
+        {sections.assumptionTesting?.status === "complete" && sections.combPersonas && (
+          <ProgressPanelSection
+            title="COM-B & Personas"
+            status={sections.combPersonas.status}
+            isExpanded={sections.combPersonas.isExpanded}
+            content={<COMBPersonasContent />}
+            onToggle={() => onToggleSection?.("combPersonas")}
           />
         )}
       </div>
