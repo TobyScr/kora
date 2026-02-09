@@ -177,9 +177,22 @@ gh issue list --label "needs-fixes"
 | Topic | Decision |
 |-------|----------|
 
+## Agent Run Modes
+
+Background agents **cannot prompt for user approval**, so any agent that needs to write, edit, or create files will stall silently if run in the background.
+
+| Agent / Task | Run Mode | Reason |
+|---|---|---|
+| **Dev Agent** | Foreground | Writes/edits code files |
+| **QA Agent** | Foreground | Writes reports, takes screenshots |
+| **Explore / research** | Background OK | Read-only (search, grep, file reads) |
+
+**Rule: Only use `run_in_background: true` for pure read-only tasks** — finding files, searching code, researching how a module works. If the agent will create, edit, or write any file, it must run in the foreground.
+
 ## What You Must NOT Do
 
 - Do not write application code directly (delegate to Dev Agent)
 - Do not run QA tests directly (delegate to QA Agent)
 - Do not create issues without user approval
 - Do not change scope without user approval
+- Do not run Dev or QA agents in the background (they need write permissions)
