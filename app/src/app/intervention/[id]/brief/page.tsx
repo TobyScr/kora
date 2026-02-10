@@ -8,6 +8,7 @@ import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
 import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
 import { ResearchInsightsSection } from "@/components/ResearchInsights";
+import { SystemMapSection } from "@/components/SystemMap";
 import { Button } from "@/components/Button/Button";
 import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
@@ -62,6 +63,8 @@ type SectionState = {
 type ProgressSections = {
   briefOverview: SectionState;
   researchInsights: SectionState;
+  systemMap: SectionState;
+  behaviouralObjective: SectionState;
 };
 
 const initialMessages: Message[] = [
@@ -84,12 +87,17 @@ export default function BriefPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("chat");
   const [cardState, setCardState] = useState<CardState>("filled");
   const [briefOverviewExpanded, setBriefOverviewExpanded] = useState(true);
+  const [researchInsightsConfirmed, setResearchInsightsConfirmed] = useState(false);
+  const [systemMapExpanded, setSystemMapExpanded] = useState(true);
   const [progressSections, setProgressSections] = useState<ProgressSections>({
     briefOverview: { status: "in-progress", isExpanded: true },
     researchInsights: { status: "in-progress", isExpanded: false },
+    systemMap: { status: "in-progress", isExpanded: false },
+    behaviouralObjective: { status: "in-progress", isExpanded: false },
   });
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const researchInsightsRef = useRef<HTMLDivElement>(null);
+  const systemMapRef = useRef<HTMLDivElement>(null);
 
   // Check if user has sent at least one message
   const hasUserMessage = messages.some((m) => m.variant === "user");
@@ -123,7 +131,7 @@ export default function BriefPage() {
     setViewMode("overview");
   };
 
-  const handleToggleSection = (section: "briefOverview" | "researchInsights") => {
+  const handleToggleSection = (section: "briefOverview" | "researchInsights" | "systemMap" | "behaviouralObjective") => {
     setProgressSections((prev) => ({
       ...prev,
       [section]: {
@@ -136,10 +144,11 @@ export default function BriefPage() {
   const handleConfirmBriefOverview = () => {
     // Collapse Brief Overview and expand Research Insights
     setBriefOverviewExpanded(false);
-    setProgressSections({
+    setProgressSections((prev) => ({
+      ...prev,
       briefOverview: { status: "complete", isExpanded: false },
       researchInsights: { status: "in-progress", isExpanded: true },
-    });
+    }));
 
     // Auto-scroll to Research Insights after a short delay for DOM update
     setTimeout(() => {
@@ -160,10 +169,28 @@ export default function BriefPage() {
           {/* Understand - expanded */}
           <div className="border-b border-stroke-default">
             <SectionItem icon={<FileIcon />} label="Understand" isExpanded />
-            <SubsectionItem label="Brief Overview" isActive />
-            <SubsectionItem label="Research Insights" isLocked />
-            <SubsectionItem label="System Map" isLocked />
-            <SubsectionItem label="Behavioural Objective" isLocked />
+            <SubsectionItem
+              label="Brief Overview"
+              isActive={progressSections.briefOverview.status === "in-progress"}
+              isComplete={progressSections.briefOverview.status === "complete"}
+            />
+            <SubsectionItem
+              label="Research Insights"
+              isActive={progressSections.researchInsights.status === "in-progress" && progressSections.briefOverview.status === "complete"}
+              isComplete={progressSections.researchInsights.status === "complete"}
+              isLocked={progressSections.briefOverview.status !== "complete"}
+            />
+            <SubsectionItem
+              label="System Map"
+              isActive={progressSections.systemMap.status === "in-progress" && progressSections.researchInsights.status === "complete"}
+              isComplete={progressSections.systemMap.status === "complete"}
+              isLocked={progressSections.researchInsights.status !== "complete"}
+            />
+            <SubsectionItem
+              label="Behavioural Objective"
+              isActive={progressSections.behaviouralObjective.status === "in-progress" && progressSections.systemMap.status === "complete"}
+              isLocked={progressSections.systemMap.status !== "complete"}
+            />
             <SubsectionItem label="Assumption testing" isLocked />
             <SubsectionItem label="COM-B & Personas" isLocked />
           </div>
@@ -250,11 +277,37 @@ export default function BriefPage() {
                   isExpanded={progressSections.researchInsights.isExpanded}
                   onToggleExpand={() => handleToggleSection("researchInsights")}
                   onConfirm={() => {
-                    // Handle confirm research insights
-                    console.log("Research insights confirmed");
+                    setResearchInsightsConfirmed(true);
+                    setSystemMapExpanded(true);
+                    setProgressSections((prev) => ({
+                      ...prev,
+                      researchInsights: { status: "complete", isExpanded: false },
+                      systemMap: { status: "in-progress", isExpanded: true },
+                    }));
+                    // Auto-scroll to System Map after a short delay for DOM update
+                    setTimeout(() => {
+                      systemMapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 100);
                   }}
                 />
               </div>
+              {/* System Map - shown after Research Insights is confirmed */}
+              {researchInsightsConfirmed && (
+                <div ref={systemMapRef}>
+                  <SystemMapSection
+                    isExpanded={systemMapExpanded}
+                    onToggleExpand={() => setSystemMapExpanded(!systemMapExpanded)}
+                    onConfirm={() => {
+                      setSystemMapExpanded(false);
+                      setProgressSections((prev) => ({
+                        ...prev,
+                        systemMap: { status: "complete", isExpanded: false },
+                        behaviouralObjective: { status: "in-progress", isExpanded: true },
+                      }));
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
