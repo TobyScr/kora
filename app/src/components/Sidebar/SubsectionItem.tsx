@@ -2,6 +2,7 @@ type SubsectionItemProps = {
   label: string;
   isActive?: boolean;
   isLocked?: boolean;
+  isComplete?: boolean;
   onClick?: () => void;
   className?: string;
 };
@@ -19,15 +20,35 @@ const LockIcon = () => (
   </svg>
 );
 
+const GreenCheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <circle cx="8" cy="8" r="7" fill="#2b8652" />
+    <path
+      d="M5 8l2 2 4-4"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export function SubsectionItem({
   label,
   isActive = false,
   isLocked = false,
+  isComplete = false,
   onClick,
   className,
 }: SubsectionItemProps) {
   const bgColor = isActive ? "bg-background-page" : "";
   const textColor = isLocked ? "text-text-tertiary" : "text-text-primary";
+
+  const renderIcon = () => {
+    if (isComplete) return <GreenCheckIcon />;
+    if (isLocked) return <LockIcon />;
+    return <CircleIcon />;
+  };
 
   return (
     <button
@@ -36,7 +57,7 @@ export function SubsectionItem({
       className={`flex items-center gap-3 w-full px-2 py-1 cursor-pointer disabled:cursor-not-allowed hover:bg-stroke-soft/50 transition-colors ${bgColor} ${className ?? ""}`}
     >
       <span className="flex items-center justify-center size-9 shrink-0 text-text-tertiary">
-        {isLocked ? <LockIcon /> : <CircleIcon />}
+        {renderIcon()}
       </span>
       <span className={`flex-1 text-left font-medium text-sm leading-[1.6] tracking-[var(--letter-spacing-wide-s)] ${textColor}`}>
         {label}

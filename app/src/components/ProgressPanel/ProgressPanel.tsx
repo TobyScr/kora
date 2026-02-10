@@ -13,8 +13,10 @@ type ProgressPanelProps = {
   sections: {
     briefOverview: SectionState;
     researchInsights: SectionState;
+    systemMap: SectionState;
+    behaviouralObjective: SectionState;
   };
-  onToggleSection?: (section: "briefOverview" | "researchInsights") => void;
+  onToggleSection?: (section: "briefOverview" | "researchInsights" | "systemMap" | "behaviouralObjective") => void;
 };
 
 // Static content for Brief Overview section
@@ -42,6 +44,70 @@ const BriefOverviewContent = () => (
     <p className="text-text-secondary text-xs">
       Note: Once you confirm, the brief will become read-only and can't be edited
       further.
+    </p>
+  </div>
+);
+
+// Static content for System Map section
+const SystemMapContent = () => (
+  <div className="space-y-4">
+    <p>
+      We&apos;re now moving to the System Map, where you can see the wider ecosystem
+      around your brief&apos;s problem.
+    </p>
+    <div>
+      <span className="font-medium">Purpose:</span> The System Map identifies the key
+      dynamics, challenges, and forces that shape the problem space. It helps you understand
+      how different factors connect and where an intervention can have the most impact.
+    </div>
+    <div>
+      <p className="font-medium mb-2">What&apos;s Next:</p>
+      <ol className="list-decimal list-inside space-y-2">
+        <li>Review and Edit any wording if needed.</li>
+        <li>
+          Select <span className="font-medium">ONE</span> system dynamic as your primary
+          entry point.
+        </li>
+        <li>
+          When you&apos;re ready, select{" "}
+          <span className="font-medium">&quot;Confirm Entry Point&quot;</span> to move to the
+          next step.
+        </li>
+      </ol>
+    </div>
+    <p className="text-text-secondary text-xs">
+      Note: Once you confirm, the System Map will become read-only and can&apos;t be edited
+      further.
+    </p>
+  </div>
+);
+
+// Static content for Behavioural Objective section
+const BehaviouralObjectiveContent = () => (
+  <div className="space-y-4">
+    <p>
+      Great work! Now let&apos;s define the Behavioural Objective for your campaign.
+    </p>
+    <div>
+      <span className="font-medium">Purpose:</span> The Behavioural Objective defines the
+      specific behaviour change you want to achieve. It connects the entry point you selected
+      in the System Map to a measurable, actionable goal.
+    </div>
+    <div>
+      <p className="font-medium mb-2">What&apos;s Next:</p>
+      <ol className="list-decimal list-inside space-y-2">
+        <li>Review the suggested behavioural objective.</li>
+        <li>Edit the wording to match your campaign goals.</li>
+        <li>
+          When you&apos;re ready, select{" "}
+          <span className="font-medium">&quot;Confirm Behavioural Objective&quot;</span> to
+          move to the next step.
+        </li>
+      </ol>
+    </div>
+    <p className="text-text-secondary text-xs">
+      Note: Once you confirm, the Behavioural Objective will become read-only and can&apos;t
+      be edited further.
     </p>
   </div>
 );
@@ -107,6 +173,26 @@ export function ProgressPanel({ sections, onToggleSection }: ProgressPanelProps)
             isExpanded={sections.researchInsights.isExpanded}
             content={<ResearchInsightsContent />}
             onToggle={() => onToggleSection?.("researchInsights")}
+          />
+        )}
+        {/* Only show System Map after Research Insights is complete */}
+        {sections.researchInsights.status === "complete" && (
+          <ProgressPanelSection
+            title="System Map"
+            status={sections.systemMap.status}
+            isExpanded={sections.systemMap.isExpanded}
+            content={<SystemMapContent />}
+            onToggle={() => onToggleSection?.("systemMap")}
+          />
+        )}
+        {/* Only show Behavioural Objective after System Map is complete */}
+        {sections.systemMap.status === "complete" && (
+          <ProgressPanelSection
+            title="Behavioural Objective"
+            status={sections.behaviouralObjective.status}
+            isExpanded={sections.behaviouralObjective.isExpanded}
+            content={<BehaviouralObjectiveContent />}
+            onToggle={() => onToggleSection?.("behaviouralObjective")}
           />
         )}
       </div>
