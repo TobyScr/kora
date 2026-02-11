@@ -9,6 +9,7 @@ import { ChatInput } from "@/components/ChatInput/ChatInput";
 import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
 import { ResearchInsightsSection } from "@/components/ResearchInsights";
 import { SystemMapSection } from "@/components/SystemMap";
+import { BehaviouralObjectiveSection } from "@/components/BehaviouralObjective";
 import { Button } from "@/components/Button/Button";
 import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
@@ -88,7 +89,10 @@ export default function BriefPage() {
   const [cardState, setCardState] = useState<CardState>("filled");
   const [briefOverviewExpanded, setBriefOverviewExpanded] = useState(true);
   const [researchInsightsConfirmed, setResearchInsightsConfirmed] = useState(false);
+  const [systemMapConfirmed, setSystemMapConfirmed] = useState(false);
   const [systemMapExpanded, setSystemMapExpanded] = useState(true);
+  const [behaviouralObjectiveExpanded, setBehaviouralObjectiveExpanded] = useState(true);
+  const [selectedEntryPoint, setSelectedEntryPoint] = useState<{ number: number; title: string } | null>(null);
   const [progressSections, setProgressSections] = useState<ProgressSections>({
     briefOverview: { status: "in-progress", isExpanded: true },
     researchInsights: { status: "in-progress", isExpanded: false },
@@ -98,6 +102,7 @@ export default function BriefPage() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const researchInsightsRef = useRef<HTMLDivElement>(null);
   const systemMapRef = useRef<HTMLDivElement>(null);
+  const behaviouralObjectiveRef = useRef<HTMLDivElement>(null);
 
   // Check if user has sent at least one message
   const hasUserMessage = messages.some((m) => m.variant === "user");
@@ -189,9 +194,13 @@ export default function BriefPage() {
             <SubsectionItem
               label="Behavioural Objective"
               isActive={progressSections.behaviouralObjective.status === "in-progress" && progressSections.systemMap.status === "complete"}
+              isComplete={progressSections.behaviouralObjective.status === "complete"}
               isLocked={progressSections.systemMap.status !== "complete"}
             />
-            <SubsectionItem label="Assumption testing" isLocked />
+            <SubsectionItem
+              label="Assumption testing"
+              isLocked={progressSections.behaviouralObjective.status !== "complete"}
+            />
             <SubsectionItem label="COM-B & Personas" isLocked />
           </div>
           {/* Design - locked */}
@@ -297,12 +306,41 @@ export default function BriefPage() {
                   <SystemMapSection
                     isExpanded={systemMapExpanded}
                     onToggleExpand={() => setSystemMapExpanded(!systemMapExpanded)}
-                    onConfirm={() => {
+                    onConfirm={(entryPoint) => {
                       setSystemMapExpanded(false);
+                      setSystemMapConfirmed(true);
+                      setSelectedEntryPoint(entryPoint);
+                      setBehaviouralObjectiveExpanded(true);
                       setProgressSections((prev) => ({
                         ...prev,
                         systemMap: { status: "complete", isExpanded: false },
                         behaviouralObjective: { status: "in-progress", isExpanded: true },
+                      }));
+                      setTimeout(() => {
+                        behaviouralObjectiveRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                  />
+                </div>
+              )}
+              {/* Behavioural Objective - shown after System Map is confirmed */}
+              {systemMapConfirmed && (
+                <div ref={behaviouralObjectiveRef}>
+                  <BehaviouralObjectiveSection
+                    isExpanded={behaviouralObjectiveExpanded}
+                    onToggleExpand={() => setBehaviouralObjectiveExpanded(!behaviouralObjectiveExpanded)}
+                    selectedChallenge={selectedEntryPoint}
+                    onViewEntryPoint={() => {
+                      setSystemMapExpanded(true);
+                      setTimeout(() => {
+                        systemMapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                    onConfirm={() => {
+                      setBehaviouralObjectiveExpanded(false);
+                      setProgressSections((prev) => ({
+                        ...prev,
+                        behaviouralObjective: { status: "complete", isExpanded: false },
                       }));
                     }}
                   />
