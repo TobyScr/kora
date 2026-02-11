@@ -2,19 +2,26 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { SystemMapCard } from "./SystemMapCard";
-import { SystemMapSkeleton } from "./SystemMapSkeleton";
-import { GeneratingCardSkeleton } from "./GeneratingCardSkeleton";
-import { EditChallengeModal } from "./EditChallengeModal";
-import { DeleteChallengeModal } from "./DeleteChallengeModal";
-import { AddChallengeModal } from "./AddChallengeModal";
+import { BehaviouralObjectiveCard } from "./BehaviouralObjectiveCard";
+import { BehaviouralObjectiveSkeleton } from "./BehaviouralObjectiveSkeleton";
+import { GeneratingObjectiveSkeleton } from "./GeneratingObjectiveSkeleton";
+import { EditObjectiveModal } from "./EditObjectiveModal";
+import { DeleteObjectiveModal } from "./DeleteObjectiveModal";
+import { AddObjectiveModal } from "./AddObjectiveModal";
 import { useToast } from "../Toast";
-import type { Challenge, ChallengeColor, SystemMapState } from "./types";
+import type { Objective, ObjectiveColor, BehaviouralObjectiveState } from "./types";
 
-type SystemMapSectionProps = {
-  onConfirm?: (entryPoint: { number: number; title: string }) => void;
+type SelectedChallenge = {
+  number: number;
+  title: string;
+};
+
+type BehaviouralObjectiveSectionProps = {
+  onConfirm?: () => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
+  selectedChallenge?: SelectedChallenge | null;
+  onViewEntryPoint?: () => void;
 };
 
 // Icons
@@ -106,134 +113,74 @@ const LoadingSpinner = () => (
   </svg>
 );
 
-// Color palette for challenge badges
-const COLORS: ChallengeColor[] = [
+// Color palette for objective badges
+const COLORS: ObjectiveColor[] = [
   "teal", "cyan", "blue", "indigo", "violet", "amber", "rose", "emerald",
 ];
 
-function getColorForIndex(index: number): ChallengeColor {
+function getColorForIndex(index: number): ObjectiveColor {
   return COLORS[index % COLORS.length];
 }
 
-// Simulated AI-generated challenge content
-const AI_CHALLENGES = [
-  {
-    title: "Digital literacy gaps in vulnerable populations",
-    description:
-      "Lack of critical media literacy skills among young people makes them more susceptible to manipulative content, as they struggle to distinguish between genuine information and strategically crafted propaganda.",
-  },
-  {
-    title: "Monetisation of outrage and division",
-    description:
-      "Content creators and influencers profit from engagement-driven algorithms that reward provocative and divisive content, creating financial incentives to produce increasingly extreme material.",
-  },
-  {
-    title: "Social isolation as a vulnerability factor",
-    description:
-      "Increasing rates of social disconnection among young men create a ready audience for online communities that promise belonging, purpose, and a framework for understanding their frustrations.",
-  },
-];
-
-// Sample challenge data
-const SAMPLE_CHALLENGES: Challenge[] = [
+// Sample objective data
+const SAMPLE_OBJECTIVES: Objective[] = [
   {
     id: "1",
     number: 1,
-    title: "Algorithmic amplification of emotionally charged content",
-    description:
-      "Platform algorithms disproportionately surface content that triggers strong emotional responses, making extremist messaging more visible to vulnerable youth who are seeking validation and identity.",
+    title: "Increase critical evaluation of online content among young men aged 16-25 who are active on social media platforms",
     color: "teal",
   },
   {
     id: "2",
     number: 2,
-    title: "Identity repair through group belonging",
-    description:
-      "Young men experiencing loneliness, rejection, or economic frustration find community in manosphere spaces that reframe personal grievances as collective male struggles against societal change.",
+    title: "Reduce sharing of misogynistic content by young men who engage with manosphere communities on platforms like TikTok and YouTube",
     color: "cyan",
   },
   {
     id: "3",
     number: 3,
-    title: "Erosion of trust in mainstream institutions",
-    description:
-      "Distrust of traditional media, educational institutions, and government creates an information vacuum that is filled by alternative influencers who position themselves as truth-tellers.",
+    title: "Increase help-seeking behaviour among socially isolated young men experiencing economic anxiety and identity frustration",
     color: "blue",
-  },
-  {
-    id: "4",
-    number: 4,
-    title: "Gamification of misogynistic engagement",
-    description:
-      "Manosphere communities use gamified elements like ranking systems, achievement badges, and competitive dynamics to encourage deeper engagement with harmful ideologies.",
-    color: "indigo",
-  },
-  {
-    id: "5",
-    number: 5,
-    title: "Economic anxiety as a radicalisation gateway",
-    description:
-      "Financial instability and perceived lack of opportunity create fertile ground for recruitment, as groups offer both material support and a sense of purpose to struggling young men.",
-    color: "violet",
-  },
-  {
-    id: "6",
-    number: 6,
-    title: "Peer pressure and social proof dynamics",
-    description:
-      "The visibility of peers engaging with manosphere content creates normalisation effects, where harmful views become seen as common and acceptable within social circles.",
-    color: "amber",
-  },
-  {
-    id: "7",
-    number: 7,
-    title: "Absence of compelling counter-narratives",
-    description:
-      "Current counter-messaging efforts lack the emotional resonance and production quality of manosphere content, failing to compete for attention in the same digital spaces.",
-    color: "rose",
-  },
-  {
-    id: "8",
-    number: 8,
-    title: "Cross-platform recruitment funnels",
-    description:
-      "Recruitment operates across multiple platforms, with initial contact on mainstream sites like TikTok and YouTube funnelling users to more extreme content on encrypted or less-moderated platforms.",
-    color: "emerald",
   },
 ];
 
-const LOADING_DELAY_MS = 2000;
+// Simulated AI-generated objectives
+const AI_OBJECTIVES = [
+  "Strengthen peer reporting of harmful recruitment content by bystanders in online gaming and social media spaces",
+  "Increase participation in constructive online communities among young men who are at risk of radicalisation through digital platforms",
+  "Build resilience against algorithmic manipulation among vulnerable youth by promoting awareness of engagement-driven content tactics",
+];
 
-// Generation simulation timing
+const LOADING_DELAY_MS = 2000;
 const GENERATION_DURATION_MS = 4000;
 const PROGRESS_INTERVAL_MS = 100;
 
 type GeneratingCard = {
   id: string;
   number: number;
-  color: ChallengeColor;
+  color: ObjectiveColor;
   progress: number;
 };
 
-export function SystemMapSection({
+export function BehaviouralObjectiveSection({
   onConfirm,
   isExpanded: controlledExpanded,
   onToggleExpand,
-}: SystemMapSectionProps) {
-  // Local state for uncontrolled mode
+  selectedChallenge,
+  onViewEntryPoint,
+}: BehaviouralObjectiveSectionProps) {
   const [localExpanded, setLocalExpanded] = useState(true);
   const isExpanded = controlledExpanded ?? localExpanded;
 
   // Data state
-  const [mapState, setMapState] = useState<SystemMapState>("loading");
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
-  const [selectedEntryPoint, setSelectedEntryPoint] = useState<string | null>(null);
-  const [showDescriptions, setShowDescriptions] = useState(false);
+  const [sectionState, setSectionState] = useState<BehaviouralObjectiveState>("loading");
+  const [objectives, setObjectives] = useState<Objective[]>([]);
+  const [selectedObjective, setSelectedObjective] = useState<string | null>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   // Edit/Delete modal state
-  const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(null);
-  const [deletingChallenge, setDeletingChallenge] = useState<Challenge | null>(null);
+  const [editingObjective, setEditingObjective] = useState<Objective | null>(null);
+  const [deletingObjective, setDeletingObjective] = useState<Objective | null>(null);
 
   // Add more state
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
@@ -247,8 +194,8 @@ export function SystemMapSection({
   // Simulate loading
   useEffect(() => {
     const timer = setTimeout(() => {
-      setChallenges(SAMPLE_CHALLENGES);
-      setMapState("loaded");
+      setObjectives(SAMPLE_OBJECTIVES);
+      setSectionState("loaded");
     }, LOADING_DELAY_MS);
 
     return () => clearTimeout(timer);
@@ -285,22 +232,19 @@ export function SystemMapSection({
       if (progress >= 100) {
         clearInterval(interval);
 
-        // Pick AI content
-        const aiContent = AI_CHALLENGES[aiCounterRef.current % AI_CHALLENGES.length];
+        const aiContent = AI_OBJECTIVES[aiCounterRef.current % AI_OBJECTIVES.length];
         aiCounterRef.current += 1;
 
-        // Replace skeleton with real challenge
-        const newChallenge: Challenge = {
+        const newObjective: Objective = {
           id: generatingCard.id,
           number: generatingCard.number,
-          title: aiContent.title,
-          description: aiContent.description,
+          title: aiContent,
           color: generatingCard.color,
         };
 
-        setChallenges((prev) => [...prev, newChallenge]);
+        setObjectives((prev) => [...prev, newObjective]);
         setGeneratingCard(null);
-        showToast("Challenge saved successfully");
+        showToast("Objective saved successfully");
       }
     }, PROGRESS_INTERVAL_MS);
 
@@ -315,67 +259,62 @@ export function SystemMapSection({
     }
   };
 
-  const handleSelectEntryPoint = (id: string) => {
+  const handleSelect = (id: string) => {
     if (isConfirmed) return;
-    setSelectedEntryPoint(id === selectedEntryPoint ? null : id);
+    setSelectedObjective(id === selectedObjective ? null : id);
   };
 
   const handleConfirm = () => {
-    if (!selectedEntryPoint) return;
+    if (!selectedObjective) return;
     setIsConfirmed(true);
-    const selected = challenges.find((c) => c.id === selectedEntryPoint);
-    if (selected) {
-      onConfirm?.({ number: selected.number, title: selected.title });
-    }
+    showToast("Behavioural Objective confirmed successfully");
+    onConfirm?.();
   };
 
   // Edit handlers
-  const handleEditSave = (updatedChallenge: Challenge) => {
-    setChallenges((prev) =>
-      prev.map((c) => (c.id === updatedChallenge.id ? updatedChallenge : c))
+  const handleEditSave = (updatedObjective: Objective) => {
+    setObjectives((prev) =>
+      prev.map((o) => (o.id === updatedObjective.id ? updatedObjective : o))
     );
-    showToast("Challenge saved successfully");
+    showToast("Objective saved successfully");
   };
 
   // Delete handlers
   const handleDeleteConfirm = () => {
-    if (!deletingChallenge) return;
+    if (!deletingObjective) return;
 
-    // If the deleted challenge was the selected entry point, clear selection
-    if (selectedEntryPoint === deletingChallenge.id) {
-      setSelectedEntryPoint(null);
+    if (selectedObjective === deletingObjective.id) {
+      setSelectedObjective(null);
     }
 
-    // Remove the challenge and re-number remaining ones sequentially
-    setChallenges((prev) => {
-      const filtered = prev.filter((c) => c.id !== deletingChallenge.id);
-      return filtered.map((c, index) => ({
-        ...c,
+    setObjectives((prev) => {
+      const filtered = prev.filter((o) => o.id !== deletingObjective.id);
+      return filtered.map((o, index) => ({
+        ...o,
         number: index + 1,
       }));
     });
 
-    showToast("Challenge deleted successfully");
+    showToast("Objective deleted successfully");
   };
 
   // Manual add handler
-  const handleManualAdd = (title: string, description: string) => {
-    const nextNumber = challenges.length + (generatingCard ? 2 : 1);
-    const newChallenge: Challenge = {
+  const handleManualAdd = (title: string) => {
+    const nextNumber = objectives.length + (generatingCard ? 2 : 1);
+    const newObjective: Objective = {
       id: `manual-${Date.now()}`,
       number: nextNumber,
       title,
-      description,
       color: getColorForIndex(nextNumber - 1),
     };
-    setChallenges((prev) => [...prev, newChallenge]);
-    showToast("Challenge saved successfully");
+    setObjectives((prev) => [...prev, newObjective]);
+    showToast("Objective saved successfully");
   };
 
   // AI generation handler
   const handleGenerateByKora = () => {
     setIsAddMenuOpen(false);
-    const nextNumber = challenges.length + 1;
+    const nextNumber = objectives.length + 1;
     const newCard: GeneratingCard = {
       id: `ai-${Date.now()}`,
       number: nextNumber,
@@ -385,7 +324,7 @@ export function SystemMapSection({
     setGeneratingCard(newCard);
   };
 
-  const isLoaded = mapState === "loaded";
+  const isLoaded = sectionState === "loaded";
 
   return (
     <div className="w-full max-w-[800px] mx-auto bg-background-surface-0 rounded-[var(--radius-xl)] p-6">
@@ -396,86 +335,83 @@ export function SystemMapSection({
           className="flex items-center gap-2 text-text-primary cursor-pointer"
         >
           <ChevronIcon isExpanded={isExpanded} />
-          <span className="text-lg font-medium">System Map</span>
+          <span className="text-lg font-medium">Behavioural Objective</span>
           {isConfirmed && <GreenCheckIcon />}
         </button>
 
-        {/* Confirm button - hidden when confirmed */}
         {isLoaded && !isConfirmed && (
           <button
             onClick={handleConfirm}
-            disabled={!selectedEntryPoint}
+            disabled={!selectedObjective}
             className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
-              selectedEntryPoint
+              selectedObjective
                 ? "text-text-inverse bg-button-solid hover:opacity-90"
                 : "text-text-tertiary bg-stroke-soft cursor-not-allowed"
             }`}
           >
-            Confirm Entry Point
+            Confirm Behavioral Objective
           </button>
         )}
       </div>
 
       {isExpanded && (
         <>
-          {/* Subheader with toggle - hidden when confirmed */}
-          {isLoaded && !isConfirmed && (
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-sm font-semibold text-text-primary">
-                  Refined challenges
-                </h3>
-                <p className="text-xs text-text-secondary mt-0.5">
-                  Select one as entry point
-                </p>
-              </div>
-
-              {/* Show Description toggle */}
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <span className="text-xs font-medium text-text-secondary">
-                  Show Description
+          {/* Selected Challenge display */}
+          {selectedChallenge && (
+            <div className="flex items-center justify-between bg-background-surface border border-stroke-default rounded-[var(--radius-lg)] px-4 py-3 mb-4">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-sm font-medium text-text-secondary shrink-0">
+                  Selected Challenge:
                 </span>
+                <span className="text-sm font-medium text-text-primary truncate">
+                  {selectedChallenge.number}. {selectedChallenge.title}
+                </span>
+              </div>
+              {onViewEntryPoint && (
                 <button
-                  role="switch"
-                  aria-checked={showDescriptions}
-                  onClick={() => setShowDescriptions(!showDescriptions)}
-                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                    showDescriptions ? "bg-button-solid" : "bg-stroke-default"
-                  }`}
+                  onClick={onViewEntryPoint}
+                  className="text-sm font-medium text-button-solid hover:underline shrink-0 ml-3"
                 >
-                  <span
-                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                      showDescriptions ? "translate-x-4" : "translate-x-0.5"
-                    }`}
-                  />
+                  View
                 </button>
-              </label>
+              )}
+            </div>
+          )}
+
+          {/* Subheader - hidden when confirmed */}
+          {isLoaded && !isConfirmed && (
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-text-primary">
+                Behavioral Objectives Options
+              </h3>
+              <p className="text-xs text-text-secondary mt-0.5">
+                Choose One
+              </p>
             </div>
           )}
 
           {/* Content */}
           {!isLoaded ? (
-            <SystemMapSkeleton />
+            <BehaviouralObjectiveSkeleton />
           ) : (
             <>
-              {/* Challenge cards grid */}
+              {/* Objective cards grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {challenges.map((challenge) => (
-                  <SystemMapCard
-                    key={challenge.id}
-                    challenge={challenge}
-                    isEntryPoint={selectedEntryPoint === challenge.id}
-                    onSelectEntryPoint={handleSelectEntryPoint}
-                    showDescription={showDescriptions}
+                {objectives.map((objective) => (
+                  <BehaviouralObjectiveCard
+                    key={objective.id}
+                    objective={objective}
+                    isSelected={selectedObjective === objective.id}
+                    onSelect={handleSelect}
                     isConfirmed={isConfirmed}
-                    onEdit={() => setEditingChallenge(challenge)}
-                    onDelete={() => setDeletingChallenge(challenge)}
+                    onEdit={() => setEditingObjective(objective)}
+                    onDelete={() => setDeletingObjective(objective)}
                   />
                 ))}
 
                 {/* AI generating skeleton card */}
                 {generatingCard && (
-                  <GeneratingCardSkeleton
+                  <GeneratingObjectiveSkeleton
                     number={generatingCard.number}
                     color={generatingCard.color}
                   />
@@ -494,7 +430,6 @@ export function SystemMapSection({
                     Add more
                   </button>
 
-                  {/* Dropdown menu */}
                   {isAddMenuOpen && (
                     <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 bg-white border border-stroke-default rounded-lg shadow-lg z-10 overflow-hidden">
                       <button
@@ -531,7 +466,7 @@ export function SystemMapSection({
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm font-medium text-text-primary">
-                  Generating Challenge
+                  Generating Objective
                 </span>
                 <span className="text-xs font-medium text-text-secondary">
                   {generatingCard.progress}%
@@ -548,23 +483,23 @@ export function SystemMapSection({
           document.body
         )}
 
-      {/* Edit Challenge Modal */}
-      <EditChallengeModal
-        isOpen={editingChallenge !== null}
-        onClose={() => setEditingChallenge(null)}
-        challenge={editingChallenge}
+      {/* Edit Objective Modal */}
+      <EditObjectiveModal
+        isOpen={editingObjective !== null}
+        onClose={() => setEditingObjective(null)}
+        objective={editingObjective}
         onSave={handleEditSave}
       />
 
-      {/* Delete Challenge Modal */}
-      <DeleteChallengeModal
-        isOpen={deletingChallenge !== null}
-        onClose={() => setDeletingChallenge(null)}
+      {/* Delete Objective Modal */}
+      <DeleteObjectiveModal
+        isOpen={deletingObjective !== null}
+        onClose={() => setDeletingObjective(null)}
         onDelete={handleDeleteConfirm}
       />
 
-      {/* Add Challenge Modal */}
-      <AddChallengeModal
+      {/* Add Objective Modal */}
+      <AddObjectiveModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onAdd={handleManualAdd}
