@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TabBar } from "../TabBar/TabBar";
 import { ResearchAccordion } from "./ResearchAccordion";
 import { FileUploadZone } from "./FileUploadZone";
@@ -11,19 +11,29 @@ import { InsightsGeneratingState } from "./InsightsGeneratingState";
 import { EditInsightModal } from "./EditInsightModal";
 import { DeleteInsightModal } from "./DeleteInsightModal";
 import { useToast } from "../Toast";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/lib/api";
+import { xanoInsightToFrontend, frontendInsightToXanoCreate, frontendInsightToXanoPatch } from "@/lib/transforms/research";
+import type { XanoResearchInsight } from "@/lib/types/research";
+import type { Intervention } from "@/lib/types/intervention";
 import type {
   ResearchTab,
   ResearchFile,
   ResearchLink,
   Insight,
   InsightsState,
+  InsightColor,
 } from "./types";
 
 type ResearchInsightsSectionProps = {
+  interventionId: number;
   onConfirm?: () => void;
+  onLoadConfirmed?: () => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
 };
+
+// Colors cycle for mock-generated insights
+const INSIGHT_COLORS: InsightColor[] = ["teal", "cyan", "blue", "indigo"];
 
 // Icons
 const ChevronIcon = ({ isExpanded }: { isExpanded: boolean }) => (
@@ -219,88 +229,62 @@ const TABS = [
 
 // Sample generated prompt
 const SAMPLE_PROMPT = `Background of the Brief
-I am designing a campaign that aims to Prevent Young Men's Drift into the Manosphere as a growing number of adolescent and young adult men (ages 14—25) are being drawn into the manosphere — an online ecosystem of influencers and communities that promote misogynistic, anti-feminist, or hyper-masculine ideologies. These spaces often reframe grievances around loneliness, rejection, economic frustration, and male identity into antagonism toward women, social progress, or institutions.
+I am designing a campaign that aims to Prevent Young Men's Drift into the Manosphere as a growing number of adolescent and young adult men (ages 14\u201425) are being drawn into the manosphere \u2014 an online ecosystem of influencers and communities that promote misogynistic, anti-feminist, or hyper-masculine ideologies. These spaces often reframe grievances around loneliness, rejection, economic frustration, and male identity into antagonism toward women, social progress, or institutions.
 
 Problem Validation and Rapid Evidence Assessment
-• A deeper understanding of why manosphere messages stick
-• Narrative and emotional drivers behind engagement`;
+\u2022 A deeper understanding of why manosphere messages stick
+\u2022 Narrative and emotional drivers behind engagement`;
 
-// Sample insights with colors, descriptions, and sources
-const SAMPLE_INSIGHTS: Insight[] = [
+// Sample insights used by the mock "Generate" button only (N8N integration is a future phase)
+const MOCK_GENERATED_INSIGHTS: Omit<Insight, "id" | "number" | "color" | "isExpanded">[] = [
   {
-    id: "1",
-    number: 1,
     text: "Recruitment thrives on identity repair, not ideology.",
     description:
-      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth—especially migrants facing stigma in Russia",
+      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth\u2014especially migrants facing stigma in Russia",
     sources: ["Existing Research", "DeepResearch"],
-    color: "teal",
-    isExpanded: false,
   },
   {
-    id: "2",
-    number: 2,
     text: "Mistrust and fear of surveillance silence healthy discourse",
     description:
       "Young people in Central Asia are hesitant to discuss sensitive topics online due to perceived government monitoring, pushing conversations to encrypted platforms where extremist content thrives unchecked.",
     sources: ["Existing Research"],
-    color: "cyan",
-    isExpanded: false,
   },
   {
-    id: "3",
-    number: 3,
     text: "Mistrust and fear of surveillance silence healthy discourse",
     description:
       "Fear of being flagged by authorities creates a chilling effect on open discourse, making it harder to counter extremist narratives in public forums.",
     sources: ["DeepResearch"],
-    color: "blue",
-    isExpanded: false,
   },
   {
-    id: "4",
-    number: 4,
     text: "Mistrust and fear of surveillance silence healthy discourse",
     description:
-      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth—especially migrants facing stigma in Russia",
+      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth\u2014especially migrants facing stigma in Russia",
     sources: ["Existing Research"],
-    color: "teal",
-    isExpanded: false,
   },
   {
-    id: "5",
-    number: 5,
     text: "Mistrust and fear of surveillance silence healthy discourse",
     description:
       "Platform algorithms amplify emotionally charged content, making extremist messaging more visible to vulnerable youth seeking validation.",
     sources: ["DeepResearch"],
-    color: "indigo",
-    isExpanded: false,
   },
   {
-    id: "6",
-    number: 6,
     text: "Mistrust and fear of surveillance silence healthy discourse",
     description:
-      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth—especially migrants facing stigma in Russia",
+      "SKP content now uses Tajik/Uzbek/Russian to meet emotional needs for belonging, dignity, and recognition among socially disconnected youth\u2014especially migrants facing stigma in Russia",
     sources: ["Existing Research"],
-    color: "cyan",
-    isExpanded: false,
   },
   {
-    id: "7",
-    number: 7,
     text: "Recruitment thrives on identity repair, not ideology.",
     description:
       "Economic frustration and lack of opportunity create fertile ground for extremist recruitment, as groups offer both material support and a sense of purpose.",
     sources: ["Existing Research", "DeepResearch"],
-    color: "teal",
-    isExpanded: false,
   },
 ];
 
 export function ResearchInsightsSection({
+  interventionId,
   onConfirm,
+  onLoadConfirmed,
   isExpanded: controlledExpanded,
   onToggleExpand,
 }: ResearchInsightsSectionProps) {
@@ -309,13 +293,14 @@ export function ResearchInsightsSection({
   const isExpanded = controlledExpanded ?? localExpanded;
 
   const [activeTab, setActiveTab] = useState<ResearchTab>("existing");
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Existing Research state
+  // Existing Research state (local-only, no Xano wiring)
   const [textFindings, setTextFindings] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<ResearchFile[]>([]);
   const [links, setLinks] = useState<ResearchLink[]>([{ id: "1", url: "" }]);
 
-  // DeepResearch state
+  // DeepResearch state (local-only)
   const [deepResearchFiles, setDeepResearchFiles] = useState<ResearchFile[]>(
     []
   );
@@ -335,7 +320,55 @@ export function ResearchInsightsSection({
   // Toast
   const { showToast } = useToast();
 
-  // Check if any research has been added
+  // Fetch insights from API on mount
+  const fetchInsights = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await apiGet<XanoResearchInsight[]>(
+        `/api/interventions/${interventionId}/research/insights`
+      );
+
+      if (response && Array.isArray(response) && response.length > 0) {
+        const transformed = response.map((item, index) =>
+          xanoInsightToFrontend(item, index)
+        );
+        setInsights(transformed);
+        setInsightsState("generated");
+      } else {
+        setInsights([]);
+        setInsightsState("empty");
+      }
+    } catch {
+      // No insights yet or error — start empty
+      setInsights([]);
+      setInsightsState("empty");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [interventionId]);
+
+  // Check confirmation state via intervention current_step
+  const checkConfirmation = useCallback(async () => {
+    try {
+      const interventionData = await apiGet<Intervention>(
+        `/api/interventions/${interventionId}`
+      );
+      // Research Insights is workflow step 2; after confirm, current_step becomes 3
+      if (interventionData && interventionData.current_step >= 3) {
+        setIsConfirmed(true);
+        onLoadConfirmed?.();
+      }
+    } catch {
+      // Could not check — leave unconfirmed
+    }
+  }, [interventionId, onLoadConfirmed]);
+
+  useEffect(() => {
+    fetchInsights();
+    checkConfirmation();
+  }, [fetchInsights, checkConfirmation]);
+
+  // Check if any research has been added (local-only tabs)
   const hasResearch =
     textFindings.trim() !== "" ||
     uploadedFiles.length > 0 ||
@@ -375,12 +408,33 @@ export function ResearchInsightsSection({
     setActiveTab("existing");
   };
 
+  // Mock generate — stays as setTimeout with sample data (N8N is a future phase)
   const handleGenerateInsights = () => {
     setInsightsState("generating");
-    // Simulate generation delay
-    setTimeout(() => {
-      setInsights(SAMPLE_INSIGHTS);
-      setInsightsState("generated");
+    setTimeout(async () => {
+      // Create insights in Xano via POST, then refresh from server
+      try {
+        for (const mockInsight of MOCK_GENERATED_INSIGHTS) {
+          await apiPost(
+            `/api/interventions/${interventionId}/research/insights`,
+            frontendInsightToXanoCreate(mockInsight, interventionId)
+          );
+        }
+        // Refresh from server to get real IDs
+        await fetchInsights();
+      } catch {
+        // Fallback: show locally with temp IDs
+        const tempInsights: Insight[] = MOCK_GENERATED_INSIGHTS.map((m, i) => ({
+          ...m,
+          id: `temp-${Date.now()}-${i}`,
+          number: i + 1,
+          color: INSIGHT_COLORS[i % INSIGHT_COLORS.length],
+          isExpanded: false,
+        }));
+        setInsights(tempInsights);
+        setInsightsState("generated");
+        showToast("Generated locally — could not save to server", "error");
+      }
     }, 2000);
   };
 
@@ -392,11 +446,40 @@ export function ResearchInsightsSection({
     );
   };
 
+  // Mock regenerate — stays as setTimeout with sample data (N8N is a future phase)
   const handleRegenerate = () => {
     setInsightsState("generating");
-    setTimeout(() => {
-      setInsights(SAMPLE_INSIGHTS);
-      setInsightsState("generated");
+    setTimeout(async () => {
+      // Delete all existing insights first, then create new ones
+      try {
+        for (const existing of insights) {
+          try {
+            await apiDelete(
+              `/api/interventions/${interventionId}/research/insights/${existing.id}`
+            );
+          } catch {
+            // Skip if already deleted or temp ID
+          }
+        }
+        for (const mockInsight of MOCK_GENERATED_INSIGHTS) {
+          await apiPost(
+            `/api/interventions/${interventionId}/research/insights`,
+            frontendInsightToXanoCreate(mockInsight, interventionId)
+          );
+        }
+        await fetchInsights();
+      } catch {
+        const tempInsights: Insight[] = MOCK_GENERATED_INSIGHTS.map((m, i) => ({
+          ...m,
+          id: `temp-${Date.now()}-${i}`,
+          number: i + 1,
+          color: INSIGHT_COLORS[i % INSIGHT_COLORS.length],
+          isExpanded: false,
+        }));
+        setInsights(tempInsights);
+        setInsightsState("generated");
+        showToast("Regenerated locally — could not save to server", "error");
+      }
     }, 2000);
   };
 
@@ -406,11 +489,29 @@ export function ResearchInsightsSection({
     setEditModalOpen(true);
   };
 
-  const handleSaveInsight = (updatedInsight: Insight) => {
+  const handleSaveInsight = async (updatedInsight: Insight) => {
+    // Optimistic update
     setInsights(
       insights.map((i) => (i.id === updatedInsight.id ? updatedInsight : i))
     );
-    showToast("Insight saved", "success");
+
+    try {
+      const patchBody = frontendInsightToXanoPatch({
+        text: updatedInsight.text,
+        description: updatedInsight.description,
+        sources: updatedInsight.sources,
+      });
+
+      await apiPatch(
+        `/api/interventions/${interventionId}/research/insights/${updatedInsight.id}`,
+        patchBody
+      );
+      showToast("Insight saved", "success");
+    } catch {
+      showToast("Failed to save insight", "error");
+      // Re-fetch to restore server state
+      fetchInsights();
+    }
   };
 
   // Delete insight handlers
@@ -419,29 +520,76 @@ export function ResearchInsightsSection({
     setDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!insightToDelete) return;
 
-    // Remove the insight and renumber remaining ones
+    // Optimistic update: remove and renumber
     const filteredInsights = insights.filter((i) => i.id !== insightToDelete);
     const renumberedInsights = filteredInsights.map((insight, index) => ({
       ...insight,
       number: index + 1,
     }));
-
     setInsights(renumberedInsights);
+
+    // If all insights deleted, go back to empty state
+    if (renumberedInsights.length === 0) {
+      setInsightsState("empty");
+    }
+
+    const deletingId = insightToDelete;
     setInsightToDelete(null);
-    showToast("Insight deleted", "success");
+
+    try {
+      await apiDelete(
+        `/api/interventions/${interventionId}/research/insights/${deletingId}`
+      );
+      showToast("Insight deleted", "success");
+    } catch {
+      showToast("Failed to delete insight", "error");
+      // Re-fetch to restore server state
+      fetchInsights();
+    }
+  };
+
+  // Add more insight handler
+  const handleAddInsight = async () => {
+    try {
+      const newInsightBody = frontendInsightToXanoCreate(
+        { text: "New insight", description: "", sources: [] },
+        interventionId
+      );
+
+      await apiPost(
+        `/api/interventions/${interventionId}/research/insights`,
+        newInsightBody
+      );
+
+      // Refresh from server to get real ID
+      await fetchInsights();
+      showToast("Insight added", "success");
+    } catch {
+      showToast("Failed to add insight", "error");
+    }
   };
 
   // Confirm handler
-  const handleConfirmInsights = () => {
-    setIsConfirmed(true);
-    onConfirm?.();
+  const handleConfirmInsights = async () => {
+    try {
+      await apiPost(
+        `/api/interventions/${interventionId}/research/confirm`,
+        { intervention_id: interventionId }
+      );
+      setIsConfirmed(true);
+      showToast("Research Insights confirmed", "success");
+      onConfirm?.();
+    } catch {
+      showToast("Failed to confirm research insights", "error");
+    }
   };
 
-  // Determine insights state based on research
+  // Determine insights state based on research and loading
   const currentInsightsState = (): InsightsState => {
+    if (isLoading) return "empty";
     if (insightsState === "generating") return "generating";
     if (insightsState === "generated" && insights.length > 0) return "generated";
     if (hasResearch) return "ready";
@@ -631,13 +779,15 @@ export function ResearchInsightsSection({
                         <button className="flex items-center gap-1 px-3 py-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors">
                           <DownloadIcon />
                         </button>
-                        <button
-                          onClick={handleRegenerate}
-                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors"
-                        >
-                          <RefreshIcon />
-                          Regenerate
-                        </button>
+                        {!isConfirmed && (
+                          <button
+                            onClick={handleRegenerate}
+                            className="flex items-center gap-1 px-3 py-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors"
+                          >
+                            <RefreshIcon />
+                            Regenerate
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -655,11 +805,16 @@ export function ResearchInsightsSection({
                       ))}
                     </div>
 
-                    {/* Add More */}
-                    <button className="flex items-center justify-center gap-2 w-full py-3 mt-2 text-sm text-text-primary font-medium border border-stroke-default rounded-lg hover:bg-stroke-soft/30 transition-colors">
-                      <PlusIcon />
-                      Add more
-                    </button>
+                    {/* Add More - only when not confirmed */}
+                    {!isConfirmed && (
+                      <button
+                        onClick={handleAddInsight}
+                        className="flex items-center justify-center gap-2 w-full py-3 mt-2 text-sm text-text-primary font-medium border border-stroke-default rounded-lg hover:bg-stroke-soft/30 transition-colors"
+                      >
+                        <PlusIcon />
+                        Add more
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

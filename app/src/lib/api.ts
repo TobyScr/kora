@@ -38,6 +38,46 @@ export async function apiGet<T = Record<string, unknown>>(
   return data as T;
 }
 
+export async function apiPatch<T = Record<string, unknown>>(
+  path: string,
+  body: Record<string, unknown>
+): Promise<T> {
+  const response = await fetch(path, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const patchData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(patchData.error || patchData.message || "Request failed");
+  }
+
+  return patchData as T;
+}
+
+export async function apiDelete<T = Record<string, unknown>>(
+  path: string
+): Promise<T> {
+  const response = await fetch(path, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const deleteData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(deleteData.error || deleteData.message || "Request failed");
+  }
+
+  return deleteData as T;
+}
+
 export async function apiPut<T = Record<string, unknown>>(
   path: string,
   body: Record<string, unknown>

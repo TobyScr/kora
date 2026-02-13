@@ -214,6 +214,17 @@ export default function BriefPage() {
     }));
   }, []);
 
+  const handleResearchLoadedConfirmed = useCallback(() => {
+    setResearchInsightsConfirmed(true);
+    setBriefOverviewExpanded(false);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "complete", isExpanded: false },
+      systemMap: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
+
   const projectName = intervention?.project_name || "Loading...";
 
   const handleBackToIntervention = () => {
@@ -358,8 +369,10 @@ export default function BriefPage() {
               />
               <div ref={researchInsightsRef}>
                 <ResearchInsightsSection
+                  interventionId={Number(params.id)}
                   isExpanded={progressSections.researchInsights.isExpanded}
                   onToggleExpand={() => handleToggleSection("researchInsights")}
+                  onLoadConfirmed={handleResearchLoadedConfirmed}
                   onConfirm={() => {
                     setResearchInsightsConfirmed(true);
                     setSystemMapExpanded(true);

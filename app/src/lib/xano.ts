@@ -132,6 +132,27 @@ export async function xanoPatchJson(
   return data;
 }
 
+export async function xanoDeleteJson(
+  path: string,
+  token?: string
+): Promise<Record<string, unknown>> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  const response = await fetch(`${XANO_API_BASE}${path}`, {
+    method: "DELETE",
+    headers,
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || `Xano request failed with status ${response.status}`);
+  }
+  return data;
+}
+
 // --- Metadata API helpers (for tables with broken endpoints) ---
 
 const XANO_META_TOKEN = process.env.XANO_META_TOKEN;
