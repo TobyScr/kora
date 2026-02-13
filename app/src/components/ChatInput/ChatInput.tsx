@@ -6,6 +6,7 @@ type ChatInputProps = {
   placeholder?: string;
   onSubmit?: (message: string) => void;
   className?: string;
+  disabled?: boolean;
 };
 
 const SendIcon = () => (
@@ -24,6 +25,7 @@ export function ChatInput({
   placeholder = "Type here",
   onSubmit,
   className,
+  disabled = false,
 }: ChatInputProps) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,7 +39,7 @@ export function ChatInput({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (value.trim() && onSubmit) {
+    if (value.trim() && onSubmit && !disabled) {
       onSubmit(value.trim());
       setValue("");
     }
@@ -53,7 +55,7 @@ export function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex items-end gap-3 bg-background-surface p-4 rounded-[var(--radius-xxl)] w-full max-w-[668px] ${className ?? ""}`}
+      className={`flex items-end gap-3 bg-background-surface p-4 rounded-[var(--radius-xxl)] w-full max-w-[668px] transition-opacity ${disabled ? "opacity-50" : ""} ${className ?? ""}`}
     >
       <textarea
         ref={textareaRef}
@@ -61,14 +63,15 @@ export function ChatInput({
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        disabled={disabled}
         rows={1}
-        className="flex-1 h-8 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-8 tracking-[var(--letter-spacing-wide-s)] outline-none"
+        className="flex-1 h-8 min-h-[32px] max-h-[200px] resize-none bg-transparent text-sm text-text-primary placeholder:text-text-tertiary font-medium leading-8 tracking-[var(--letter-spacing-wide-s)] outline-none disabled:cursor-not-allowed"
       />
       <button
         type="submit"
-        disabled={!value.trim()}
+        disabled={disabled || !value.trim()}
         className={`flex items-center justify-center size-8 rounded-full text-text-inverse shrink-0 transition-colors ${
-          value.trim()
+          !disabled && value.trim()
             ? "bg-button-solid cursor-pointer"
             : "bg-button-solid/40 cursor-not-allowed"
         }`}
