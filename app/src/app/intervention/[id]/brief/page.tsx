@@ -13,7 +13,6 @@ import { BriefOverviewSection } from "@/components/BriefOverview";
 import { ResearchInsightsSection } from "@/components/ResearchInsights";
 import { SystemMapSection } from "@/components/SystemMap";
 import { BehaviouralObjectiveSection } from "@/components/BehaviouralObjective";
-import { Button } from "@/components/Button/Button";
 import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
 const FileIcon = () => (
@@ -39,18 +38,6 @@ const LockIcon = () => (
   </svg>
 );
 
-const ArrowRightIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M3 8h10m0 0L9 4m4 4L9 12"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 type Message = {
   id: string;
   variant: "ai" | "user";
@@ -71,20 +58,7 @@ type ProgressSections = {
   behaviouralObjective: SectionState;
 };
 
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    variant: "ai",
-    content: "We begin by gaining an initial understanding of your brief.\nWe'll walk you through 9 initial questions.\n\n**1. Who is the client or funder?** (e.g., \"government\"; \"foundation\")",
-  },
-];
-
-const aiResponses = [
-  "Thank you for that information! Let me process this and incorporate it into your brief.",
-  "Great, I've noted that down. Is there anything else you'd like to add?",
-  "Understood. This will help shape the direction of the campaign.",
-  "Perfect, that's very helpful context. Let me update the brief accordingly.",
-];
+const initialMessages: Message[] = [];
 
 export default function BriefPage() {
   const params = useParams();
@@ -100,16 +74,80 @@ export default function BriefPage() {
   const [systemMapExpanded, setSystemMapExpanded] = useState(true);
   const [behaviouralObjectiveExpanded, setBehaviouralObjectiveExpanded] = useState(true);
   const [selectedEntryPoint, setSelectedEntryPoint] = useState<{ number: number; title: string } | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [sessionId] = useState(() => crypto.randomUUID());
   const [progressSections, setProgressSections] = useState<ProgressSections>({
     briefOverview: { status: "in-progress", isExpanded: true },
     researchInsights: { status: "in-progress", isExpanded: false },
     systemMap: { status: "in-progress", isExpanded: false },
     behaviouralObjective: { status: "in-progress", isExpanded: false },
   });
+  // Render inline markdown (bold + italic) within a text segment
+  function renderInline(text: string, keyPrefix: string) {
+    return text.split(/(\*\*.*?\*\*|\*[^*]+?\*)/).map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <span key={`${keyPrefix}-${i}`} className="font-semibold text-[0.94rem] text-text-primary">{part.slice(2, -2)}</span>;
+      }
+      if (part.startsWith("*") && part.endsWith("*")) {
+        return <em key={`${keyPrefix}-${i}`} className="text-text-secondary text-[0.8rem] not-italic">{part.slice(1, -1)}</em>;
+      }
+      return <span key={`${keyPrefix}-${i}`}>{part}</span>;
+    });
+  }
+
+  // Render markdown content: handles ## headers, bullet lists, and inline formatting
+  function renderMarkdown(content: string) {
+    const lines = content.split("\n");
+    const elements: React.ReactNode[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      // ## Headers → bold section title with spacing
+      if (line.startsWith("## ")) {
+        elements.push(
+          <div key={`h-${i}`} className="font-semibold text-[0.94rem] text-text-primary mt-5 mb-1">
+            {line.replace(/^#+\s*/, "")}
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Bullet list items (- or *)
+      if (/^[\-\*]\s/.test(line)) {
+        const listItems: React.ReactNode[] = [];
+        while (i < lines.length && /^[\-\*]\s/.test(lines[i])) {
+          listItems.push(
+            <li key={`li-${i}`} className="text-[0.84rem] leading-relaxed">{renderInline(lines[i].replace(/^[\-\*]\s/, ""), `li-${i}`)}</li>
+          );
+          i++;
+        }
+        elements.push(<ul key={`ul-${i}`} className="list-disc pl-5 my-1.5 space-y-1">{listItems}</ul>);
+        continue;
+      }
+
+      // Empty lines → breathing room
+      if (line.trim() === "") {
+        elements.push(<div key={`sp-${i}`} className="h-3" />);
+        i++;
+        continue;
+      }
+
+      // Regular text → inline markdown
+      elements.push(<div key={`p-${i}`} className="leading-relaxed">{renderInline(line, `p-${i}`)}</div>);
+      i++;
+    }
+
+    return elements;
+  }
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const researchInsightsRef = useRef<HTMLDivElement>(null);
   const systemMapRef = useRef<HTMLDivElement>(null);
   const behaviouralObjectiveRef = useRef<HTMLDivElement>(null);
+  const greetingSentRef = useRef(false);
 
   // Fetch intervention data
   useEffect(() => {
@@ -148,8 +186,69 @@ export default function BriefPage() {
     checkBriefExists();
   }, [params.id]);
 
-  // Check if user has sent at least one message
-  const hasUserMessage = messages.some((m) => m.variant === "user");
+  // Auto-send greeting to N8N on first load in chat mode
+  useEffect(() => {
+    if (viewMode !== "chat" || greetingSentRef.current) return;
+    greetingSentRef.current = true;
+
+    const sendGreeting = async () => {
+      const aiMsgId = "ai-greeting-" + Date.now();
+      setMessages([{ id: aiMsgId, variant: "ai", content: "" }]);
+      setIsStreaming(true);
+
+      const controller = new AbortController();
+      const overallTimeout = setTimeout(() => controller.abort(), 90000);
+
+      try {
+        const response = await fetch(`/api/interventions/${params.id}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "Hello", sessionId }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) throw new Error("Greeting failed");
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let idleTimer: ReturnType<typeof setTimeout> | undefined;
+
+        const resetIdleTimer = () => {
+          clearTimeout(idleTimer);
+          idleTimer = setTimeout(() => {
+            reader?.cancel();
+          }, 30000);
+        };
+
+        if (reader) {
+          resetIdleTimer();
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            resetIdleTimer();
+            const chunk = decoder.decode(value, { stream: true });
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === aiMsgId ? { ...m, content: m.content + chunk } : m
+              )
+            );
+          }
+          clearTimeout(idleTimer);
+        }
+      } catch {
+        setMessages([{
+          id: aiMsgId,
+          variant: "ai",
+          content: "Kora took too long to respond. Please try sending your message again.",
+        }]);
+      } finally {
+        clearTimeout(overallTimeout);
+        setIsStreaming(false);
+      }
+    };
+
+    sendGreeting();
+  }, [viewMode, params.id, sessionId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -157,27 +256,82 @@ export default function BriefPage() {
     }
   }, [messages]);
 
-  const handleSendMessage = (content: string) => {
-    const userMessage: Message = {
-      id: "user-" + Date.now(),
-      variant: "user",
-      content,
-    };
-    setMessages((prev) => [...prev, userMessage]);
+  const handleSendMessage = async (content: string) => {
+    if (isStreaming) return;
 
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: "ai-" + Date.now(),
-        variant: "ai",
-        content: aiResponses[Math.floor(Math.random() * aiResponses.length)],
+    // Add user message
+    const userMsg: Message = { id: "user-" + Date.now(), variant: "user", content };
+    setMessages((prev) => [...prev, userMsg]);
+
+    // Add empty AI placeholder
+    const aiMsgId = "ai-" + Date.now();
+    setMessages((prev) => [...prev, { id: aiMsgId, variant: "ai", content: "" }]);
+    setIsStreaming(true);
+
+    const controller = new AbortController();
+    const overallTimeout = setTimeout(() => controller.abort(), 90000);
+
+    try {
+      const response = await fetch(`/api/interventions/${params.id}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: content, sessionId }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) throw new Error("Chat request failed");
+
+      // Read streamed plain-text response with idle timeout
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let idleTimer: ReturnType<typeof setTimeout> | undefined;
+
+      const resetIdleTimer = () => {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+          reader?.cancel();
+        }, 30000);
       };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 1000);
-  };
 
-  const handleGenerateOverview = () => {
-    setViewMode("overview");
+      if (reader) {
+        resetIdleTimer();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          resetIdleTimer();
+          const chunk = decoder.decode(value, { stream: true });
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === aiMsgId ? { ...m, content: m.content + chunk } : m
+            )
+          );
+        }
+        clearTimeout(idleTimer);
+      }
+
+      // After stream completes, check if brief was generated
+      try {
+        const brief = await apiGet<{ id?: number } | null>(
+          `/api/interventions/${params.id}/brief`
+        );
+        if (brief && brief.id) {
+          setViewMode("overview");
+        }
+      } catch {
+        // No brief yet — that's fine, chat continues
+      }
+    } catch {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === aiMsgId
+            ? { ...m, content: "Kora took too long to respond. Please try sending your message again." }
+            : m
+        )
+      );
+    } finally {
+      clearTimeout(overallTimeout);
+      setIsStreaming(false);
+    }
   };
 
   const handleToggleSection = (section: "briefOverview" | "researchInsights" | "systemMap" | "behaviouralObjective") => {
@@ -321,30 +475,10 @@ export default function BriefPage() {
                 {messages.map((message) => (
                   <ChatBubble key={message.id} variant={message.variant}>
                     <div className="whitespace-pre-wrap">
-                      {message.content.split(/(\*\*.*?\*\*)/).map((part, i) => {
-                        if (part.startsWith("**") && part.endsWith("**")) {
-                          return (
-                            <span key={i} className="font-medium">
-                              {part.slice(2, -2)}
-                            </span>
-                          );
-                        }
-                        return part;
-                      })}
+                      {renderMarkdown(message.content)}
                     </div>
                   </ChatBubble>
                 ))}
-
-                {/* Generate Brief Overview button - shown after user sends a message */}
-                {hasUserMessage && (
-                  <Button
-                    variant="solid"
-                    icon={<ArrowRightIcon />}
-                    onClick={handleGenerateOverview}
-                  >
-                    Generate Brief Overview
-                  </Button>
-                )}
               </div>
             </div>
 
@@ -353,7 +487,11 @@ export default function BriefPage() {
 
             {/* Input bar */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[668px] px-4 z-20">
-              <ChatInput placeholder="Type here" onSubmit={handleSendMessage} />
+              <ChatInput
+                placeholder={isStreaming ? "Kora is typing..." : "Type here"}
+                onSubmit={handleSendMessage}
+                disabled={isStreaming}
+              />
             </div>
           </>
         ) : (

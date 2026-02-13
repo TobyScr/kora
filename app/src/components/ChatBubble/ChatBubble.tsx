@@ -19,7 +19,7 @@ export function ChatBubble({ variant, children, className }: ChatBubbleProps) {
   }
 
   return (
-    <div className={`flex gap-4 items-end max-w-[700px] w-full ${className ?? ""}`}>
+    <div className={`flex gap-4 items-start max-w-[700px] w-full ${className ?? ""}`}>
       <AiAvatar size={24} />
       <div className="flex-1 max-w-[650px] rounded-tl-[var(--radius-xl)] rounded-tr-[var(--radius-xl)] rounded-br-[var(--radius-xl)]">
         <div className="text-text-primary text-sm leading-[1.5]">{children}</div>
