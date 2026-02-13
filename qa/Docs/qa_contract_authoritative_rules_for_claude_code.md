@@ -69,7 +69,7 @@ Fast QA Mode is the **default** for all QA runs.
 
 **Fast QA Mode behaviour:**
 - Skip pre-execution scope confirmation (start testing immediately)
-- Mobile-first full pass, desktop spot-check only
+- Desktop only (no mobile testing)
 - Output is a `README.md` in `QA-Runs/[issue-number]/` listing what was tested and results
 - Screenshots only for failures and unexpected findings (not passes)
 - Comment on GitHub issue with findings for Dev Agent
