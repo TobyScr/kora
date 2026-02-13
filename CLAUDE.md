@@ -1,8 +1,8 @@
-# [Project Name] - Claude Code Orchestrator
+# Kora - Claude Code Orchestrator
 
 ## Project Overview
 
-<!-- Describe your project here -->
+Kora is a behavioural design platform that guides users through structured intervention workflows. The frontend is a Next.js app, the backend is Xano (cloud-hosted), AI orchestration runs through N8N, and prompts are managed in Langfuse.
 
 ## App Port
 
@@ -14,22 +14,140 @@ You are the **Orchestrator**. You coordinate between:
 - **Dev Agent** (builds features in `/app/`)
 - **QA Agent** (tests features from `/qa/`)
 
-You do not write code directly. You delegate to the appropriate agent.
+You do not write application code directly. You delegate to the appropriate agent.
 
 ## Repository Structure
 
 ```
-/[project]/
-├── CLAUDE.md           ← You are here (Orchestrator)
-├── app/                ← Dev Agent workspace
-│   ├── CLAUDE.md       ← Dev Agent rules
-│   └── Docs/           ← Dev-specific docs
-├── qa/                 ← QA Agent workspace
-│   ├── CLAUDE.md       ← QA Agent rules
-│   └── Docs/           ← QA-specific docs
-├── docs/               ← Broad project context
-└── .github/            ← GitHub config
+kora-main/
+├── CLAUDE.md              ← You are here (Orchestrator)
+├── AGENTS.md              ← XanoScript rules for AI editing .xs files (Cursor)
+│
+├── app/                   ← Dev Agent workspace (Next.js frontend)
+│   ├── CLAUDE.md          ← Dev Agent rules
+│   ├── Docs/              ← Dev-specific docs (workflow, Figma exports)
+│   └── src/               ← Application source code
+│
+├── qa/                    ← QA Agent workspace
+│   ├── CLAUDE.md          ← QA Agent rules
+│   ├── Docs/              ← QA rules and contracts
+│   └── QA-Runs/           ← Test evidence per issue
+│
+├── docs/                  ← Project documentation
+│   └── back-end/          ← Xano endpoint mappings, architecture, creds
+│
+├── xano-docs/             ← XanoScript platform reference (from Xano extension)
+│   ├── guidelines/        ← How to write XanoScript (APIs, functions, tables)
+│   └── examples/          ← Code examples for each guideline
+│
+├── apis/                  ← Xano API endpoint exports (.xs files)
+├── functions/             ← Xano function exports (.xs files)
+├── tables/                ← Xano table schema exports (.xs files)
+├── addons/                ← Xano addon exports (.xs files)
+├── agents/                ← Xano AI agent exports (.xs files)
+├── middlewares/            ← Xano middleware exports (.xs files)
+├── tasks/                 ← Xano task exports (.xs files)
+├── .xano/                 ← Xano VS Code extension state (local only)
+│
+├── Skills/                ← Local dev tools (gitignored)
+└── .github/               ← GitHub config
 ```
+
+## Who Touches What
+
+| Directory | Who edits it | How |
+|-----------|-------------|-----|
+| `app/` | Dev Agent (Claude Code) | Edits files directly |
+| `qa/` | QA Agent (Claude Code) | Writes test reports |
+| `docs/` | Orchestrator / User | Project documentation |
+| `.xs` files (apis/, functions/, tables/, etc.) | User in Cursor | Via Xano VS Code extension |
+| Xano cloud backend | User in Cursor | Via Xano VS Code extension |
+
+**The Dev Agent never touches `.xs` files.** It builds Next.js API routes in `app/src/app/api/` that call Xano over HTTP. The `.xs` files are a separate concern managed through Cursor.
+
+## Xano Backend Workflow
+
+The `.xs` files in this repo are exports of the Xano cloud backend. They're synced via the Xano VS Code extension in Cursor.
+
+```
+Xano cloud  ←→  local .xs files  ←→  GitHub
+            (extension)              (git)
+```
+
+### Making backend changes:
+1. **Pull** latest from Xano (extension button in Cursor)
+2. **Edit** `.xs` files locally (in Cursor, with AI assistance via AGENTS.md)
+3. **Push to Xano** (extension button in Cursor) — makes changes live
+4. **Commit + push to GitHub** — tracks the change history
+
+**Rule:** Always push to Xano BEFORE committing to GitHub, so GitHub reflects what's actually live.
+
+### Important:
+- The Xano extension requires `.xano/` at the repo root — do not move it
+- The extension also expects `apis/`, `functions/`, `tables/`, `tasks/` at root — do not reorganise these into subdirectories
+- `AGENTS.md` at root has `applyTo: "**/*.xs"` — Cursor uses this to guide AI when editing XanoScript
+
+## External Services
+
+Kora depends on several external services. Each has its own rules and gotchas.
+
+### N8N (AI Orchestration)
+
+- **URL:** https://n8n-toby.sliplane.app/
+- **MCP:** Configured in `.mcp.json` — Claude Code can search, read, and execute workflows
+- **What it does:** Runs AI generation workflows (chat, brief generation, research, etc.)
+
+**Gotchas:**
+- Every workflow must be **activated individually** before the MCP can execute it. Inactive workflows silently do nothing.
+- Sub-workflows are referenced by **ID** (not name). If the ID is wrong, it fails silently. Always verify the ID matches.
+- `$env.VAR` reads **Sliplane environment variables**, not anything in N8N's UI. To set an env var, you must configure it in Sliplane's deployment settings.
+- `$vars.VAR` reads N8N's built-in Variables feature (set in N8N UI under Settings > Variables). Use this for values that don't need to be secret.
+- The N8N REST API **cannot list credentials** (GET not supported). You can't programmatically check what credentials exist.
+- **Known issue:** Serper API key is hardcoded in the InternetSearch node header instead of using N8N credentials (GitHub issue #74 to fix).
+- Webhook endpoints follow the pattern: `{N8N_WEBHOOK_BASE}/webhook/{workflow-name}`
+
+### Sliplane (N8N Hosting)
+
+- **What it does:** Hosts the N8N instance
+- **When you need it:** To set environment variables (`$env.VAR` in N8N), to restart N8N, or to check deployment status
+- **How to access:** Sliplane dashboard (credentials in `docs/back-end/creds and vars kora.txt`)
+
+**Key rule:** Any N8N `$env.VAR` reference requires the variable to be set in Sliplane's deployment config — there is no way to set it from within N8N itself.
+
+### Langfuse (Prompt Management)
+
+- **URL:** https://cloud.langfuse.com
+- **What it does:** Stores and versions all AI prompts used by N8N workflows
+- **Access:** READ-ONLY from code. Only `GET` requests with label `:latest` are used.
+- **Prompt catalog:** `docs/back-end/langfuse_prompt_catalog.md` (26 prompts documented)
+
+**Key rules:**
+- Prompts are fetched by N8N workflows at runtime — they are NOT stored in this repo
+- To update a prompt, edit it in the Langfuse web UI and publish with the `latest` label
+- N8N workflows reference prompts by name + `:latest` label, so publishing a new version with that label makes it live immediately
+
+### Supabase (RAG Vector DB)
+
+- **URL:** https://sjwzqprnglxdozdcsytj.supabase.co
+- **What it does:** Stores vector embeddings for RAG (Retrieval-Augmented Generation) used by research workflows
+- **Access:** Used by N8N workflows via the `queryForResearch` tool — not accessed directly from the frontend
+
+### OpenAI (LLMs)
+
+- **Models:** GPT-4.1 / GPT-5.2 (used via N8N, not called directly from the frontend)
+- **Key management:** OpenAI API key is stored as an N8N credential, not in this repo
+- **The frontend never calls OpenAI directly.** All AI calls go: Frontend → Next.js API route → N8N webhook → OpenAI
+
+### Xano (Backend/DB)
+
+- **Instance:** https://xyot-fwcy-i2yo.e2.xano.io
+- **Workspace:** Kora_Toby (ID: 41)
+- **What it does:** All database storage, business logic, and API endpoints
+- **Full details:** See "Xano Backend Workflow" section above and `docs/back-end/`
+
+### Credentials
+
+All credentials and API keys are stored in `docs/back-end/creds and vars kora.txt` (gitignored). Never hardcode credentials in source files.
 
 ## GitHub Is the Source of Truth
 
@@ -177,9 +295,15 @@ gh issue list --label "needs-fixes"
 
 ## Decisions Already Made
 
-<!-- Add your project-specific decisions here -->
 | Topic | Decision |
 |-------|----------|
+| Xano .xs file location | Stay at repo root — Xano extension requires it |
+| Xano reference docs | Moved to `xano-docs/` (guidelines, examples, reference) |
+| Project docs | `docs/` contains only Kora project docs + `back-end/` |
+| AGENTS.md | Stays at root — Cursor uses it for .xs file editing |
+| Dev Agent scope | Frontend only (`app/`). Never touches .xs files |
+| QA viewport | Desktop only (1920x1080) |
+| App port | Fixed at 3000 |
 
 ## Agent Run Modes
 
