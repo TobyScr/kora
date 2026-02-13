@@ -1,10 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { apiGet } from "@/lib/api";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { SectionItem } from "@/components/Sidebar/SectionItem";
 import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
 import { Button } from "@/components/Button/Button";
+import type { Intervention } from "@/lib/types/intervention";
 
 const FileIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -83,20 +86,72 @@ const WelcomeIllustration = () => (
 export default function InterventionPage() {
   const router = useRouter();
   const params = useParams();
+  const [intervention, setIntervention] = useState<Intervention | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchIntervention() {
+      try {
+        const data = await apiGet<Intervention>(
+          `/api/interventions/${params.id}`
+        );
+        setIntervention(data);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load intervention";
+        setError(message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchIntervention();
+  }, [params.id]);
 
   const handleStart = () => {
     router.push(`/intervention/${params.id}/brief`);
   };
+
+  const handleBack = () => {
+    router.push("/");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background-page">
+        <p className="text-text-secondary text-sm">Loading intervention...</p>
+      </div>
+    );
+  }
+
+  if (error || !intervention) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background-page">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <p className="text-sm text-red-700">
+            {error || "Intervention not found"}
+          </p>
+          <Button variant="outline" onClick={handleBack}>
+            Back to interventions
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const projectName = intervention.project_name || "Untitled Project";
 
   return (
     <div className="flex h-screen bg-background-page">
       {/* Sidebar - visual only */}
       <div className="hidden md:block">
         <Sidebar
-          projectName="Rewrite the Rules"
+          projectName={projectName}
           projectSubtitle="Project name"
           progress={25}
           sections={[]}
+          onBack={handleBack}
         >
           {/* Understand - expanded */}
           <div className="border-b border-stroke-default">

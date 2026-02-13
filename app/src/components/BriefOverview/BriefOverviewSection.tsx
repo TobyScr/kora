@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BriefOverviewCard, type CardState, type CardType } from "./BriefOverviewCard";
 import {
   EditClientNameModal,
@@ -12,14 +12,30 @@ import {
   EditTimelineModal,
   EditBulletPointsModal,
 } from "../EditModals";
+import { useToast } from "../Toast";
+import { apiGet, apiPost, apiPut } from "@/lib/api";
+import { xanoBriefToFrontend, frontendBriefToXano } from "@/lib/transforms/brief";
+import type { BriefData } from "@/lib/types/brief";
+import type { XanoBriefOutput } from "@/lib/types/brief";
 
 type BriefOverviewSectionProps = {
-  state: CardState;
-  onStateChange?: (state: CardState) => void;
+  interventionId: number;
   onConfirm?: () => void;
-  showDevToggle?: boolean;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
+};
+
+const emptyBriefData: BriefData = {
+  clientName: "",
+  location: "",
+  budget: { currency: "GBP", minAmount: "", maxAmount: "" },
+  timeline: { unit: "months", from: "", to: "" },
+  deliverables: "",
+  problemDefinition: "",
+  initialObjective: "",
+  taProfile: [],
+  dos: [],
+  donts: [],
 };
 
 const ChevronIcon = ({ isExpanded }: { isExpanded: boolean }) => (
@@ -104,59 +120,75 @@ const XIcon = () => (
   </span>
 );
 
-// Initial data
-const initialData = {
-  clientName: "FCDO",
-  location: "Uzbekistan, Tajikistan, and diaspora",
-  budget: {
-    currency: "GBP",
-    minAmount: "50,000",
-    maxAmount: "100,000",
-  },
-  timeline: {
-    unit: "months",
-    from: "6",
-    to: "",
-  },
-  deliverables: "Integrated campaign with digital and offline content/activations",
-  problemDefinition:
-    "Vulnerable young Tajiks and Uzbeks, both domestically and in diaspora communities, face increased risk of recruitment by Daesh (ISKP) due to social, emotional, and ideological vulnerabilities, exacerbated by evolving digital recruitment tactics and intensified activity, demanding urgent behavior change to reduce susceptibility.",
-  initialObjective:
-    "Build resilience among young Tajik and Uzbek populations against ISKP propaganda by diminishing extremist messaging influence through targeted behavior-change strategies addressing underlying social conditions and grievances.",
-  taProfile: [
-    "Active on platforms like TikTok, YouTube, Instagram, Discord, Reddit",
-    "Male-identifying, 14—20",
-    "Alienated or disillusioned, Distrusts institutions",
-    "Seeking identity, belonging, status",
-  ],
-  dos: [
-    "Use the right platforms: TikTok, Instagram, Discord for testing",
-    "Co-create: use participatory storytelling and testing",
-    "Safeguard community spaces: moderate interactions, consult mental health professionals",
-  ],
-  donts: [
-    "Directly shame manosphere participants",
-    "Rely heavily on traditional authority figures",
-  ],
-};
+// Confirmed badge checkmark icon
+const ConfirmedCheckIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M4 8l3 3 5-6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
-type BriefData = typeof initialData;
 type OpenModal = CardType | null;
 
 export function BriefOverviewSection({
-  state,
-  onStateChange,
+  interventionId,
   onConfirm,
-  showDevToggle = false,
   isExpanded: controlledExpanded,
   onToggleExpand,
 }: BriefOverviewSectionProps) {
-  const [data, setData] = useState<BriefData>(initialData);
+  const [data, setData] = useState<BriefData>(emptyBriefData);
+  const [briefId, setBriefId] = useState<number | null>(null);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [openModal, setOpenModal] = useState<OpenModal>(null);
   const [localExpanded, setLocalExpanded] = useState(true);
 
+  const { showToast } = useToast();
+
   // Use controlled or local expansion state
   const isExpanded = controlledExpanded ?? localExpanded;
+
+  // Determine card state based on loading/data
+  const cardState: CardState = isLoading
+    ? "loading"
+    : briefId !== null
+      ? "filled"
+      : "empty";
+
+  // Fetch brief data on mount
+  const fetchBrief = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await apiGet<XanoBriefOutput | null>(
+        `/api/interventions/${interventionId}/brief`
+      );
+
+      if (response && response.id) {
+        setBriefId(response.id);
+        setIsConfirmed(response.is_confirmed || false);
+        setData(xanoBriefToFrontend(response));
+      } else {
+        // No brief record yet
+        setBriefId(null);
+        setIsConfirmed(false);
+        setData(emptyBriefData);
+      }
+    } catch {
+      showToast("Failed to load brief data", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [interventionId, showToast]);
+
+  useEffect(() => {
+    fetchBrief();
+  }, [fetchBrief]);
 
   const handleToggle = () => {
     if (onToggleExpand) {
@@ -169,14 +201,71 @@ export function BriefOverviewSection({
   const openEditModal = (modal: CardType) => setOpenModal(modal);
   const closeModal = () => setOpenModal(null);
 
+  // Persist a field update to the API
+  const persistUpdate = async (updatedData: BriefData) => {
+    setIsSaving(true);
+    try {
+      const xanoBody = frontendBriefToXano(updatedData);
+
+      if (briefId === null) {
+        // No brief exists yet — create one via POST
+        const created = await apiPost<XanoBriefOutput>(
+          `/api/interventions/${interventionId}/brief`,
+          xanoBody
+        );
+        if (created && created.id) {
+          setBriefId(created.id);
+        }
+      } else {
+        // Brief exists — update via PUT
+        await apiPut(
+          `/api/interventions/${interventionId}/brief/${briefId}`,
+          xanoBody
+        );
+      }
+    } catch {
+      showToast("Failed to save changes", "error");
+      // Re-fetch to restore server state
+      fetchBrief();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Generic save handler: update local state optimistically, then persist
+  const handleSaveField = <K extends keyof BriefData>(
+    field: K,
+    value: BriefData[K]
+  ) => {
+    const updatedData = { ...data, [field]: value };
+    setData(updatedData);
+    persistUpdate(updatedData);
+    closeModal();
+  };
+
+  // Handle confirm
+  const handleConfirm = async () => {
+    try {
+      await fetch(`/api/interventions/${interventionId}/brief/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      setIsConfirmed(true);
+      showToast("Brief overview confirmed", "success");
+      onConfirm?.();
+    } catch {
+      showToast("Failed to confirm brief", "error");
+    }
+  };
+
   // Format budget for display
   const formatBudget = () => {
     const { minAmount, maxAmount } = data.budget;
     if (minAmount && maxAmount) {
-      return `£${minAmount} - £${maxAmount}`;
+      return `\u00a3${minAmount} - \u00a3${maxAmount}`;
     }
-    if (minAmount) return `£${minAmount}+`;
-    if (maxAmount) return `Up to £${maxAmount}`;
+    if (minAmount) return `\u00a3${minAmount}+`;
+    if (maxAmount) return `Up to \u00a3${maxAmount}`;
     return "";
   };
 
@@ -204,38 +293,34 @@ export function BriefOverviewSection({
         </button>
 
         <div className="flex items-center gap-3">
-          {/* Dev Toggle */}
-          {showDevToggle && (
-            <div className="flex items-center gap-1 bg-yellow-100 rounded-full px-2 py-1 text-xs">
-              <span className="text-yellow-800 font-medium">State:</span>
-              <select
-                value={state}
-                onChange={(e) => onStateChange?.(e.target.value as CardState)}
-                className="bg-transparent text-yellow-800 font-medium outline-none cursor-pointer"
-              >
-                <option value="loading">Loading</option>
-                <option value="empty">Empty</option>
-                <option value="filled">Filled</option>
-              </select>
-            </div>
+          {/* Saving indicator */}
+          {isSaving && (
+            <span className="text-xs text-text-tertiary">Saving...</span>
           )}
 
           {/* Export PDF - only in filled state */}
-          {state === "filled" && (
+          {cardState === "filled" && (
             <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-primary border border-stroke-default rounded-full hover:bg-background-surface transition-colors">
               <DownloadIcon />
               Export PDF
             </button>
           )}
 
-          {/* Confirm Button - in empty and filled states */}
-          {state !== "loading" && (
-            <button
-              onClick={onConfirm}
-              className="px-4 py-2 text-sm font-medium text-text-inverse bg-button-solid rounded-full hover:opacity-90 transition-opacity"
-            >
-              Confirm Brief Overview
-            </button>
+          {/* Confirmed badge or Confirm button */}
+          {isConfirmed ? (
+            <span className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-full">
+              <ConfirmedCheckIcon />
+              Confirmed
+            </span>
+          ) : (
+            cardState !== "loading" && (
+              <button
+                onClick={handleConfirm}
+                className="px-4 py-2 text-sm font-medium text-text-inverse bg-button-solid rounded-full hover:opacity-90 transition-opacity"
+              >
+                Confirm Brief Overview
+              </button>
+            )
           )}
         </div>
       </div>
@@ -246,21 +331,21 @@ export function BriefOverviewSection({
         {/* Row 1: Client Name, Location, Budget */}
         <BriefOverviewCard
           type="clientName"
-          state={state}
+          state={cardState}
           content={data.clientName}
           className="lg:col-span-2"
           onEdit={() => openEditModal("clientName")}
         />
         <BriefOverviewCard
           type="location"
-          state={state}
+          state={cardState}
           content={data.location}
           className="lg:col-span-2"
           onEdit={() => openEditModal("location")}
         />
         <BriefOverviewCard
           type="budget"
-          state={state}
+          state={cardState}
           content={formatBudget()}
           className="lg:col-span-2"
           onEdit={() => openEditModal("budget")}
@@ -269,14 +354,14 @@ export function BriefOverviewSection({
         {/* Row 2: Timeline, Deliverables */}
         <BriefOverviewCard
           type="timeline"
-          state={state}
+          state={cardState}
           content={formatTimeline()}
           className="lg:col-span-2"
           onEdit={() => openEditModal("timeline")}
         />
         <BriefOverviewCard
           type="deliverables"
-          state={state}
+          state={cardState}
           content={data.deliverables}
           className="lg:col-span-4"
           onEdit={() => openEditModal("deliverables")}
@@ -285,14 +370,14 @@ export function BriefOverviewSection({
         {/* Row 3: Problem Definition, Initial Objective (equal width 50/50) */}
         <BriefOverviewCard
           type="problemDefinition"
-          state={state}
+          state={cardState}
           content={data.problemDefinition}
           className="lg:col-span-3"
           onEdit={() => openEditModal("problemDefinition")}
         />
         <BriefOverviewCard
           type="initialObjective"
-          state={state}
+          state={cardState}
           content={data.initialObjective}
           className="lg:col-span-3"
           onEdit={() => openEditModal("initialObjective")}
@@ -301,16 +386,18 @@ export function BriefOverviewSection({
         {/* Row 4: TA Profile (full width) */}
         <BriefOverviewCard
           type="taProfile"
-          state={state}
+          state={cardState}
           content={
-            <ul className="space-y-3">
-              {data.taProfile.map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <CheckboxIcon />
-                  <span className="font-normal">{item}</span>
-                </li>
-              ))}
-            </ul>
+            data.taProfile.length > 0 ? (
+              <ul className="space-y-3">
+                {data.taProfile.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckboxIcon />
+                    <span className="font-normal">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : undefined
           }
           className="md:col-span-2 lg:col-span-6"
           onEdit={() => openEditModal("taProfile")}
@@ -319,32 +406,36 @@ export function BriefOverviewSection({
         {/* Row 5: Do's, Don'ts (equal width 50/50) */}
         <BriefOverviewCard
           type="dos"
-          state={state}
+          state={cardState}
           content={
-            <ul className="space-y-3">
-              {data.dos.map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <CheckIcon />
-                  <span className="font-normal">{item}</span>
-                </li>
-              ))}
-            </ul>
+            data.dos.length > 0 ? (
+              <ul className="space-y-3">
+                {data.dos.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckIcon />
+                    <span className="font-normal">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : undefined
           }
           className="lg:col-span-3"
           onEdit={() => openEditModal("dos")}
         />
         <BriefOverviewCard
           type="donts"
-          state={state}
+          state={cardState}
           content={
-            <ul className="space-y-3">
-              {data.donts.map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <XIcon />
-                  <span className="font-normal">{item}</span>
-                </li>
-              ))}
-            </ul>
+            data.donts.length > 0 ? (
+              <ul className="space-y-3">
+                {data.donts.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <XIcon />
+                    <span className="font-normal">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : undefined
           }
           className="lg:col-span-3"
           onEdit={() => openEditModal("donts")}
@@ -357,49 +448,49 @@ export function BriefOverviewSection({
         isOpen={openModal === "clientName"}
         onClose={closeModal}
         initialValue={data.clientName}
-        onSave={(value) => setData((prev) => ({ ...prev, clientName: value }))}
+        onSave={(value) => handleSaveField("clientName", value)}
       />
 
       <EditLocationModal
         isOpen={openModal === "location"}
         onClose={closeModal}
         initialValue={data.location}
-        onSave={(value) => setData((prev) => ({ ...prev, location: value }))}
+        onSave={(value) => handleSaveField("location", value)}
       />
 
       <EditProblemDefinitionModal
         isOpen={openModal === "problemDefinition"}
         onClose={closeModal}
         initialValue={data.problemDefinition}
-        onSave={(value) => setData((prev) => ({ ...prev, problemDefinition: value }))}
+        onSave={(value) => handleSaveField("problemDefinition", value)}
       />
 
       <EditInitialObjectiveModal
         isOpen={openModal === "initialObjective"}
         onClose={closeModal}
         initialValue={data.initialObjective}
-        onSave={(value) => setData((prev) => ({ ...prev, initialObjective: value }))}
+        onSave={(value) => handleSaveField("initialObjective", value)}
       />
 
       <EditDeliverablesModal
         isOpen={openModal === "deliverables"}
         onClose={closeModal}
         initialValue={data.deliverables}
-        onSave={(value) => setData((prev) => ({ ...prev, deliverables: value }))}
+        onSave={(value) => handleSaveField("deliverables", value)}
       />
 
       <EditBudgetModal
         isOpen={openModal === "budget"}
         onClose={closeModal}
         initialValue={data.budget}
-        onSave={(value) => setData((prev) => ({ ...prev, budget: value }))}
+        onSave={(value) => handleSaveField("budget", value)}
       />
 
       <EditTimelineModal
         isOpen={openModal === "timeline"}
         onClose={closeModal}
         initialValue={data.timeline}
-        onSave={(value) => setData((prev) => ({ ...prev, timeline: value }))}
+        onSave={(value) => handleSaveField("timeline", value)}
       />
 
       <EditBulletPointsModal
@@ -408,7 +499,7 @@ export function BriefOverviewSection({
         title="Edit TA Profile"
         fieldLabel="Bullet point"
         initialValue={{ points: data.taProfile }}
-        onSave={(value) => setData((prev) => ({ ...prev, taProfile: value.points }))}
+        onSave={(value) => handleSaveField("taProfile", value.points)}
         maxPoints={6}
         maxLength={150}
       />
@@ -419,7 +510,7 @@ export function BriefOverviewSection({
         title="Edit Do's"
         fieldLabel="Bullet point"
         initialValue={{ points: data.dos }}
-        onSave={(value) => setData((prev) => ({ ...prev, dos: value.points }))}
+        onSave={(value) => handleSaveField("dos", value.points)}
         maxPoints={5}
         maxLength={150}
       />
@@ -430,7 +521,7 @@ export function BriefOverviewSection({
         title="Edit Don'ts"
         fieldLabel="Bullet point"
         initialValue={{ points: data.donts }}
-        onSave={(value) => setData((prev) => ({ ...prev, donts: value.points }))}
+        onSave={(value) => handleSaveField("donts", value.points)}
         maxPoints={5}
         maxLength={150}
       />

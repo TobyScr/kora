@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { apiGet } from "@/lib/api";
+import type { Intervention } from "@/lib/types/intervention";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { SectionItem } from "@/components/Sidebar/SectionItem";
 import { SubsectionItem } from "@/components/Sidebar/SubsectionItem";
 import { ChatBubble } from "@/components/ChatBubble/ChatBubble";
 import { ChatInput } from "@/components/ChatInput/ChatInput";
-import { BriefOverviewSection, type CardState } from "@/components/BriefOverview";
+import { BriefOverviewSection } from "@/components/BriefOverview";
 import { ResearchInsightsSection } from "@/components/ResearchInsights";
 import { SystemMapSection } from "@/components/SystemMap";
 import { BehaviouralObjectiveSection } from "@/components/BehaviouralObjective";
@@ -84,9 +87,13 @@ const aiResponses = [
 ];
 
 export default function BriefPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [intervention, setIntervention] = useState<Intervention | null>(null);
+  const [interventionLoading, setInterventionLoading] = useState(true);
+  const [interventionError, setInterventionError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [viewMode, setViewMode] = useState<ViewMode>("chat");
-  const [cardState, setCardState] = useState<CardState>("filled");
   const [briefOverviewExpanded, setBriefOverviewExpanded] = useState(true);
   const [researchInsightsConfirmed, setResearchInsightsConfirmed] = useState(false);
   const [systemMapConfirmed, setSystemMapConfirmed] = useState(false);
@@ -103,6 +110,26 @@ export default function BriefPage() {
   const researchInsightsRef = useRef<HTMLDivElement>(null);
   const systemMapRef = useRef<HTMLDivElement>(null);
   const behaviouralObjectiveRef = useRef<HTMLDivElement>(null);
+
+  // Fetch intervention data
+  useEffect(() => {
+    async function fetchIntervention() {
+      try {
+        const data = await apiGet<Intervention>(
+          `/api/interventions/${params.id}`
+        );
+        setIntervention(data);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load intervention";
+        setInterventionError(message);
+      } finally {
+        setInterventionLoading(false);
+      }
+    }
+
+    fetchIntervention();
+  }, [params.id]);
 
   // Check if user has sent at least one message
   const hasUserMessage = messages.some((m) => m.variant === "user");
@@ -161,15 +188,38 @@ export default function BriefPage() {
     }, 100);
   };
 
+  const projectName = intervention?.project_name || "Loading...";
+
+  const handleBackToIntervention = () => {
+    router.push(`/intervention/${params.id}`);
+  };
+
+  if (interventionLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background-page">
+        <p className="text-text-secondary text-sm">Loading brief...</p>
+      </div>
+    );
+  }
+
+  if (interventionError) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background-page">
+        <p className="text-sm text-red-700">{interventionError}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-background-page">
       {/* Sidebar */}
       <div className="hidden md:block">
         <Sidebar
-          projectName="Rewrite the Rules"
+          projectName={projectName}
           projectSubtitle="Project name"
           progress={25}
           sections={[]}
+          onBack={handleBackToIntervention}
         >
           {/* Understand - expanded */}
           <div className="border-b border-stroke-default">
@@ -274,10 +324,8 @@ export default function BriefPage() {
           <div className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-10">
             <div className="space-y-6">
               <BriefOverviewSection
-                state={cardState}
-                onStateChange={setCardState}
+                interventionId={Number(params.id)}
                 onConfirm={handleConfirmBriefOverview}
-                showDevToggle
                 isExpanded={briefOverviewExpanded}
                 onToggleExpand={() => setBriefOverviewExpanded(!briefOverviewExpanded)}
               />

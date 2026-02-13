@@ -1,0 +1,8200 @@
+[
+  {
+    "id": 312,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "ai_execution_log",
+    "description": "",
+    "docs": "",
+    "guid": "b2bvQrR-rhU66ET37KT-Mnx_peM",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "step_confirmation_log_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 305
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "n8n_execution_id",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "n8n_triggered_workflow",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "action",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "message",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "n8n_request_url",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 323,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "API_KEY",
+    "description": "",
+    "docs": "",
+    "guid": "kgOYTi19lvlANDKcib1nYgVmDms",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "Client",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "last_time_used",
+        "type": "timestamp",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "status",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "Inactive",
+        "required": false,
+        "values": [
+          "Active",
+          "Inactive"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "expired_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "api_key_hast",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "salt",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 322,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "APPROACH",
+    "description": "",
+    "docs": "",
+    "guid": "CGGTsJt78koExjhw5Lx-j-NnyaE",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "approach"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "selected_option_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 316
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "intervention_id",
+            "op": "asc"
+          }
+        ],
+        "id": "12479d2e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 341,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "ASSUMPTION",
+    "description": "",
+    "docs": "",
+    "guid": "n9anq2JcufFEQ1hRDy2pAwoWszM",
+    "auth": false,
+    "tag": [
+      "active",
+      "assumption",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "assumption",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 285,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "AUDIENCE",
+    "description": "This table will contain the list of audiences a partner can potentially have.",
+    "docs": "",
+    "guid": "vMt3Abgjpe4oPFhBMPqyQH6T1B0",
+    "auth": false,
+    "tag": [
+      "audience"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 340,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "BEHAVIOURAL_OBJECTIVE_NEW",
+    "description": "",
+    "docs": "",
+    "guid": "1Eo7gqwbsmiZ5vqFI8zQh9gH718",
+    "auth": false,
+    "tag": [
+      "active",
+      "behavioral_objective",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "objective",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "is_selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 303,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "BRIEF_CHAT_OUTPUT",
+    "description": "Stores detailed content for a brief, linked exclusively to an intervention.",
+    "docs": "",
+    "guid": "-PaLyi_7C0sApopqR5mTPitJPN4",
+    "auth": false,
+    "tag": [
+      "active",
+      "brief",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "Links to the associated intervention.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "client_funder",
+        "type": "text",
+        "description": "The client or funding organization for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "core_challenge",
+        "type": "text",
+        "description": "The primary challenge addressed by the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "initial_objective",
+        "type": "text",
+        "description": "The initial objective for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "initial_target_audience",
+        "type": "text",
+        "description": "Detailed description of the initial target audience.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "location",
+        "type": "text",
+        "description": "Geographical focus for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "dos",
+        "type": "text",
+        "description": "A list of 'do' guidelines for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "donts",
+        "type": "text",
+        "description": "A list of 'don't' guidelines for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "budget_amount",
+        "type": "decimal",
+        "description": "The allocated budget amount for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "budget_currency",
+        "type": "text",
+        "description": "The currency of the allocated budget (e.g., 'USD').",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "timeline_end_date",
+        "type": "date",
+        "description": "The target completion date for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "expected_outputs",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "suggested_intervention_type",
+        "type": "text",
+        "description": "The suggested type of intervention for the brief.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 294,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "BRIEF_OUTPUT",
+    "description": "",
+    "docs": "",
+    "guid": "xDXoSgwVKRWXqkKpAGXislDUkgc",
+    "auth": false,
+    "tag": [
+      "active",
+      "brief",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "client",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "location",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true,
+          "min": "1"
+        }
+      },
+      {
+        "name": "budget_currency",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "\uffe1",
+          "\u20ac",
+          "$",
+          "\u00a3"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "budget_min",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "budget_max",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "timeline_unit",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "Days",
+          "Weeks",
+          "Months",
+          "Years"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "timeline_min",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "timeline_max",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "problem_definition",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "high_level_objective",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "is_confirmed",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "section_stage_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "expected_deliverables",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "ta_profile",
+        "type": "text",
+        "description": "This column will store a list of texts for ta_profile.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "plaintext",
+        "access": "private",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "dos",
+        "type": "text",
+        "description": "This column will store a list of texts for do's.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "private",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "donts",
+        "type": "text",
+        "description": "This column will store a list of texts for don'ts.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "private",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 325,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "CBD_AUDIENCE",
+    "description": "",
+    "docs": "",
+    "guid": "cG0RV7AnY_0ej6aMRQalL4xWcc8",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "creative_brief"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "target_profile",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "barriers",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "strategy",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 326,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "CBD_BRIEF",
+    "description": "",
+    "docs": "",
+    "guid": "qlNveHteHkugo5_4lYBsN9K7FxI",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "creative_brief"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "territory",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "cta",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "smp",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "key_messages",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "tfd_shift",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "deliverables",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "timings",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "mandatories",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "budget",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "inspiration",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 327,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "CBD_INTRODUCTION",
+    "description": "",
+    "docs": "",
+    "guid": "cjIDo6G6xjRmsFEr8EUbTnu6P3w",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "creative_brief"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "summary",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "context",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "problem",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "objectives",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 291,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "CLIENT",
+    "description": "This table will allow us to store a list of clients",
+    "docs": "",
+    "guid": "h0C1Vn-OjfcKg4ya4ARspuiyZxI",
+    "auth": false,
+    "tag": [
+      "client",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true,
+          "min": "2",
+          "max": "80"
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 347,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "COM_B",
+    "description": "",
+    "docs": "",
+    "guid": "zOFRtpvYUyxas7coiyCYwNoE9yk",
+    "auth": false,
+    "tag": [
+      "active",
+      "com_b",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "capability",
+          "opportunity",
+          "motivation"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "barrier",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 308,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "CONTEXT_MEDIA",
+    "description": "",
+    "docs": "",
+    "guid": "WbWGujarbPwJPOGmhUdru0GcLh4",
+    "auth": false,
+    "tag": [
+      "active",
+      "persona",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "social_influencer_network",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "media_consumption_habits",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "language_symbols",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 319,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "CORE_NARRATIVE",
+    "description": "",
+    "docs": "",
+    "guid": "tv-nxekmNqQIhDXjY6KBGSoKxg0",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "narrative_framework",
+      "core_narrative"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "title",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "Beginning",
+          "Tension",
+          "Resolution"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "narrative",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "intervention_id",
+            "op": "asc"
+          },
+          {
+            "name": "title",
+            "op": "asc"
+          }
+        ],
+        "id": "f31d90f8"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 287,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "COUNTRY",
+    "description": "This table will contain the list of countries a partner can potentially have.",
+    "docs": "",
+    "guid": "VcIPilyLpMkALhYnXRocpoQCpdo",
+    "auth": false,
+    "tag": [
+      "country",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 350,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "CTA",
+    "description": "",
+    "docs": "",
+    "guid": "FmI4-bk3AOSBxWxmPa7Dp--CxDU",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "cta"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "validations",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 306,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "DEMOGRAPHICS",
+    "description": "",
+    "docs": "",
+    "guid": "jvhLWP9_FaRSOB3yrrT2Tslymkk",
+    "auth": false,
+    "tag": [
+      "active",
+      "persona",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "location",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "language",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "children",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "employment",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "education",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "age",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "gender",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "marital_status",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "quote",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "file",
+        "type": "image",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 344,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "DOCUMENT_INSIGHT",
+    "description": "",
+    "docs": "",
+    "guid": "rs_evWx7bIu-FEZGsGtnM5CxLbQ",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "insight",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "source",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "page",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "sectionTitle",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "keywords",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "importance",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 288,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "ENTITY_TYPE",
+    "description": "This table will contain the list of entity types a partner can potentially have.",
+    "docs": "",
+    "guid": "m7_qMWdY3ayQpg9ZE5ra6lZRWYs",
+    "auth": false,
+    "tag": [
+      "entity-type",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 296,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "EVENT_TYPE",
+    "description": "User events",
+    "docs": "",
+    "guid": "uwRL7QfrKOhgShXziDhUcVn0F7M",
+    "auth": false,
+    "tag": [
+      "event-type",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "event_name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 310,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "FIRST_TIME_WIZARD",
+    "description": "this table holds every step of first time wizards and their related workflow steps.",
+    "docs": "",
+    "guid": "myP4ELE8KzXd15m3lEmbpvTMI04",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "tip_name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "workflow_step_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 302
+      },
+      {
+        "name": "order",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 313,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "GET_WHO_TO_BY",
+    "description": "",
+    "docs": "",
+    "guid": "dbXt7cXWPrY8DsG19bYsgdPAbGs",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "get_who_to_by"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "get",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "who",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "to",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "by",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 335,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "HA_CATEGORIES",
+    "description": "Taxonomy data from HyperAuditor taken from\nhttps://hypeauditor.readme.io/reference/taxonomy_v1",
+    "docs": "",
+    "guid": "jwFplxaHWzdby8KDzDVI3UmGruA",
+    "auth": false,
+    "tag": [
+      "active",
+      "hype_auditor"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "ha_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "social",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "YOUTUBE",
+          "TIKTOK",
+          "INSTAGRAM"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 336,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "HA_FAILED_REPORTS",
+    "description": "",
+    "docs": "",
+    "guid": "cv0-JhREy_W8Cf5yh7-b8epJ_kI",
+    "auth": false,
+    "tag": [
+      "active",
+      "hype_auditor"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "partner_social_media_channel_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 283
+      },
+      {
+        "name": "social_lookout",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "lookup_value",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "code",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "ha_code",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 293,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "INTERVENTION",
+    "description": "This table stores all project interventions",
+    "docs": "",
+    "guid": "plKt8JQG5rwmHXW70RW8iK9iuE4",
+    "auth": false,
+    "tag": [
+      "intervention",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "current_step",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 302
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "internal",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "project_id",
+        "type": "int",
+        "description": "This is a reference to PROJECT table",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 292
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "is_duplicated",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "last_modified",
+        "type": "timestamp",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "chat_id",
+        "type": "text",
+        "description": "unique id of the chat",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "helper_text",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 339
+      },
+      {
+        "name": "percentage",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 328,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "JOURNEY_MAP",
+    "description": "",
+    "docs": "",
+    "guid": "3P9jN7GhPHOCCz29kqykCoSQDLU",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "journey_map"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "journey_phase_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 329
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "key_moments",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "key_messages",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "key_mechanism",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": true,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 321,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "KEY_MESSAGE",
+    "description": "",
+    "docs": "",
+    "guid": "gd_Yq1ak5uL4kbr63T7fAPCS5q4",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "narrative_framework",
+      "key_message"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "message",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "proof_points",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 286,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "LANGUAGE",
+    "description": "This table will contain the list of languages a partner can potentially have.",
+    "docs": "",
+    "guid": "-Z1NGJOq5rn6ZVyay98UDfZ5pAY",
+    "auth": false,
+    "tag": [
+      "language",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 331,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "MREL_INDICATORS",
+    "description": "",
+    "docs": "",
+    "guid": "FcNNqusPSfLwPIHNtx8sOV-8qrA",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "mrel"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "indicator_type",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 330
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "indicator",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "target",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "data_source",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 324,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "N8N_ERROR_LOG",
+    "description": "",
+    "docs": "",
+    "guid": "XzlO_8rXQ3u4XVAgd2rrHvB00-Q",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "workflow_name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "error_message",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "execution_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "workflow_id",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "execution_url",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "last_node_executed",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 343,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "nav-fix-zinc",
+    "description": "",
+    "docs": "",
+    "guid": "i20g-Om7gcUCQImbfk7vsx-lYuw",
+    "auth": true,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "parent_id",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "level",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "order",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "id2",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "ai_slug",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "triggers",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 351,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OASIS",
+    "description": "",
+    "docs": "",
+    "guid": "MH22vGNJRQjEW6eh28wTYDyevMo",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "oasis"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "core_challenge",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "outcome",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "campaign_objectives",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "demographics",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "attitudes_behaviors",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "barriers",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "selected_strategy",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "key_messages",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "core_cta",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "creative_territory",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "user_journey",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "timings",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "metrics",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "intervention_id",
+            "op": "asc"
+          }
+        ],
+        "id": "12479d2e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 316,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_APPROACH_OPTIONS",
+    "description": "",
+    "docs": "",
+    "guid": "GKouqITC_VQvEtc6L8oBMlLEKSc",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "approach"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "Skip Creative Strategy",
+          "Develop Creative Strategy"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "steps_outputs",
+        "type": "json",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "list"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 339,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_HELPER_TEXT",
+    "description": "",
+    "docs": "",
+    "guid": "EGMopfFKapBBxxFpOlX53CRB26M",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "text",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "workflow_step_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 302
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 330,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_INDICATOR_TYPE",
+    "description": "",
+    "docs": "",
+    "guid": "blZyDQT71pqmW9UAg9wsR_J-fFU",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "mrel"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 329,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_JOURNEY_PHASE",
+    "description": "",
+    "docs": "",
+    "guid": "XP_oGQ7hdCRtC0IadCeFTAUZMZU",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "journey_map"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 320,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_MESSAGE_SOURCE",
+    "description": "",
+    "docs": "",
+    "guid": "YjtcNi0Qj7WgMYN3nrUHbSl5XMs",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 301,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_STAKEHOLDER_ROLE_PHRASES",
+    "description": "",
+    "docs": "",
+    "guid": "41uOyxeaABCsMxMZkQRZ7-oRcOU",
+    "auth": false,
+    "tag": [
+      "active",
+      "deprecated"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "os_stakeholder_types_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 300
+      },
+      {
+        "name": "phrase",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 300,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_STAKEHOLDER_TYPES",
+    "description": "",
+    "docs": "",
+    "guid": "MO1tby9bK2zrvck-I8UNK-nn0os",
+    "auth": false,
+    "tag": [
+      "active",
+      "deprecated"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 349,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "OS_STRATEGY_TYPE",
+    "description": "",
+    "docs": "",
+    "guid": "Ewfw1h2Oioab5ZqEgDrNMu3ThPY",
+    "auth": false,
+    "tag": [
+      "v2",
+      "strategy"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "type",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 280,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "PARTNER",
+    "description": "Stores information about partners",
+    "docs": "",
+    "guid": "cWAcQ2pYUZgZBkd-N8elhtWQMro",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "The name of the partner",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "A description of the partner",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "geographical_focus",
+        "type": "text",
+        "description": "The geographical areas the partner focuses on",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "past_zinc_engagement",
+        "type": "bool",
+        "description": "Whether the partner has previously engaged with Zinc",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "past_zinc_engagement_description",
+        "type": "text",
+        "description": "Description of past Zinc engagement, if any",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "preferred_incentives_for_collaboration",
+        "type": "text",
+        "description": "Preferred incentives for collaboration with the partner",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "preferred_communication_channel",
+        "type": "int",
+        "description": "The partner's preferred method of communication. A link to PARTNER_SOCIAL_MEDIA_CHANNEL table.",
+        "nullable": true,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 283
+      },
+      {
+        "name": "partner_languages",
+        "type": "int",
+        "description": "This column will contain a list of Language table ids, showing what topics the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 286
+      },
+      {
+        "name": "partner_audiences",
+        "type": "int",
+        "description": "This column will contain a list of Audience table ids, showing what topics the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 285
+      },
+      {
+        "name": "partner_topics",
+        "type": "int",
+        "description": "This column will contain a list of Topic table ids, showing what topics the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 282
+      },
+      {
+        "name": "partner_social_medias",
+        "type": "int",
+        "description": "This column will contain a list of Social Media Channel table ids, showing what topics the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 281
+      },
+      {
+        "name": "partner_entity_types",
+        "type": "int",
+        "description": "This column will contain a list of Entity Type table ids, showing what topics the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 288
+      },
+      {
+        "name": "partner_countries",
+        "type": "int",
+        "description": "This column will contain a list of Country table ids, showing what topics the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 287
+      },
+      {
+        "name": "partner_contact_details",
+        "type": "int",
+        "description": "This column will contain a list of Partner Contact Detail table ids, showing what contacts the partner has.",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 289
+      },
+      {
+        "name": "audience_follower_count",
+        "type": "int",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "audience_general_description",
+        "type": "text",
+        "description": "This column will hold general description for audience. ",
+        "nullable": true,
+        "default": "N/A",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "This column allows the Partner to be \"deleted\" or archived.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "last_updated_at",
+        "type": "timestamp",
+        "description": "This column will show the latest time a record is updated.",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_by",
+        "type": "int",
+        "description": "created_by",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 289,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "PARTNER_CONTACT_DETAIL",
+    "description": "This table will contain the list of contacts a partner has.",
+    "docs": "",
+    "guid": "3SHKLBvR__MxiC2nNWaIC_VZ3BM",
+    "auth": false,
+    "tag": [
+      "partner-contact",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "phone_number",
+          "email"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "value",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "partner_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 280
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "This column will store a boolean value based on the fact whether the Partner has been \"deleted\" or not.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "is_removed",
+        "type": "bool",
+        "description": "This column will hold a boolean value based on the fact whether the contact is removed during the \"edit\" of Partner.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 290,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "PARTNER_LOGS",
+    "description": "This table will contain the logs of Partner table.",
+    "docs": "",
+    "guid": "jn-qqaFmicldPmngKuQEnlX0nzM",
+    "auth": false,
+    "tag": [
+      "partner-log",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "changed_by",
+        "type": "int",
+        "description": "This column will contain the user id of the one who made the changes to Partner.",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      },
+      {
+        "name": "action",
+        "type": "enum",
+        "description": "This column will show which action has taken the user during the change.",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "edit",
+          "delete",
+          "create"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "partner_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 280
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 334,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "PARTNER_SOCIAL_HA_DATA",
+    "description": "Standardized data from the HyperAuditor report",
+    "docs": "",
+    "guid": "xmocM62MYSActSCFItQu8SZjrWQ",
+    "auth": false,
+    "tag": [
+      "active",
+      "hype_auditor"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "partner_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 280
+      },
+      {
+        "name": "social",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "INSTAGRAM",
+          "YOUTUBE",
+          "TIKTOK",
+          "X"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "followers_count",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "engagement_rate",
+        "type": "decimal",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "engagement_rate_mark",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "N/A",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "avg_likes",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "avg_comments",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "aqs_score",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "aqs_score_description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "N/A",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "sentiment_positive_prc",
+        "type": "decimal",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "sentiment_negative_prc",
+        "type": "decimal",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "sentiment_neutral_prc",
+        "type": "decimal",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "sentiment_score",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "audience_type",
+        "type": "json",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "audience_reachability",
+        "type": "json",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "audience_countries",
+        "type": "json",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "list"
+      },
+      {
+        "name": "audience_languages",
+        "type": "json",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "list"
+      },
+      {
+        "name": "creator_categories",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "list"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 283,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "PARTNER_SOCIAL_MEDIA_CHANNEL",
+    "description": "Links partners to their specific social media channel instances",
+    "docs": "",
+    "guid": "X-Jtd7WGXPQqF7ufanvoxXKJhNI",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "partner",
+        "type": "int",
+        "description": "Reference to the partner",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 280
+      },
+      {
+        "name": "social_media_channel",
+        "type": "int",
+        "description": "Reference to the social media channel type",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 281
+      },
+      {
+        "name": "url",
+        "type": "text",
+        "description": "The URL of the partner's specific social media channel page",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "This column will store a boolean value based on the fact whether the Partner has been \"deleted\" or not.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "is_removed",
+        "type": "bool",
+        "description": "This column will hold a boolean value based on the fact whether the social media is removed during the \"edit\" of Partner.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 346,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "PDF_CO_TEMPLATES",
+    "description": "",
+    "docs": "",
+    "guid": "-vdxxx2oui6DyVvVJRc_GYSy2Pk",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "template_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 348,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "PERSONA",
+    "description": "",
+    "docs": "",
+    "guid": "66_Z3bbnMCwYdou_FtAMwy1kuno",
+    "auth": false,
+    "tag": [
+      "active",
+      "persona",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "demographics_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 306
+      },
+      {
+        "name": "psychographics_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 307
+      },
+      {
+        "name": "context_media_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 308
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 292,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "PROJECT",
+    "description": "This table will allow us to store a clients projects",
+    "docs": "",
+    "guid": "i_Y9vaDkB9TN0Wg3ShF8-7NXDz4",
+    "auth": false,
+    "tag": [
+      "project",
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "internal",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "client_id",
+        "type": "int",
+        "description": "This is a reference to CLIENT table",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 291
+      },
+      {
+        "name": "number_of_interventions",
+        "type": "int",
+        "description": "",
+        "nullable": true,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "last_updated_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 307,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "PSYCHOGRAPHICS",
+    "description": "",
+    "docs": "",
+    "guid": "umpbk9iGwrJcvD8XzO3S_I1735E",
+    "auth": false,
+    "tag": [
+      "active",
+      "persona",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "values",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "aspirations",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "life_goals",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "concerns_challenges",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 332,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "REQUEST_FIELD_MAPPING",
+    "description": "Mapping for HypeAuditor API response fields to dabase equivalent",
+    "docs": "",
+    "guid": "yX0FAOyRy1ftbnkG9qTa3GHfP04",
+    "auth": false,
+    "tag": [
+      "active",
+      "hype_auditor"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "INSTAGRAM",
+          "TIKTOK",
+          "YOUTUBE",
+          "X"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "from",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "to",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 297,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "RESEARCH",
+    "description": "This table will store data for Research tab of Understand stage.",
+    "docs": "",
+    "guid": "eYbJHb8iCB9Q6ai1nz1IXqdTQHQ",
+    "auth": false,
+    "tag": [
+      "research-table",
+      "inactive"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "content",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "proprietary_findings",
+        "type": "text",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "proprietary_links",
+        "type": "text",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "list",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "proprietary_uploaded_files",
+        "type": "attachment",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "list"
+      },
+      {
+        "name": "research_sections_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 298
+      },
+      {
+        "name": "is_skipped",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "research_files_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "list",
+        "tableref_id": 304
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 309,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "RESEARCH_DEEPRESEARCH_PROMPTS",
+    "description": "",
+    "docs": "",
+    "guid": "wrHbz0WtQeyOMaFxSqYZK3ZgA4U",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "prompt",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "markdown",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 304,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "RESEARCH_Files_",
+    "description": "",
+    "docs": "",
+    "guid": "GzkS7qWIBjo8AfmQuhLC--xshd0",
+    "auth": false,
+    "tag": [
+      "active",
+      "deep_research",
+      "existing_research",
+      "assumption_finding",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "status",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "pending",
+        "required": false,
+        "values": [
+          "completed",
+          "pending",
+          "started",
+          "failed"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "findings",
+          "file",
+          "url"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "subsection",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "proprietary",
+          "external",
+          "deep",
+          "existing",
+          "findings"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "value",
+        "type": "json",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "file",
+        "type": "attachment",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "section_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 298
+      },
+      {
+        "name": "txt_value",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 337,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "RESEARCH_INSIGHTS",
+    "description": "",
+    "docs": "",
+    "guid": "1xHIDoXJUXhsUNBKXh6DOvKvClk",
+    "auth": false,
+    "tag": [
+      "active",
+      "research_insights",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "insight",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "source",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "Existing research",
+          "DeepResearch"
+        ],
+        "access": "public",
+        "style": "list"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 342,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "RESEARCH_QUESTION",
+    "description": "",
+    "docs": "",
+    "guid": "RwzRzUtJhchZeZIxh_oJH6nSEWg",
+    "auth": false,
+    "tag": [
+      "active",
+      "research_question",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "question",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 298,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "RESEARCH_SECTIONS",
+    "description": "",
+    "docs": "",
+    "guid": "Ye1Jp3tK9ErDgPhvtvXNyYxL5_o",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "reseach_section_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 284,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "ROLE",
+    "description": "This table will contain all the available user roles for the app.",
+    "docs": "",
+    "guid": "aew-OIgYoJgUasJVtqh5wMl0qig",
+    "auth": false,
+    "tag": [
+      "roles"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "This column contains the name of the role.",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "format": "",
+        "access": "private",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "role",
+        "type": "enum",
+        "description": "This column is an enum of roles of the app.",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "admin",
+          "user",
+          "editor"
+        ],
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 318,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "SM_PROPOSITION",
+    "description": "",
+    "docs": "",
+    "guid": "socPU76rVP1CsD-8IPkKpZD8K0s",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "smp"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "proposition",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 281,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "SOCIAL_MEDIA_CHANNEL",
+    "description": "Stores information about social media channels (types)",
+    "docs": "",
+    "guid": "XGVgpdKV5RQXsKKGFwoGtyXnwRY",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "The name of the social media channel (e.g., 'Twitter', 'YouTube')",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "logo",
+        "type": "text",
+        "description": "This column will contain an url of the logo of social media.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 299,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "STAKEHOLDERS",
+    "description": "",
+    "docs": "",
+    "guid": "DJLhDNRErr4sC2ff3ry6ZrD9-EU",
+    "auth": false,
+    "tag": [
+      "active",
+      "deprecated"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "leverage_point",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "values": [
+          "Yes",
+          "Partial",
+          "No"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "rationale",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "source",
+        "type": "enum",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "values": [
+          "Research",
+          "Kora insights"
+        ],
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "stakeholder_type_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 300
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "is_prioritized",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "leverage_rank",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "influence_on_problem_space",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "system_dynamics",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 345,
+    "created_at": "2026-02-11 22:10:40+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "step-confirmation-zinc",
+    "description": "",
+    "docs": "",
+    "guid": "FL_DZJYloHA_3Rd5iBHArqejw2s",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "confirmed_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "step_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "user_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 305,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "STEP_CONFIRMATION_LOG",
+    "description": "",
+    "docs": "",
+    "guid": "UPlvL8MrsUcCyoYkI77Xhu6Ah9k",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "confirmed_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "step_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 302
+      },
+      {
+        "name": "user_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 314,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "STRATEGY",
+    "description": "",
+    "docs": "",
+    "guid": "ccFYuOSIaiQj9pdctWqZZc_kO2Y",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "strategy"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "strategy",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "type",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "1",
+        "required": true,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "pros",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "cons",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "plaintext",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 338,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "SYSTEM_MAP",
+    "description": "",
+    "docs": "",
+    "guid": "ACW9HY-VBl_1_IIDYoAxkGWinEE",
+    "auth": false,
+    "tag": [
+      "active",
+      "system_map",
+      "v2"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "challenge",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "is_selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 317,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "TERRITORY",
+    "description": "",
+    "docs": "",
+    "guid": "yI8mL6pOTfIXAvLiNc7GQ1pgTrE",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "territory"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "credibility",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 315,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "TFD_CARD",
+    "description": "",
+    "docs": "",
+    "guid": "kdBvpCqWNwj51uc-RbPkuYUNM7I",
+    "auth": false,
+    "tag": [
+      "active",
+      "v2",
+      "think_feel_do"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "description": "",
+        "nullable": false,
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      },
+      {
+        "name": "com_b1_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 347
+      },
+      {
+        "name": "com_b2_id",
+        "type": "uuid",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 347
+      },
+      {
+        "name": "current_think",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "current_feel",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "current_do",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "future_think",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "future_feel",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "future_do",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "selected",
+        "type": "bool",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 282,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "TOPIC",
+    "description": "Stores information about topics",
+    "docs": "",
+    "guid": "GzekPNNhu-jmbmyHDPCyICtz7Vc",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "The name of the topic",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "description": "A description of the topic",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "name",
+            "op": "asc"
+          }
+        ],
+        "id": "af4e33a7"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 279,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "USER",
+    "description": "",
+    "docs": "",
+    "guid": "Vr6dBZJGxiIzo142kZOWulsxrco",
+    "auth": true,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true,
+          "lower": true
+        }
+      },
+      {
+        "name": "password",
+        "type": "password",
+        "description": "",
+        "nullable": true,
+        "required": false,
+        "access": "internal",
+        "style": "single",
+        "validators": {
+          "min": 8,
+          "minAlpha": 1,
+          "minDigit": 1
+        }
+      },
+      {
+        "name": "role_id",
+        "type": "int",
+        "description": "This column contains the role of the user.",
+        "nullable": false,
+        "default": "0",
+        "required": true,
+        "access": "private",
+        "style": "single",
+        "tableref_id": 284
+      },
+      {
+        "name": "magic_link",
+        "type": "object",
+        "description": "Magic link object with token and expiration",
+        "nullable": true,
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "children": [
+          {
+            "name": "token",
+            "type": "text",
+            "description": "",
+            "nullable": false,
+            "default": "",
+            "required": false,
+            "format": "",
+            "access": "public",
+            "style": "single",
+            "validators": {
+              "trim": true
+            }
+          },
+          {
+            "name": "expiration",
+            "type": "timestamp",
+            "description": "Time the token expires",
+            "nullable": false,
+            "default": "",
+            "required": false,
+            "access": "public",
+            "style": "single"
+          },
+          {
+            "name": "used",
+            "type": "bool",
+            "description": "",
+            "nullable": false,
+            "default": "",
+            "required": false,
+            "access": "public",
+            "style": "single"
+          }
+        ]
+      },
+      {
+        "name": "is_deleted",
+        "type": "bool",
+        "description": "This column is used to indicate whether an user is active or inactive.",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "last_login",
+        "type": "timestamp",
+        "description": "This column keeps track of the login times of the user.",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "last_url",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      },
+      {
+        "type": "unique",
+        "fields": [
+          {
+            "name": "email",
+            "op": "asc"
+          }
+        ],
+        "id": "1ebc7987"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 295,
+    "created_at": "2026-02-11 22:10:38+0000",
+    "updated_at": "2026-02-11 22:10:40+0000",
+    "name": "USER_ANALYTICS",
+    "description": "User event logs",
+    "docs": "",
+    "guid": "SaJJVo1wGNo2cK-gNeyHIOqb0c0",
+    "auth": false,
+    "tag": [],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "user_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      },
+      {
+        "name": "event_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 296
+      },
+      {
+        "name": "intervention_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 293
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 333,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "USER_CLIENT",
+    "description": "",
+    "docs": "",
+    "guid": "JIBTToEkXOJ3m2-mJixDR0iMnJo",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "client_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 291
+      },
+      {
+        "name": "user_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      },
+      {
+        "name": "role_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 284
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 311,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "WIZARD_SEEN_LOGS",
+    "description": "this table holds a record of wizard step a user has seen/dismissed",
+    "docs": "",
+    "guid": "i-0X6WjmiGDEV_X_y6cnT83Wb90",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "description": "",
+        "nullable": false,
+        "default": "now",
+        "required": false,
+        "access": "private",
+        "style": "single"
+      },
+      {
+        "name": "first_time_wizard_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 310
+      },
+      {
+        "name": "user_id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 279
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      },
+      {
+        "type": "btree",
+        "fields": [
+          {
+            "name": "created_at",
+            "op": "desc"
+          }
+        ],
+        "id": "411a6c94"
+      }
+    ],
+    "xanoscript": null
+  },
+  {
+    "id": 302,
+    "created_at": "2026-02-11 22:10:39+0000",
+    "updated_at": "2026-02-11 22:10:41+0000",
+    "name": "WORKFLOW_STEP",
+    "description": "",
+    "docs": "",
+    "guid": "9cdp6PBo39gnbga4mp7In3VCSCA",
+    "auth": false,
+    "tag": [
+      "active"
+    ],
+    "autocomplete": [],
+    "schema": [
+      {
+        "name": "id",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "parent_id",
+        "type": "int",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 302
+      },
+      {
+        "name": "group",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": true,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "order",
+        "type": "int",
+        "description": "",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single"
+      },
+      {
+        "name": "ai_slug",
+        "type": "text",
+        "description": "",
+        "nullable": false,
+        "default": "",
+        "required": false,
+        "format": "",
+        "access": "public",
+        "style": "single",
+        "validators": {
+          "trim": true
+        }
+      },
+      {
+        "name": "triggers",
+        "type": "int",
+        "description": "",
+        "nullable": false,
+        "default": "0",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 302
+      },
+      {
+        "name": "helper_text_id",
+        "type": "int",
+        "description": "Helper Text to show when this step becomes the current step",
+        "nullable": true,
+        "default": "",
+        "required": false,
+        "access": "public",
+        "style": "single",
+        "tableref_id": 339
+      }
+    ],
+    "index": [
+      {
+        "type": "primary",
+        "fields": [
+          {
+            "name": "id"
+          }
+        ],
+        "id": "1339908e"
+      }
+    ],
+    "xanoscript": null
+  }
+]
