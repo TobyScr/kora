@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { xanoGet, xanoMetaPut, XANO_BRIEF_TABLE_ID } from "@/lib/xano";
+import { xanoPostJson } from "@/lib/xano";
 
 export async function POST(
   _request: NextRequest,
@@ -19,24 +19,10 @@ export async function POST(
   const { id } = await params;
 
   try {
-    // First, get the current brief to find its record ID
-    const brief = await xanoGet(
-      `/api:8e-lJ9lG/projects/${id}/brief`,
+    const data = await xanoPostJson(
+      `/api:8e-lJ9lG/projects/${id}/brief/confirm`,
+      { intervention_id: parseInt(id, 10) },
       token
-    ) as { id?: number } | null;
-
-    if (!brief || !brief.id) {
-      return NextResponse.json(
-        { error: "No brief found to confirm" },
-        { status: 404 }
-      );
-    }
-
-    // Use Metadata API to set is_confirmed = true
-    const data = await xanoMetaPut(
-      XANO_BRIEF_TABLE_ID,
-      brief.id,
-      { is_confirmed: true }
     );
 
     return NextResponse.json(data);

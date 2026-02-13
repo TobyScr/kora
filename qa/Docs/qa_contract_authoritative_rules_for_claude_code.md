@@ -69,7 +69,7 @@ Fast QA Mode is the **default** for all QA runs.
 
 **Fast QA Mode behaviour:**
 - Skip pre-execution scope confirmation (start testing immediately)
-- Mobile-first full pass, desktop spot-check only
+- Desktop only (no mobile testing)
 - Output is a `README.md` in `QA-Runs/[issue-number]/` listing what was tested and results
 - Screenshots only for failures and unexpected findings (not passes)
 - Comment on GitHub issue with findings for Dev Agent
@@ -96,9 +96,39 @@ Abort rule:
 
 ## 4. Navigation & Interaction Guarantees
 
-QA must interact only with **user-visible UI elements**.
+QA must interact only with **user-visible UI elements**, using only the methods a real user has: clicking, typing, scrolling, and navigating.
 
 Hidden, implementation-derived, or non-visible selectors are forbidden.
+
+### Prohibited Techniques (Non-Negotiable)
+
+The following are **strictly forbidden** in all QA runs. Playwright must act purely as a user — no shortcuts, no injection, no backdoors.
+
+| Prohibited | Why |
+|---|---|
+| `page.evaluate()` / `page.$eval()` / `page.evaluateHandle()` | Injects JavaScript — a user cannot do this |
+| `page.route()` / `page.setExtraHTTPHeaders()` | Intercepts or modifies network traffic |
+| `page.addScriptTag()` / `page.addStyleTag()` | Injects code into the page |
+| Direct API calls (`fetch`, `curl`, HTTP requests) to check or modify state | A user interacts through the UI, not the API |
+| Reading `localStorage`, `sessionStorage`, or cookies via JS | A user cannot inspect browser storage |
+| DOM manipulation or reading DOM properties not visible on screen | A user sees rendered output, not the DOM tree |
+| `page.setContent()` / `page.goto('javascript:...')` | Bypasses normal navigation |
+| `page.dispatchEvent()` | Simulates events the user didn't trigger |
+| Accessing `__NEXT_DATA__`, React internals, or framework state | Implementation details invisible to users |
+
+### Allowed Playwright Methods
+
+Only use Playwright's **user-simulation layer**:
+- `page.goto(url)` — navigate like typing a URL
+- `page.click()` / `page.fill()` / `page.type()` — interact like a user
+- `page.keyboard.*` / `page.mouse.*` — physical input simulation
+- `page.waitForSelector()` / `page.waitForURL()` — wait for visible changes
+- `page.screenshot()` — capture what the user sees
+- `page.textContent()` / `page.isVisible()` / `page.isEnabled()` — read visible state
+- `expect()` assertions on visible text, element state, and URLs
+- `page.console` — passively listen to console output (telemetry only, per Section 6)
+
+**Rule of thumb:** If a real user sitting at the keyboard cannot do it, Playwright must not do it.
 
 If an interaction fails:
 - Capture evidence

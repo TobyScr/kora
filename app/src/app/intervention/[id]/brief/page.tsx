@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { apiGet } from "@/lib/api";
 import type { Intervention } from "@/lib/types/intervention";
@@ -131,6 +131,23 @@ export default function BriefPage() {
     fetchIntervention();
   }, [params.id]);
 
+  // Auto-detect view mode: if a brief record exists, show overview instead of chat
+  useEffect(() => {
+    async function checkBriefExists() {
+      try {
+        const brief = await apiGet<{ id?: number } | null>(
+          `/api/interventions/${params.id}/brief`
+        );
+        if (brief && brief.id) {
+          setViewMode("overview");
+        }
+      } catch {
+        // No brief found or error — stay in chat mode
+      }
+    }
+    checkBriefExists();
+  }, [params.id]);
+
   // Check if user has sent at least one message
   const hasUserMessage = messages.some((m) => m.variant === "user");
 
@@ -187,6 +204,15 @@ export default function BriefPage() {
       researchInsightsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   };
+
+  const handleBriefLoadedConfirmed = useCallback(() => {
+    setBriefOverviewExpanded(false);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
 
   const projectName = intervention?.project_name || "Loading...";
 
@@ -326,6 +352,7 @@ export default function BriefPage() {
               <BriefOverviewSection
                 interventionId={Number(params.id)}
                 onConfirm={handleConfirmBriefOverview}
+                onLoadConfirmed={handleBriefLoadedConfirmed}
                 isExpanded={briefOverviewExpanded}
                 onToggleExpand={() => setBriefOverviewExpanded(!briefOverviewExpanded)}
               />
@@ -401,7 +428,7 @@ export default function BriefPage() {
 
       {/* Progress Panel - right side, only in overview mode */}
       {viewMode === "overview" && (
-        <div className="hidden lg:block">
+        <div className="hidden lg:block shrink-0">
           <ProgressPanel
             sections={progressSections}
             onToggleSection={handleToggleSection}

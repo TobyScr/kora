@@ -22,6 +22,7 @@ type BriefOverviewCardProps = {
   content?: ReactNode;
   className?: string;
   onEdit?: () => void;
+  isConfirmed?: boolean;
 };
 
 const cardConfig: Record<
@@ -211,6 +212,7 @@ export function BriefOverviewCard({
   content,
   className = "",
   onEdit,
+  isConfirmed,
 }: BriefOverviewCardProps) {
   const config = cardConfig[type];
 
@@ -229,7 +231,7 @@ export function BriefOverviewCard({
             <span className="text-xs text-text-tertiary">(Optional)</span>
           )}
         </div>
-        {state !== "loading" && (
+        {state !== "loading" && !isConfirmed && (
           <button
             onClick={onEdit}
             className="p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"

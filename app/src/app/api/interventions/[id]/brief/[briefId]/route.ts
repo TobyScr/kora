@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { xanoMetaPut, XANO_BRIEF_TABLE_ID } from "@/lib/xano";
+import { xanoGet, xanoPatchJson } from "@/lib/xano";
 
 export async function PUT(
   request: NextRequest,
@@ -16,54 +16,62 @@ export async function PUT(
     );
   }
 
-  const { briefId } = await params;
+  const { id, briefId } = await params;
   const body = await request.json();
 
   try {
-    // Build the Metadata API body with proper types
-    const metaBody: Record<string, unknown> = {};
+    // GET current brief to merge with — Xano requires ALL fields for validation
+    const current = await xanoGet(
+      `/api:8e-lJ9lG/projects/${id}/brief`,
+      token
+    ) as Record<string, unknown>;
 
-    // Text fields — only include if non-empty
-    const textFields = ["client", "location", "expected_deliverables", "problem_definition", "high_level_objective"];
-    for (const field of textFields) {
-      if (body[field] !== undefined && body[field] !== "") {
-        metaBody[field] = body[field];
-      }
-    }
+    // Build the full payload, starting with current values, overriding with incoming changes
+    const patchBody: Record<string, unknown> = {
+      intervention_id: parseInt(id, 10),
+      client: body.client ?? current.client ?? "",
+      location: body.location ?? current.location ?? "",
+      budget_currency: body.budget_currency ?? current.budget_currency ?? "£",
+      budget_min: body.budget_min !== undefined ? parseInt(String(body.budget_min), 10) : (current.budget_min ?? 0),
+      budget_max: body.budget_max !== undefined ? parseInt(String(body.budget_max), 10) : (current.budget_max ?? 0),
+      timeline_unit: body.timeline_unit ?? current.timeline_unit ?? "Months",
+      timeline_min: body.timeline_min !== undefined ? parseInt(String(body.timeline_min), 10) : (current.timeline_min ?? 0),
+      timeline_max: body.timeline_max !== undefined ? parseInt(String(body.timeline_max), 10) : (current.timeline_max ?? 0),
+      expected_deliverables: body.expected_deliverables ?? current.expected_deliverables ?? "",
+      problem_definition: body.problem_definition ?? current.problem_definition ?? "",
+      high_level_objective: body.high_level_objective ?? current.high_level_objective ?? "",
+      ta_profile: parseArray(body.ta_profile) ?? current.ta_profile ?? [],
+      dos: parseArray(body.dos) ?? current.dos ?? [],
+      donts: parseArray(body.donts) ?? current.donts ?? [],
+    };
 
-    // Number fields — parse to int
-    const numFields = ["budget_min", "budget_max", "timeline_min", "timeline_max"];
-    for (const field of numFields) {
-      if (body[field] !== undefined && body[field] !== "") {
-        metaBody[field] = parseInt(body[field], 10);
-      }
-    }
-
-    // Enum fields
-    if (body.budget_currency) metaBody.budget_currency = body.budget_currency;
-    if (body.timeline_unit) metaBody.timeline_unit = body.timeline_unit;
-
-    // Array fields — parse from JSON string if needed
-    const arrayFields = ["ta_profile", "dos", "donts"];
-    for (const field of arrayFields) {
-      if (body[field] !== undefined) {
-        const parsed = typeof body[field] === "string" ? JSON.parse(body[field]) : body[field];
-        if (Array.isArray(parsed)) {
-          metaBody[field] = parsed;
-        }
-      }
-    }
-
-    const data = await xanoMetaPut(
-      XANO_BRIEF_TABLE_ID,
-      parseInt(briefId, 10),
-      metaBody
+    const data = await xanoPatchJson(
+      `/api:8e-lJ9lG/projects/${id}/brief/${briefId}`,
+      patchBody,
+      token
     );
 
     return NextResponse.json(data);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to update brief";
-    return NextResponse.json({ error: message }, { status: 500 });
+
+    // Xano returns "Intervention step confirmed, edition not allowed" when trying to edit after confirmation
+    const status = message.toLowerCase().includes("confirmed") ? 403 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
+}
+
+function parseArray(value: unknown): string[] | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      // not valid JSON, ignore
+    }
+  }
+  return undefined;
 }

@@ -4,6 +4,10 @@
 
 <!-- Describe your project here -->
 
+## App Port
+
+**Kora runs on `http://localhost:3000`** — this is fixed in `app/.env.local` as `PORT=3000`. All agents must use this URL when starting the dev server or running tests.
+
 ## Your Role
 
 You are the **Orchestrator**. You coordinate between:
@@ -91,7 +95,7 @@ backlog → ready-for-dev → in-dev → ready-for-qa → in-qa → done
 ```bash
 cd /path/to/project/app && npm run dev
 ```
-Note the port (usually 3000 or 3001).
+The app runs on port 3000 (`http://localhost:3000`).
 
 **Step 2: Choose QA Mode**
 
@@ -110,9 +114,9 @@ The QA Agent prompt MUST include:
 
 2. **Use Interactivity Mode with Playwright** - not code review
 
-3. **Viewports:** Mobile (390×844) primary, desktop spot-check
+3. **Viewport:** Desktop (1920×1080) only
 
-4. **App URL:** e.g., `http://localhost:3001`
+4. **App URL:** `http://localhost:3000`
 
 5. **Evidence:** `qa/QA-Runs/[issue-number]/README.md`
    - A `README.md` listing what was tested and the result
@@ -126,7 +130,7 @@ The QA Agent prompt MUST include:
 ### Fast QA (Default)
 
 - Skip scope confirmation
-- Mobile-first, desktop spot-check only
+- Desktop only
 - Output is a `README.md` confirmation of what was tested
 - Screenshots only when they help explain a problem
 - Comment fixes required on the GitHub issue for Dev Agent
@@ -134,7 +138,7 @@ The QA Agent prompt MUST include:
 ### Standard QA (Only When Requested)
 
 - Scope confirmation before testing
-- Full mobile pass + desktop pass
+- Full desktop pass
 - Full narrative TEST_REPORT.md
 - Screenshots for all requirements
 

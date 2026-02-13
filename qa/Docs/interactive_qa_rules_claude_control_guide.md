@@ -82,6 +82,12 @@ Each requirement must end in one of:
 - Interact only with visible UI elements
 - Never target hidden or implementation-derived controls
 - Prefer text and accessible roles over structural selectors
+- **No JavaScript injection** — never use `page.evaluate()`, `page.$eval()`, or any method that executes code in the browser context
+- **No direct API calls** — never use `fetch`, `curl`, or HTTP requests to check or modify application state
+- **No reading browser internals** — never access `localStorage`, `sessionStorage`, cookies, DOM properties, React state, or `__NEXT_DATA__`
+- **No network interception** — never use `page.route()` or modify headers/requests
+- If a real user cannot do it from the keyboard and screen, Playwright must not do it
+- See Section 4 of `qa_contract_authoritative_rules_for_claude_code.md` for the full prohibited techniques list
 
 ### If an interaction fails:
 1. Capture evidence
@@ -127,26 +133,23 @@ When UI elements appear that are marked "out of scope" for workflow testing, Cla
 
 ---
 
-## Multi-Viewport Testing
+## Viewport Testing
 
-All interactive QA runs test **mobile-first** (matching Figma designs).
+All interactive QA runs test on **desktop only**.
 
-### Viewport Definitions
+### Viewport Definition
 
 | Viewport | Resolution | Description |
 |----------|------------|-------------|
-| Mobile   | 390×844    | Mobile device (iPhone 14 equivalent) — **Primary** |
-| Desktop  | 1920×1080  | Standard desktop/laptop |
+| Desktop  | 1920×1080  | Standard desktop/laptop — **Primary and only viewport** |
 
 ### Fast QA (Default)
 
-1. **Mobile pass** — Complete all requirements on mobile viewport
-2. **Desktop spot-check** — Quick layout sanity check
+1. **Desktop pass** — Complete all requirements on desktop viewport
 
 ### Standard QA (When Requested)
 
-1. **Mobile pass first** — Complete all requirements on mobile viewport
-2. **Desktop full pass** — Test all requirements on desktop viewport
+1. **Desktop full pass** — Test all requirements on desktop viewport
 
 ---
 
@@ -172,7 +175,7 @@ Each run must produce a `README.md` in `QA-Runs/[issue-number]/` containing:
 ## QA Result: [PASS | FAIL | BLOCKED]
 
 **Issue:** #N - [Title]
-**Mode:** Fast QA (mobile-first, desktop spot-check)
+**Mode:** Fast QA (desktop only)
 **Date:** YYYY-MM-DD
 
 ### Fixes Required

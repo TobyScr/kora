@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { xanoGet, xanoMetaPost, XANO_BRIEF_TABLE_ID } from "@/lib/xano";
+import { xanoGet, xanoPostJson } from "@/lib/xano";
 
 export async function GET(
   _request: NextRequest,
@@ -50,43 +50,29 @@ export async function POST(
   const body = await request.json();
 
   try {
-    // Build the Metadata API body with proper types
-    const metaBody: Record<string, unknown> = {
+    const postBody: Record<string, unknown> = {
       intervention_id: parseInt(id, 10),
+      client: body.client || "",
+      location: body.location || "",
+      budget_currency: body.budget_currency || "£",
+      budget_min: body.budget_min ? parseInt(String(body.budget_min), 10) : 0,
+      budget_max: body.budget_max ? parseInt(String(body.budget_max), 10) : 0,
+      timeline_unit: body.timeline_unit || "Months",
+      timeline_min: body.timeline_min ? parseInt(String(body.timeline_min), 10) : 0,
+      timeline_max: body.timeline_max ? parseInt(String(body.timeline_max), 10) : 0,
+      expected_deliverables: body.expected_deliverables || "",
+      problem_definition: body.problem_definition || "",
+      high_level_objective: body.high_level_objective || "",
+      ta_profile: parseArray(body.ta_profile) || [],
+      dos: parseArray(body.dos) || [],
+      donts: parseArray(body.donts) || [],
     };
 
-    // Text fields — only include if non-empty
-    const textFields = ["client", "location", "expected_deliverables", "problem_definition", "high_level_objective"];
-    for (const field of textFields) {
-      if (body[field] && body[field] !== "") {
-        metaBody[field] = body[field];
-      }
-    }
-
-    // Number fields — parse to int, only include if > 0
-    const numFields = ["budget_min", "budget_max", "timeline_min", "timeline_max"];
-    for (const field of numFields) {
-      if (body[field] && body[field] !== "" && body[field] !== "0") {
-        metaBody[field] = parseInt(body[field], 10);
-      }
-    }
-
-    // Enum fields — only include if non-empty
-    if (body.budget_currency) metaBody.budget_currency = body.budget_currency;
-    if (body.timeline_unit) metaBody.timeline_unit = body.timeline_unit;
-
-    // Array fields — parse from JSON string if needed
-    const arrayFields = ["ta_profile", "dos", "donts"];
-    for (const field of arrayFields) {
-      if (body[field]) {
-        const parsed = typeof body[field] === "string" ? JSON.parse(body[field]) : body[field];
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          metaBody[field] = parsed;
-        }
-      }
-    }
-
-    const data = await xanoMetaPost(XANO_BRIEF_TABLE_ID, metaBody);
+    const data = await xanoPostJson(
+      `/api:8e-lJ9lG/projects/${id}/brief`,
+      postBody,
+      token
+    );
 
     return NextResponse.json(data);
   } catch (error) {
@@ -94,4 +80,18 @@ export async function POST(
       error instanceof Error ? error.message : "Failed to create brief";
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+function parseArray(value: unknown): string[] | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      // not valid JSON, ignore
+    }
+  }
+  return undefined;
 }
