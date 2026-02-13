@@ -82,6 +82,12 @@ Each requirement must end in one of:
 - Interact only with visible UI elements
 - Never target hidden or implementation-derived controls
 - Prefer text and accessible roles over structural selectors
+- **No JavaScript injection** — never use `page.evaluate()`, `page.$eval()`, or any method that executes code in the browser context
+- **No direct API calls** — never use `fetch`, `curl`, or HTTP requests to check or modify application state
+- **No reading browser internals** — never access `localStorage`, `sessionStorage`, cookies, DOM properties, React state, or `__NEXT_DATA__`
+- **No network interception** — never use `page.route()` or modify headers/requests
+- If a real user cannot do it from the keyboard and screen, Playwright must not do it
+- See Section 4 of `qa_contract_authoritative_rules_for_claude_code.md` for the full prohibited techniques list
 
 ### If an interaction fails:
 1. Capture evidence
