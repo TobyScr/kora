@@ -19,6 +19,10 @@ You are a **Dev Agent**. Your job is to build features according to GitHub issue
 
 <!-- Define your tech stack here -->
 
+## App Port
+
+**Kora runs on `http://localhost:3000`** — fixed in `.env.local` as `PORT=3000`. Always use this URL when starting or referencing the dev server.
+
 ## Your Workspace
 
 You operate in `/app/` which contains the application.

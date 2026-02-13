@@ -21,6 +21,7 @@ import type { XanoBriefOutput } from "@/lib/types/brief";
 type BriefOverviewSectionProps = {
   interventionId: number;
   onConfirm?: () => void;
+  onLoadConfirmed?: () => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
 };
@@ -138,6 +139,7 @@ type OpenModal = CardType | null;
 export function BriefOverviewSection({
   interventionId,
   onConfirm,
+  onLoadConfirmed,
   isExpanded: controlledExpanded,
   onToggleExpand,
 }: BriefOverviewSectionProps) {
@@ -172,6 +174,9 @@ export function BriefOverviewSection({
       if (response && response.id) {
         setBriefId(response.id);
         setIsConfirmed(response.is_confirmed || false);
+        if (response.is_confirmed) {
+          onLoadConfirmed?.();
+        }
         setData(xanoBriefToFrontend(response));
       } else {
         // No brief record yet
@@ -184,7 +189,7 @@ export function BriefOverviewSection({
     } finally {
       setIsLoading(false);
     }
-  }, [interventionId, showToast]);
+  }, [interventionId, showToast, onLoadConfirmed]);
 
   useEffect(() => {
     fetchBrief();
@@ -335,6 +340,7 @@ export function BriefOverviewSection({
           content={data.clientName}
           className="lg:col-span-2"
           onEdit={() => openEditModal("clientName")}
+          isConfirmed={isConfirmed}
         />
         <BriefOverviewCard
           type="location"
@@ -342,6 +348,7 @@ export function BriefOverviewSection({
           content={data.location}
           className="lg:col-span-2"
           onEdit={() => openEditModal("location")}
+          isConfirmed={isConfirmed}
         />
         <BriefOverviewCard
           type="budget"
@@ -349,6 +356,7 @@ export function BriefOverviewSection({
           content={formatBudget()}
           className="lg:col-span-2"
           onEdit={() => openEditModal("budget")}
+          isConfirmed={isConfirmed}
         />
 
         {/* Row 2: Timeline, Deliverables */}
@@ -358,6 +366,7 @@ export function BriefOverviewSection({
           content={formatTimeline()}
           className="lg:col-span-2"
           onEdit={() => openEditModal("timeline")}
+          isConfirmed={isConfirmed}
         />
         <BriefOverviewCard
           type="deliverables"
@@ -365,6 +374,7 @@ export function BriefOverviewSection({
           content={data.deliverables}
           className="lg:col-span-4"
           onEdit={() => openEditModal("deliverables")}
+          isConfirmed={isConfirmed}
         />
 
         {/* Row 3: Problem Definition, Initial Objective (equal width 50/50) */}
@@ -374,6 +384,7 @@ export function BriefOverviewSection({
           content={data.problemDefinition}
           className="lg:col-span-3"
           onEdit={() => openEditModal("problemDefinition")}
+          isConfirmed={isConfirmed}
         />
         <BriefOverviewCard
           type="initialObjective"
@@ -381,6 +392,7 @@ export function BriefOverviewSection({
           content={data.initialObjective}
           className="lg:col-span-3"
           onEdit={() => openEditModal("initialObjective")}
+          isConfirmed={isConfirmed}
         />
 
         {/* Row 4: TA Profile (full width) */}
@@ -401,6 +413,7 @@ export function BriefOverviewSection({
           }
           className="md:col-span-2 lg:col-span-6"
           onEdit={() => openEditModal("taProfile")}
+          isConfirmed={isConfirmed}
         />
 
         {/* Row 5: Do's, Don'ts (equal width 50/50) */}
@@ -421,6 +434,7 @@ export function BriefOverviewSection({
           }
           className="lg:col-span-3"
           onEdit={() => openEditModal("dos")}
+          isConfirmed={isConfirmed}
         />
         <BriefOverviewCard
           type="donts"
@@ -439,6 +453,7 @@ export function BriefOverviewSection({
           }
           className="lg:col-span-3"
           onEdit={() => openEditModal("donts")}
+          isConfirmed={isConfirmed}
         />
       </div>
       )}
