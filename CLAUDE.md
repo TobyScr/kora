@@ -34,7 +34,8 @@ kora-main/
 │   └── QA-Runs/           ← Test evidence per issue
 │
 ├── docs/                  ← Project documentation
-│   └── back-end/          ← Xano endpoint mappings, architecture, creds
+│   ├── back-end/          ← Xano endpoint mappings, architecture, creds
+│   └── future-n8n-migration/ ← Plan to replace N8N with Mastra AI
 │
 ├── xano-docs/             ← XanoScript platform reference (from Xano extension)
 │   ├── guidelines/        ← How to write XanoScript (APIs, functions, tables)
@@ -105,6 +106,7 @@ Kora depends on several external services. Each has its own rules and gotchas.
 - The N8N REST API **cannot list credentials** (GET not supported). You can't programmatically check what credentials exist.
 - **Known issue:** Serper API key is hardcoded in the InternetSearch node header instead of using N8N credentials (GitHub issue #74 to fix).
 - Webhook endpoints follow the pattern: `{N8N_WEBHOOK_BASE}/webhook/{workflow-name}`
+- **Future migration:** N8N will eventually be replaced with Mastra AI (TypeScript, in-repo). See `docs/future-n8n-migration/README.md` for the full plan.
 
 ### Sliplane (N8N Hosting)
 
@@ -144,6 +146,18 @@ Kora depends on several external services. Each has its own rules and gotchas.
 - **Workspace:** Kora_Toby (ID: 41)
 - **What it does:** All database storage, business logic, and API endpoints
 - **Full details:** See "Xano Backend Workflow" section above and `docs/back-end/`
+
+**CRITICAL — Always use the Xano Function Stack (proper API endpoints), NEVER the Metadata API:**
+
+Xano has a Metadata API (`/api:meta/...`) that provides direct database access bypassing all business logic. **Do not use it.** It skips validation, auth middleware, addons, and the entire function stack that Xano endpoints are built on. Using it creates a backdoor that circumvents all backend safeguards.
+
+The correct approach is to always call the proper API endpoints (e.g. `/api:8e-lJ9lG/brief_output`). These go through Xano's function stack which handles validation, authentication, data transformation, and business logic. If an endpoint doesn't exist for what you need, the answer is to build one in Xano — not to bypass the system with the Metadata API.
+
+**Before building any new Xano integration, review what already exists:**
+- `app/src/lib/xano.ts` — All Xano HTTP helpers are here (`xanoGet`, `xanoPostJson`, `xanoPatchJson`, `xanoDeleteJson`, etc.)
+- `app/src/app/api/interventions/[id]/` — Existing API route patterns (brief, research, chat)
+- `apis/` — Full XanoScript exports of every API endpoint in the Xano backend
+- `docs/back-end/xano_api_endpoints_comprehensive_mapping.md` — Endpoint reference
 
 ### Credentials
 

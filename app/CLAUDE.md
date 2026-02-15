@@ -86,6 +86,25 @@ Before marking ready-for-qa:
 - [ ] Works on desktop viewport
 - [ ] Dev notes added to issue
 
+## Xano Integration Rules
+
+**CRITICAL — Use proper API endpoints, NEVER the Metadata API.**
+
+Xano has a Metadata API (`/api:meta/...`) that provides raw database access. **Do not use it.** It bypasses all validation, auth middleware, and business logic. If you find `xanoMetaPost` or `xanoMetaPut` functions in the codebase, do not call them — they are legacy and will be removed.
+
+**Before building any Xano integration, review what already exists:**
+- **`src/lib/xano.ts`** — All Xano HTTP helpers (`xanoGet`, `xanoPostJson`, `xanoPatchJson`, `xanoDeleteJson`, etc.). Use these — do not create new HTTP wrappers.
+- **`src/app/api/interventions/[id]/`** — Existing API route patterns. Follow the same structure for new sections.
+- **`apis/`** (repo root) — Full XanoScript exports of every Xano API endpoint. Read these to understand what endpoints exist, what parameters they expect, and what they return.
+- **`docs/back-end/xano_api_endpoints_comprehensive_mapping.md`** — Endpoint reference.
+
+**Rules:**
+- Always call the proper Xano API endpoints (e.g. `/api:8e-lJ9lG/brief_output`), never `/api:meta/`
+- Use the existing helpers in `src/lib/xano.ts` — do not duplicate them
+- v2 endpoints expect JSON (`Content-Type: application/json`), auth endpoints expect form-encoded
+- PATCH endpoints support partial updates — only send changed fields
+- Review the XanoScript exports in `apis/` before assuming an endpoint doesn't exist
+
 ## What You Must NOT Do
 
 - Do not modify files in `/qa/`
@@ -94,3 +113,4 @@ Before marking ready-for-qa:
 - Do not hardcode credentials
 - Do not commit .env files
 - Do not add scope beyond what the issue specifies
+- Do not use the Xano Metadata API (`/api:meta/`) — always use proper endpoints

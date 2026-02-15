@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { BehaviouralObjectiveCard } from "./BehaviouralObjectiveCard";
 import { BehaviouralObjectiveSkeleton } from "./BehaviouralObjectiveSkeleton";
@@ -9,6 +9,10 @@ import { EditObjectiveModal } from "./EditObjectiveModal";
 import { DeleteObjectiveModal } from "./DeleteObjectiveModal";
 import { AddObjectiveModal } from "./AddObjectiveModal";
 import { useToast } from "../Toast";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/lib/api";
+import { xanoObjectiveToFrontend, frontendObjectiveToXanoCreate, frontendObjectiveToXanoPatch } from "@/lib/transforms/behaviouralObjective";
+import type { XanoBehaviouralObjective } from "@/lib/types/behaviouralObjective";
+import type { Intervention } from "@/lib/types/intervention";
 import type { Objective, ObjectiveColor, BehaviouralObjectiveState } from "./types";
 
 type SelectedChallenge = {
@@ -17,7 +21,9 @@ type SelectedChallenge = {
 };
 
 type BehaviouralObjectiveSectionProps = {
+  interventionId: number;
   onConfirm?: () => void;
+  onLoadConfirmed?: () => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
   selectedChallenge?: SelectedChallenge | null;
@@ -122,36 +128,13 @@ function getColorForIndex(index: number): ObjectiveColor {
   return COLORS[index % COLORS.length];
 }
 
-// Sample objective data
-const SAMPLE_OBJECTIVES: Objective[] = [
-  {
-    id: "1",
-    number: 1,
-    title: "Increase critical evaluation of online content among young men aged 16-25 who are active on social media platforms",
-    color: "teal",
-  },
-  {
-    id: "2",
-    number: 2,
-    title: "Reduce sharing of misogynistic content by young men who engage with manosphere communities on platforms like TikTok and YouTube",
-    color: "cyan",
-  },
-  {
-    id: "3",
-    number: 3,
-    title: "Increase help-seeking behaviour among socially isolated young men experiencing economic anxiety and identity frustration",
-    color: "blue",
-  },
-];
-
-// Simulated AI-generated objectives
+// Simulated AI-generated objectives (mock — N8N integration is future)
 const AI_OBJECTIVES = [
   "Strengthen peer reporting of harmful recruitment content by bystanders in online gaming and social media spaces",
   "Increase participation in constructive online communities among young men who are at risk of radicalisation through digital platforms",
   "Build resilience against algorithmic manipulation among vulnerable youth by promoting awareness of engagement-driven content tactics",
 ];
 
-const LOADING_DELAY_MS = 2000;
 const GENERATION_DURATION_MS = 4000;
 const PROGRESS_INTERVAL_MS = 100;
 
@@ -163,7 +146,9 @@ type GeneratingCard = {
 };
 
 export function BehaviouralObjectiveSection({
+  interventionId,
   onConfirm,
+  onLoadConfirmed,
   isExpanded: controlledExpanded,
   onToggleExpand,
   selectedChallenge,
@@ -191,15 +176,55 @@ export function BehaviouralObjectiveSection({
 
   const { showToast } = useToast();
 
-  // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setObjectives(SAMPLE_OBJECTIVES);
-      setSectionState("loaded");
-    }, LOADING_DELAY_MS);
+  // Fetch objectives from API on mount
+  const fetchObjectives = useCallback(async () => {
+    try {
+      setSectionState("loading");
+      const response = await apiGet<XanoBehaviouralObjective[]>(
+        `/api/interventions/${interventionId}/behavioural-objective`
+      );
 
-    return () => clearTimeout(timer);
-  }, []);
+      if (response && Array.isArray(response)) {
+        const transformed = response.map((item, index) =>
+          xanoObjectiveToFrontend(item, index)
+        );
+        setObjectives(transformed);
+
+        // Check if any is already selected
+        const selected = response.find((item) => item.is_selected);
+        if (selected) {
+          setSelectedObjective(selected.id);
+        }
+      } else {
+        setObjectives([]);
+      }
+    } catch {
+      setObjectives([]);
+    } finally {
+      setSectionState("loaded");
+    }
+  }, [interventionId]);
+
+  // Check confirmation state via intervention current_step
+  const checkConfirmation = useCallback(async () => {
+    try {
+      const interventionData = await apiGet<Intervention>(
+        `/api/interventions/${interventionId}`
+      );
+      // Behavioural Objective is workflow step 4; after confirm, current_step becomes 5+
+      if (interventionData && interventionData.current_step >= 5) {
+        setIsConfirmed(true);
+        onLoadConfirmed?.();
+      }
+    } catch {
+      // Could not check — leave unconfirmed
+    }
+  }, [interventionId, onLoadConfirmed]);
+
+  useEffect(() => {
+    fetchObjectives();
+    checkConfirmation();
+  }, [fetchObjectives, checkConfirmation]);
 
   // Close add menu on click outside
   useEffect(() => {
@@ -218,7 +243,7 @@ export function BehaviouralObjectiveSection({
     };
   }, [isAddMenuOpen]);
 
-  // AI generation progress simulation
+  // AI generation progress simulation (mock — N8N integration is future)
   useEffect(() => {
     if (!generatingCard) return;
 
@@ -235,16 +260,20 @@ export function BehaviouralObjectiveSection({
         const aiContent = AI_OBJECTIVES[aiCounterRef.current % AI_OBJECTIVES.length];
         aiCounterRef.current += 1;
 
-        const newObjective: Objective = {
-          id: generatingCard.id,
-          number: generatingCard.number,
-          title: aiContent,
-          color: generatingCard.color,
-        };
-
-        setObjectives((prev) => [...prev, newObjective]);
-        setGeneratingCard(null);
-        showToast("Objective saved successfully");
+        (async () => {
+          try {
+            await apiPost(
+              `/api/interventions/${interventionId}/behavioural-objective`,
+              frontendObjectiveToXanoCreate({ title: aiContent }, interventionId)
+            );
+            await fetchObjectives();
+            showToast("Objective saved successfully");
+          } catch {
+            showToast("Failed to save generated objective", "error");
+          } finally {
+            setGeneratingCard(null);
+          }
+        })();
       }
     }, PROGRESS_INTERVAL_MS);
 
@@ -259,59 +288,107 @@ export function BehaviouralObjectiveSection({
     }
   };
 
-  const handleSelect = (id: string) => {
+  const handleSelect = async (id: string) => {
     if (isConfirmed) return;
+
+    const previousSelection = selectedObjective;
     setSelectedObjective(id === selectedObjective ? null : id);
+
+    if (id !== selectedObjective) {
+      try {
+        await apiPost(
+          `/api/interventions/${interventionId}/behavioural-objective/${id}/select`,
+          {}
+        );
+      } catch {
+        setSelectedObjective(previousSelection);
+        showToast("Failed to select objective", "error");
+      }
+    }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedObjective) return;
-    setIsConfirmed(true);
-    showToast("Behavioural Objective confirmed successfully");
-    onConfirm?.();
+
+    try {
+      await apiPost(
+        `/api/interventions/${interventionId}/behavioural-objective/confirm`,
+        { intervention_id: interventionId }
+      );
+      setIsConfirmed(true);
+      showToast("Behavioural Objective confirmed successfully");
+      onConfirm?.();
+    } catch {
+      showToast("Failed to confirm behavioural objective", "error");
+    }
   };
 
   // Edit handlers
-  const handleEditSave = (updatedObjective: Objective) => {
+  const handleEditSave = async (updatedObjective: Objective) => {
+    // Optimistic update
     setObjectives((prev) =>
       prev.map((o) => (o.id === updatedObjective.id ? updatedObjective : o))
     );
-    showToast("Objective saved successfully");
+
+    try {
+      const patchBody = frontendObjectiveToXanoPatch({
+        title: updatedObjective.title,
+      });
+
+      await apiPatch(
+        `/api/interventions/${interventionId}/behavioural-objective/${updatedObjective.id}`,
+        patchBody
+      );
+      showToast("Objective saved successfully");
+    } catch {
+      showToast("Failed to save objective", "error");
+      fetchObjectives();
+    }
   };
 
   // Delete handlers
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deletingObjective) return;
 
     if (selectedObjective === deletingObjective.id) {
       setSelectedObjective(null);
     }
 
+    const deletingId = deletingObjective.id;
     setObjectives((prev) => {
-      const filtered = prev.filter((o) => o.id !== deletingObjective.id);
+      const filtered = prev.filter((o) => o.id !== deletingId);
       return filtered.map((o, index) => ({
         ...o,
         number: index + 1,
       }));
     });
 
-    showToast("Objective deleted successfully");
+    try {
+      await apiDelete(
+        `/api/interventions/${interventionId}/behavioural-objective/${deletingId}`
+      );
+      showToast("Objective deleted successfully");
+    } catch {
+      showToast("Failed to delete objective", "error");
+      fetchObjectives();
+    }
   };
 
   // Manual add handler
-  const handleManualAdd = (title: string) => {
-    const nextNumber = objectives.length + (generatingCard ? 2 : 1);
-    const newObjective: Objective = {
-      id: `manual-${Date.now()}`,
-      number: nextNumber,
-      title,
-      color: getColorForIndex(nextNumber - 1),
-    };
-    setObjectives((prev) => [...prev, newObjective]);
-    showToast("Objective saved successfully");
+  const handleManualAdd = async (title: string) => {
+    try {
+      await apiPost(
+        `/api/interventions/${interventionId}/behavioural-objective`,
+        frontendObjectiveToXanoCreate({ title }, interventionId)
+      );
+      await fetchObjectives();
+      showToast("Objective saved successfully");
+    } catch {
+      showToast("Failed to add objective", "error");
+    }
   };
 
-  // AI generation handler
+  // AI generation handler (mock — N8N integration is future)
   const handleGenerateByKora = () => {
     setIsAddMenuOpen(false);
     const nextNumber = objectives.length + 1;

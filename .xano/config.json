@@ -1,0 +1,12 @@
+{
+  "instanceName": "xyot-fwcy-i2yo",
+  "workspaceName": "Kora_Toby",
+  "workspaceId": 41,
+  "branch": "v1",
+  "paths": {
+    "functions": "functions",
+    "tables": "tables",
+    "apis": "apis",
+    "tasks": "tasks"
+  }
+}

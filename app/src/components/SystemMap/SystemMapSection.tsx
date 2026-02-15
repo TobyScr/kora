@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { SystemMapCard } from "./SystemMapCard";
 import { SystemMapSkeleton } from "./SystemMapSkeleton";
@@ -9,10 +9,16 @@ import { EditChallengeModal } from "./EditChallengeModal";
 import { DeleteChallengeModal } from "./DeleteChallengeModal";
 import { AddChallengeModal } from "./AddChallengeModal";
 import { useToast } from "../Toast";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/lib/api";
+import { xanoChallengeToFrontend, frontendChallengeToXanoCreate, frontendChallengeToXanoPatch } from "@/lib/transforms/systemMap";
+import type { XanoSystemMapChallenge } from "@/lib/types/systemMap";
+import type { Intervention } from "@/lib/types/intervention";
 import type { Challenge, ChallengeColor, SystemMapState } from "./types";
 
 type SystemMapSectionProps = {
+  interventionId: number;
   onConfirm?: (entryPoint: { number: number; title: string }) => void;
+  onLoadConfirmed?: () => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
 };
@@ -115,7 +121,7 @@ function getColorForIndex(index: number): ChallengeColor {
   return COLORS[index % COLORS.length];
 }
 
-// Simulated AI-generated challenge content
+// Simulated AI-generated challenge content (mock — N8N integration is future)
 const AI_CHALLENGES = [
   {
     title: "Digital literacy gaps in vulnerable populations",
@@ -134,76 +140,6 @@ const AI_CHALLENGES = [
   },
 ];
 
-// Sample challenge data
-const SAMPLE_CHALLENGES: Challenge[] = [
-  {
-    id: "1",
-    number: 1,
-    title: "Algorithmic amplification of emotionally charged content",
-    description:
-      "Platform algorithms disproportionately surface content that triggers strong emotional responses, making extremist messaging more visible to vulnerable youth who are seeking validation and identity.",
-    color: "teal",
-  },
-  {
-    id: "2",
-    number: 2,
-    title: "Identity repair through group belonging",
-    description:
-      "Young men experiencing loneliness, rejection, or economic frustration find community in manosphere spaces that reframe personal grievances as collective male struggles against societal change.",
-    color: "cyan",
-  },
-  {
-    id: "3",
-    number: 3,
-    title: "Erosion of trust in mainstream institutions",
-    description:
-      "Distrust of traditional media, educational institutions, and government creates an information vacuum that is filled by alternative influencers who position themselves as truth-tellers.",
-    color: "blue",
-  },
-  {
-    id: "4",
-    number: 4,
-    title: "Gamification of misogynistic engagement",
-    description:
-      "Manosphere communities use gamified elements like ranking systems, achievement badges, and competitive dynamics to encourage deeper engagement with harmful ideologies.",
-    color: "indigo",
-  },
-  {
-    id: "5",
-    number: 5,
-    title: "Economic anxiety as a radicalisation gateway",
-    description:
-      "Financial instability and perceived lack of opportunity create fertile ground for recruitment, as groups offer both material support and a sense of purpose to struggling young men.",
-    color: "violet",
-  },
-  {
-    id: "6",
-    number: 6,
-    title: "Peer pressure and social proof dynamics",
-    description:
-      "The visibility of peers engaging with manosphere content creates normalisation effects, where harmful views become seen as common and acceptable within social circles.",
-    color: "amber",
-  },
-  {
-    id: "7",
-    number: 7,
-    title: "Absence of compelling counter-narratives",
-    description:
-      "Current counter-messaging efforts lack the emotional resonance and production quality of manosphere content, failing to compete for attention in the same digital spaces.",
-    color: "rose",
-  },
-  {
-    id: "8",
-    number: 8,
-    title: "Cross-platform recruitment funnels",
-    description:
-      "Recruitment operates across multiple platforms, with initial contact on mainstream sites like TikTok and YouTube funnelling users to more extreme content on encrypted or less-moderated platforms.",
-    color: "emerald",
-  },
-];
-
-const LOADING_DELAY_MS = 2000;
-
 // Generation simulation timing
 const GENERATION_DURATION_MS = 4000;
 const PROGRESS_INTERVAL_MS = 100;
@@ -216,7 +152,9 @@ type GeneratingCard = {
 };
 
 export function SystemMapSection({
+  interventionId,
   onConfirm,
+  onLoadConfirmed,
   isExpanded: controlledExpanded,
   onToggleExpand,
 }: SystemMapSectionProps) {
@@ -244,15 +182,55 @@ export function SystemMapSection({
 
   const { showToast } = useToast();
 
-  // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setChallenges(SAMPLE_CHALLENGES);
-      setMapState("loaded");
-    }, LOADING_DELAY_MS);
+  // Fetch challenges from API on mount
+  const fetchChallenges = useCallback(async () => {
+    try {
+      setMapState("loading");
+      const response = await apiGet<XanoSystemMapChallenge[]>(
+        `/api/interventions/${interventionId}/system-map`
+      );
 
-    return () => clearTimeout(timer);
-  }, []);
+      if (response && Array.isArray(response)) {
+        const transformed = response.map((item, index) =>
+          xanoChallengeToFrontend(item, index)
+        );
+        setChallenges(transformed);
+
+        // Check if any is already selected
+        const selected = response.find((item) => item.is_selected);
+        if (selected) {
+          setSelectedEntryPoint(selected.id);
+        }
+      } else {
+        setChallenges([]);
+      }
+    } catch {
+      setChallenges([]);
+    } finally {
+      setMapState("loaded");
+    }
+  }, [interventionId]);
+
+  // Check confirmation state via intervention current_step
+  const checkConfirmation = useCallback(async () => {
+    try {
+      const interventionData = await apiGet<Intervention>(
+        `/api/interventions/${interventionId}`
+      );
+      // System Map is workflow step 3; after confirm, current_step becomes 4+
+      if (interventionData && interventionData.current_step >= 4) {
+        setIsConfirmed(true);
+        onLoadConfirmed?.();
+      }
+    } catch {
+      // Could not check — leave unconfirmed
+    }
+  }, [interventionId, onLoadConfirmed]);
+
+  useEffect(() => {
+    fetchChallenges();
+    checkConfirmation();
+  }, [fetchChallenges, checkConfirmation]);
 
   // Close add menu on click outside
   useEffect(() => {
@@ -271,7 +249,7 @@ export function SystemMapSection({
     };
   }, [isAddMenuOpen]);
 
-  // AI generation progress simulation
+  // AI generation progress simulation (mock — N8N integration is future)
   useEffect(() => {
     if (!generatingCard) return;
 
@@ -285,22 +263,27 @@ export function SystemMapSection({
       if (progress >= 100) {
         clearInterval(interval);
 
-        // Pick AI content
+        // Pick AI content and save to Xano
         const aiContent = AI_CHALLENGES[aiCounterRef.current % AI_CHALLENGES.length];
         aiCounterRef.current += 1;
 
-        // Replace skeleton with real challenge
-        const newChallenge: Challenge = {
-          id: generatingCard.id,
-          number: generatingCard.number,
-          title: aiContent.title,
-          description: aiContent.description,
-          color: generatingCard.color,
-        };
-
-        setChallenges((prev) => [...prev, newChallenge]);
-        setGeneratingCard(null);
-        showToast("Challenge saved successfully");
+        (async () => {
+          try {
+            await apiPost(
+              `/api/interventions/${interventionId}/system-map`,
+              frontendChallengeToXanoCreate(
+                { title: aiContent.title, description: aiContent.description },
+                interventionId
+              )
+            );
+            await fetchChallenges();
+            showToast("Challenge saved successfully");
+          } catch {
+            showToast("Failed to save generated challenge", "error");
+          } finally {
+            setGeneratingCard(null);
+          }
+        })();
       }
     }, PROGRESS_INTERVAL_MS);
 
@@ -315,30 +298,73 @@ export function SystemMapSection({
     }
   };
 
-  const handleSelectEntryPoint = (id: string) => {
+  const handleSelectEntryPoint = async (id: string) => {
     if (isConfirmed) return;
+
+    // Optimistic update
+    const previousSelection = selectedEntryPoint;
     setSelectedEntryPoint(id === selectedEntryPoint ? null : id);
+
+    if (id !== selectedEntryPoint) {
+      // Selecting a new entry point
+      try {
+        await apiPost(
+          `/api/interventions/${interventionId}/system-map/${id}/select`,
+          {}
+        );
+      } catch {
+        // Revert on error
+        setSelectedEntryPoint(previousSelection);
+        showToast("Failed to select entry point", "error");
+      }
+    }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedEntryPoint) return;
-    setIsConfirmed(true);
-    const selected = challenges.find((c) => c.id === selectedEntryPoint);
-    if (selected) {
-      onConfirm?.({ number: selected.number, title: selected.title });
+
+    try {
+      await apiPost(
+        `/api/interventions/${interventionId}/system-map/confirm`,
+        { intervention_id: interventionId }
+      );
+      setIsConfirmed(true);
+      showToast("System Map confirmed");
+      const selected = challenges.find((c) => c.id === selectedEntryPoint);
+      if (selected) {
+        onConfirm?.({ number: selected.number, title: selected.title });
+      }
+    } catch {
+      showToast("Failed to confirm system map", "error");
     }
   };
 
   // Edit handlers
-  const handleEditSave = (updatedChallenge: Challenge) => {
+  const handleEditSave = async (updatedChallenge: Challenge) => {
+    // Optimistic update
     setChallenges((prev) =>
       prev.map((c) => (c.id === updatedChallenge.id ? updatedChallenge : c))
     );
-    showToast("Challenge saved successfully");
+
+    try {
+      const patchBody = frontendChallengeToXanoPatch({
+        title: updatedChallenge.title,
+        description: updatedChallenge.description,
+      });
+
+      await apiPatch(
+        `/api/interventions/${interventionId}/system-map/${updatedChallenge.id}`,
+        patchBody
+      );
+      showToast("Challenge saved successfully");
+    } catch {
+      showToast("Failed to save challenge", "error");
+      fetchChallenges();
+    }
   };
 
   // Delete handlers
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deletingChallenge) return;
 
     // If the deleted challenge was the selected entry point, clear selection
@@ -346,33 +372,42 @@ export function SystemMapSection({
       setSelectedEntryPoint(null);
     }
 
-    // Remove the challenge and re-number remaining ones sequentially
+    // Optimistic update: remove and re-number
+    const deletingId = deletingChallenge.id;
     setChallenges((prev) => {
-      const filtered = prev.filter((c) => c.id !== deletingChallenge.id);
+      const filtered = prev.filter((c) => c.id !== deletingId);
       return filtered.map((c, index) => ({
         ...c,
         number: index + 1,
       }));
     });
 
-    showToast("Challenge deleted successfully");
+    try {
+      await apiDelete(
+        `/api/interventions/${interventionId}/system-map/${deletingId}`
+      );
+      showToast("Challenge deleted successfully");
+    } catch {
+      showToast("Failed to delete challenge", "error");
+      fetchChallenges();
+    }
   };
 
   // Manual add handler
-  const handleManualAdd = (title: string, description: string) => {
-    const nextNumber = challenges.length + (generatingCard ? 2 : 1);
-    const newChallenge: Challenge = {
-      id: `manual-${Date.now()}`,
-      number: nextNumber,
-      title,
-      description,
-      color: getColorForIndex(nextNumber - 1),
-    };
-    setChallenges((prev) => [...prev, newChallenge]);
-    showToast("Challenge saved successfully");
+  const handleManualAdd = async (title: string, description: string) => {
+    try {
+      await apiPost(
+        `/api/interventions/${interventionId}/system-map`,
+        frontendChallengeToXanoCreate({ title, description }, interventionId)
+      );
+      await fetchChallenges();
+      showToast("Challenge saved successfully");
+    } catch {
+      showToast("Failed to add challenge", "error");
+    }
   };
 
-  // AI generation handler
+  // AI generation handler (mock — N8N integration is future)
   const handleGenerateByKora = () => {
     setIsAddMenuOpen(false);
     const nextNumber = challenges.length + 1;
