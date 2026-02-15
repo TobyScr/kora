@@ -99,3 +99,22 @@ body {
   background: var(--background-page);
   color: var(--text-primary);
 }
+
+/* Pointer cursor on all interactive elements */
+button,
+a,
+select,
+summary,
+[type="button"],
+[type="submit"],
+[type="reset"],
+[type="checkbox"],
+[type="radio"],
+[role="button"],
+[role="tab"],
+[role="link"],
+[role="menuitem"],
+[role="option"],
+[tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}

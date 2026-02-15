@@ -89,6 +89,10 @@ Each requirement must end in one of:
 - If a real user cannot do it from the keyboard and screen, Playwright must not do it
 - See Section 4 of `qa_contract_authoritative_rules_for_claude_code.md` for the full prohibited techniques list
 
+### Page Load Timeout Rule
+
+If a page does not load within **15 seconds**, kill the browser and try again. Do not wait longer than 15 seconds for any single page load. If it fails a second time, mark the requirement as Blocked and move on.
+
 ### If an interaction fails:
 1. Capture evidence
 2. Record what was attempted

@@ -13,6 +13,9 @@ import { BriefOverviewSection } from "@/components/BriefOverview";
 import { ResearchInsightsSection } from "@/components/ResearchInsights";
 import { SystemMapSection } from "@/components/SystemMap";
 import { BehaviouralObjectiveSection } from "@/components/BehaviouralObjective";
+import { AssumptionTestingSection } from "@/components/AssumptionTesting";
+import { ComBSection } from "@/components/ComB";
+import { PersonaSection } from "@/components/Personas";
 import { ProgressPanel, type StatusType } from "@/components/ProgressPanel";
 
 const FileIcon = () => (
@@ -51,12 +54,16 @@ type SectionState = {
   isExpanded: boolean;
 };
 
-type ProgressSections = {
-  briefOverview: SectionState;
-  researchInsights: SectionState;
-  systemMap: SectionState;
-  behaviouralObjective: SectionState;
-};
+type SectionKey =
+  | "briefOverview"
+  | "researchInsights"
+  | "systemMap"
+  | "behaviouralObjective"
+  | "assumptionTesting"
+  | "comB"
+  | "personas";
+
+type ProgressSections = Record<SectionKey, SectionState>;
 
 const initialMessages: Message[] = [];
 
@@ -69,10 +76,21 @@ export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [viewMode, setViewMode] = useState<ViewMode>("chat");
   const [briefOverviewExpanded, setBriefOverviewExpanded] = useState(true);
+
+  // Track which sections have been confirmed (to conditionally render the next)
   const [researchInsightsConfirmed, setResearchInsightsConfirmed] = useState(false);
   const [systemMapConfirmed, setSystemMapConfirmed] = useState(false);
+  const [behaviouralObjectiveConfirmed, setBehaviouralObjectiveConfirmed] = useState(false);
+  const [assumptionTestingConfirmed, setAssumptionTestingConfirmed] = useState(false);
+  const [comBConfirmed, setComBConfirmed] = useState(false);
+
+  // Expanded state for each section
   const [systemMapExpanded, setSystemMapExpanded] = useState(true);
   const [behaviouralObjectiveExpanded, setBehaviouralObjectiveExpanded] = useState(true);
+  const [assumptionTestingExpanded, setAssumptionTestingExpanded] = useState(true);
+  const [comBExpanded, setComBExpanded] = useState(true);
+  const [personasExpanded, setPersonasExpanded] = useState(true);
+
   const [selectedEntryPoint, setSelectedEntryPoint] = useState<{ number: number; title: string } | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
@@ -81,7 +99,11 @@ export default function BriefPage() {
     researchInsights: { status: "in-progress", isExpanded: false },
     systemMap: { status: "in-progress", isExpanded: false },
     behaviouralObjective: { status: "in-progress", isExpanded: false },
+    assumptionTesting: { status: "in-progress", isExpanded: false },
+    comB: { status: "in-progress", isExpanded: false },
+    personas: { status: "in-progress", isExpanded: false },
   });
+
   // Render inline markdown (bold + italic) within a text segment
   function renderInline(text: string, keyPrefix: string) {
     return text.split(/(\*\*.*?\*\*|\*[^*]+?\*)/).map((part, i) => {
@@ -104,7 +126,7 @@ export default function BriefPage() {
     while (i < lines.length) {
       const line = lines[i];
 
-      // ## Headers → bold section title with spacing
+      // ## Headers
       if (line.startsWith("## ")) {
         elements.push(
           <div key={`h-${i}`} className="font-semibold text-[0.94rem] text-text-primary mt-5 mb-1">
@@ -128,14 +150,14 @@ export default function BriefPage() {
         continue;
       }
 
-      // Empty lines → breathing room
+      // Empty lines
       if (line.trim() === "") {
         elements.push(<div key={`sp-${i}`} className="h-3" />);
         i++;
         continue;
       }
 
-      // Regular text → inline markdown
+      // Regular text
       elements.push(<div key={`p-${i}`} className="leading-relaxed">{renderInline(line, `p-${i}`)}</div>);
       i++;
     }
@@ -147,6 +169,9 @@ export default function BriefPage() {
   const researchInsightsRef = useRef<HTMLDivElement>(null);
   const systemMapRef = useRef<HTMLDivElement>(null);
   const behaviouralObjectiveRef = useRef<HTMLDivElement>(null);
+  const assumptionTestingRef = useRef<HTMLDivElement>(null);
+  const comBRef = useRef<HTMLDivElement>(null);
+  const personasRef = useRef<HTMLDivElement>(null);
   const greetingSentRef = useRef(false);
 
   // Fetch intervention data
@@ -334,7 +359,7 @@ export default function BriefPage() {
     }
   };
 
-  const handleToggleSection = (section: "briefOverview" | "researchInsights" | "systemMap" | "behaviouralObjective") => {
+  const handleToggleSection = (section: SectionKey) => {
     setProgressSections((prev) => ({
       ...prev,
       [section]: {
@@ -345,7 +370,6 @@ export default function BriefPage() {
   };
 
   const handleConfirmBriefOverview = () => {
-    // Collapse Brief Overview and expand Research Insights
     setBriefOverviewExpanded(false);
     setProgressSections((prev) => ({
       ...prev,
@@ -353,7 +377,6 @@ export default function BriefPage() {
       researchInsights: { status: "in-progress", isExpanded: true },
     }));
 
-    // Auto-scroll to Research Insights after a short delay for DOM update
     setTimeout(() => {
       researchInsightsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
@@ -376,6 +399,84 @@ export default function BriefPage() {
       briefOverview: { status: "complete", isExpanded: false },
       researchInsights: { status: "complete", isExpanded: false },
       systemMap: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
+
+  const handleSystemMapLoadedConfirmed = useCallback(() => {
+    setResearchInsightsConfirmed(true);
+    setSystemMapConfirmed(true);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "complete", isExpanded: false },
+      systemMap: { status: "complete", isExpanded: false },
+      behaviouralObjective: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
+
+  const handleBehaviouralObjectiveLoadedConfirmed = useCallback(() => {
+    setResearchInsightsConfirmed(true);
+    setSystemMapConfirmed(true);
+    setBehaviouralObjectiveConfirmed(true);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "complete", isExpanded: false },
+      systemMap: { status: "complete", isExpanded: false },
+      behaviouralObjective: { status: "complete", isExpanded: false },
+      assumptionTesting: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
+
+  const handleAssumptionTestingLoadedConfirmed = useCallback(() => {
+    setResearchInsightsConfirmed(true);
+    setSystemMapConfirmed(true);
+    setBehaviouralObjectiveConfirmed(true);
+    setAssumptionTestingConfirmed(true);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "complete", isExpanded: false },
+      systemMap: { status: "complete", isExpanded: false },
+      behaviouralObjective: { status: "complete", isExpanded: false },
+      assumptionTesting: { status: "complete", isExpanded: false },
+      comB: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
+
+  const handleComBLoadedConfirmed = useCallback(() => {
+    setResearchInsightsConfirmed(true);
+    setSystemMapConfirmed(true);
+    setBehaviouralObjectiveConfirmed(true);
+    setAssumptionTestingConfirmed(true);
+    setComBConfirmed(true);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "complete", isExpanded: false },
+      systemMap: { status: "complete", isExpanded: false },
+      behaviouralObjective: { status: "complete", isExpanded: false },
+      assumptionTesting: { status: "complete", isExpanded: false },
+      comB: { status: "complete", isExpanded: false },
+      personas: { status: "in-progress", isExpanded: true },
+    }));
+  }, []);
+
+  const handlePersonasLoadedConfirmed = useCallback(() => {
+    setResearchInsightsConfirmed(true);
+    setSystemMapConfirmed(true);
+    setBehaviouralObjectiveConfirmed(true);
+    setAssumptionTestingConfirmed(true);
+    setComBConfirmed(true);
+    setProgressSections((prev) => ({
+      ...prev,
+      briefOverview: { status: "complete", isExpanded: false },
+      researchInsights: { status: "complete", isExpanded: false },
+      systemMap: { status: "complete", isExpanded: false },
+      behaviouralObjective: { status: "complete", isExpanded: false },
+      assumptionTesting: { status: "complete", isExpanded: false },
+      comB: { status: "complete", isExpanded: false },
+      personas: { status: "complete", isExpanded: false },
     }));
   }, []);
 
@@ -439,10 +540,23 @@ export default function BriefPage() {
               isLocked={progressSections.systemMap.status !== "complete"}
             />
             <SubsectionItem
-              label="Assumption testing"
+              label="Assumption Testing"
+              isActive={progressSections.assumptionTesting.status === "in-progress" && progressSections.behaviouralObjective.status === "complete"}
+              isComplete={progressSections.assumptionTesting.status === "complete"}
               isLocked={progressSections.behaviouralObjective.status !== "complete"}
             />
-            <SubsectionItem label="COM-B & Personas" isLocked />
+            <SubsectionItem
+              label="COM-B"
+              isActive={progressSections.comB.status === "in-progress" && progressSections.assumptionTesting.status === "complete"}
+              isComplete={progressSections.comB.status === "complete"}
+              isLocked={progressSections.assumptionTesting.status !== "complete"}
+            />
+            <SubsectionItem
+              label="Personas"
+              isActive={progressSections.personas.status === "in-progress" && progressSections.comB.status === "complete"}
+              isComplete={progressSections.personas.status === "complete"}
+              isLocked={progressSections.comB.status !== "complete"}
+            />
           </div>
           {/* Design - locked */}
           <div className="border-b border-stroke-default">
@@ -498,6 +612,7 @@ export default function BriefPage() {
           /* Brief Overview view */
           <div className="flex-1 overflow-y-auto px-6 md:px-10 pt-16 pb-10">
             <div className="space-y-6">
+              {/* 1. Brief Overview */}
               <BriefOverviewSection
                 interventionId={Number(params.id)}
                 onConfirm={handleConfirmBriefOverview}
@@ -505,6 +620,8 @@ export default function BriefPage() {
                 isExpanded={briefOverviewExpanded}
                 onToggleExpand={() => setBriefOverviewExpanded(!briefOverviewExpanded)}
               />
+
+              {/* 2. Research Insights */}
               <div ref={researchInsightsRef}>
                 <ResearchInsightsSection
                   interventionId={Number(params.id)}
@@ -519,19 +636,21 @@ export default function BriefPage() {
                       researchInsights: { status: "complete", isExpanded: false },
                       systemMap: { status: "in-progress", isExpanded: true },
                     }));
-                    // Auto-scroll to System Map after a short delay for DOM update
                     setTimeout(() => {
                       systemMapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                     }, 100);
                   }}
                 />
               </div>
-              {/* System Map - shown after Research Insights is confirmed */}
+
+              {/* 3. System Map - shown after Research Insights is confirmed */}
               {researchInsightsConfirmed && (
                 <div ref={systemMapRef}>
                   <SystemMapSection
+                    interventionId={Number(params.id)}
                     isExpanded={systemMapExpanded}
                     onToggleExpand={() => setSystemMapExpanded(!systemMapExpanded)}
+                    onLoadConfirmed={handleSystemMapLoadedConfirmed}
                     onConfirm={(entryPoint) => {
                       setSystemMapExpanded(false);
                       setSystemMapConfirmed(true);
@@ -549,13 +668,16 @@ export default function BriefPage() {
                   />
                 </div>
               )}
-              {/* Behavioural Objective - shown after System Map is confirmed */}
+
+              {/* 4. Behavioural Objective - shown after System Map is confirmed */}
               {systemMapConfirmed && (
                 <div ref={behaviouralObjectiveRef}>
                   <BehaviouralObjectiveSection
+                    interventionId={Number(params.id)}
                     isExpanded={behaviouralObjectiveExpanded}
                     onToggleExpand={() => setBehaviouralObjectiveExpanded(!behaviouralObjectiveExpanded)}
                     selectedChallenge={selectedEntryPoint}
+                    onLoadConfirmed={handleBehaviouralObjectiveLoadedConfirmed}
                     onViewEntryPoint={() => {
                       setSystemMapExpanded(true);
                       setTimeout(() => {
@@ -564,10 +686,86 @@ export default function BriefPage() {
                     }}
                     onConfirm={() => {
                       setBehaviouralObjectiveExpanded(false);
+                      setBehaviouralObjectiveConfirmed(true);
+                      setAssumptionTestingExpanded(true);
                       setProgressSections((prev) => ({
                         ...prev,
                         behaviouralObjective: { status: "complete", isExpanded: false },
+                        assumptionTesting: { status: "in-progress", isExpanded: true },
                       }));
+                      setTimeout(() => {
+                        assumptionTestingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* 5. Assumption Testing - shown after Behavioural Objective is confirmed */}
+              {behaviouralObjectiveConfirmed && (
+                <div ref={assumptionTestingRef}>
+                  <AssumptionTestingSection
+                    interventionId={Number(params.id)}
+                    isExpanded={assumptionTestingExpanded}
+                    onToggleExpand={() => setAssumptionTestingExpanded(!assumptionTestingExpanded)}
+                    onLoadConfirmed={handleAssumptionTestingLoadedConfirmed}
+                    onConfirm={() => {
+                      setAssumptionTestingExpanded(false);
+                      setAssumptionTestingConfirmed(true);
+                      setComBExpanded(true);
+                      setProgressSections((prev) => ({
+                        ...prev,
+                        assumptionTesting: { status: "complete", isExpanded: false },
+                        comB: { status: "in-progress", isExpanded: true },
+                      }));
+                      setTimeout(() => {
+                        comBRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* 6. COM-B - shown after Assumption Testing is confirmed */}
+              {assumptionTestingConfirmed && (
+                <div ref={comBRef}>
+                  <ComBSection
+                    interventionId={Number(params.id)}
+                    isExpanded={comBExpanded}
+                    onToggleExpand={() => setComBExpanded(!comBExpanded)}
+                    onLoadConfirmed={handleComBLoadedConfirmed}
+                    onConfirm={() => {
+                      setComBExpanded(false);
+                      setComBConfirmed(true);
+                      setPersonasExpanded(true);
+                      setProgressSections((prev) => ({
+                        ...prev,
+                        comB: { status: "complete", isExpanded: false },
+                        personas: { status: "in-progress", isExpanded: true },
+                      }));
+                      setTimeout(() => {
+                        personasRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* 7. Personas - shown after COM-B is confirmed */}
+              {comBConfirmed && (
+                <div ref={personasRef}>
+                  <PersonaSection
+                    interventionId={Number(params.id)}
+                    isExpanded={personasExpanded}
+                    onToggleExpand={() => setPersonasExpanded(!personasExpanded)}
+                    onLoadConfirmed={handlePersonasLoadedConfirmed}
+                    onConfirm={() => {
+                      setPersonasExpanded(false);
+                      setProgressSections((prev) => ({
+                        ...prev,
+                        personas: { status: "complete", isExpanded: false },
+                      }));
+                      // Understand stage complete - future: unlock Design
                     }}
                   />
                 </div>
